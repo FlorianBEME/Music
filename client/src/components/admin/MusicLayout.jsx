@@ -170,7 +170,7 @@ const MusicLayout = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   return (
     <div className="flex flex-col">
