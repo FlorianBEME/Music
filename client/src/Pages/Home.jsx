@@ -4,24 +4,30 @@ import axios from "axios";
 import { FETCH } from "../FETCH";
 import { FiLoader } from "react-icons/fi";
 import SongRequest from "../components/SongRequest";
+import { useHistory } from "react-router-dom";
 
 const Home = () => {
   //Verification de la soirée
   const [event, setEvent] = useState();
   const [eventLoad, setEventLoad] = useState(false);
+  let history = useHistory();
 
   useEffect(() => {
-    axios
-      .get(`${FETCH}/events`)
-      .then((res) => {
-        setEvent(res.data);
-        setTimeout(function () {
-          setEventLoad(true);
-        }, 2000);
-      })
-      .catch(function (erreur) {
-        console.log(erreur);
-      });
+    if (localStorage.getItem("usInfoMusic")) {
+      axios
+        .get(`${FETCH}/events`)
+        .then((res) => {
+          setEvent(res.data);
+          setTimeout(function () {
+            setEventLoad(true);
+          }, 2000);
+        })
+        .catch(function (erreur) {
+          console.log(erreur);
+        });
+    } else {
+      history.push("/new");
+    }
   }, []);
 
   return (

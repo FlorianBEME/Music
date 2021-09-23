@@ -41,5 +41,12 @@ CREATE TABLE `songInCurrent` (
   `user_password` varchar(255) NOT NULL
 );
 
+CREATE TABLE `visitor` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) NOT NULL,
+  `pseudo` varchar(50) NOT NULL,
+  `isNotAllowed`boolean NOT NULL
+);
 INSERT INTO users ( user_name , user_password ) VALUES ("Admin","$2b$10$dH1ZvM2SRCwGBwWxl/CDlurofNaiTIAOW5f0kx7XY0Ej.kknFf9j2");
+
 INSERT INTO app (text, type) VALUEs ("Anniversaire de Valentin" , "Name")
