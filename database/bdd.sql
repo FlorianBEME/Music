@@ -48,5 +48,6 @@ CREATE TABLE `visitor` (
   `isNotAllowed`boolean NOT NULL
 );
 INSERT INTO users ( user_name , user_password ) VALUES ("Admin","$2b$10$dH1ZvM2SRCwGBwWxl/CDlurofNaiTIAOW5f0kx7XY0Ej.kknFf9j2");
+INSERT INTO users ( user_name , user_password ) VALUES ("Alek","$2b$10$vr613HdUrNoPVQ//USyxgOPtA3RKB1jzYz0EDBsBNY/D0wzj0mE42");
 
-INSERT INTO app (text, type) VALUEs ("Anniversaire de Valentin" , "Name")
+INSERT INTO app (text, type) VALUEs ("Anniversaire de Valentin" , "Name");
