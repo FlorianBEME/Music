@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { FETCH } from "../FETCH";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SongRequestInCurrent(props) {
   // Hook pour le rendu du composant
@@ -23,28 +25,34 @@ export default function SongRequestInCurrent(props) {
   };
 
   const handleVote = (id, count) => {
-    let newCount = parseInt(count) + 1;
-    axios
-      .put(`${FETCH}/currentSongs/${id}`, {
-        countVote: newCount,
-      })
-      .then((result, err) => {
-        if (
-          localStorage.getItem("idMusicVoting") === null &&
-          localStorage.getItem("date") === null
-        ) {
-          localStorage.setItem("idMusicVoting", id);
-        } else {
-          let oldId = localStorage.getItem("idMusicVoting");
-          if (oldId !== null) {
-            let result = oldId.split(",");
-            result.push(id);
-            localStorage.removeItem("idMusicVoting");
-            localStorage.setItem("idMusicVoting", result);
+    if (props.isAllowed) {
+      let newCount = parseInt(count) + 1;
+      axios
+        .put(`${FETCH}/currentSongs/${id}`, {
+          countVote: newCount,
+        })
+        .then((result, err) => {
+          if (
+            localStorage.getItem("idMusicVoting") === null &&
+            localStorage.getItem("date") === null
+          ) {
+            localStorage.setItem("idMusicVoting", id);
+          } else {
+            let oldId = localStorage.getItem("idMusicVoting");
+            if (oldId !== null) {
+              let result = oldId.split(",");
+              result.push(id);
+              localStorage.removeItem("idMusicVoting");
+              localStorage.setItem("idMusicVoting", result);
+            }
           }
-        }
+        });
+      forceUpdate();
+    } else {
+      toast.error("Vous n'êtes pas autorisé!", {
+        position: toast.POSITION.TOP_RIGHT,
       });
-    forceUpdate();
+    }
   };
 
   return (

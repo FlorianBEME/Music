@@ -3,13 +3,17 @@ import SongRequestInCurrent from "./songRequestInCurrent";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FETCH } from "../FETCH";
+import { useHistory } from "react-router-dom";
 
-/* This example requires Tailwind CSS v2.0+ */
 export default function SongRequestBloc() {
   // useState
   const [songs, setSongs] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [titleIncurent, setTitleIncurent] = useState("");
+  const [isAllowed, setIsAllowed] = useState(true);
+
+  const history = useHistory();
+  const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
 
   //Fecth liste de musique
   useEffect(() => {
@@ -22,10 +26,12 @@ export default function SongRequestBloc() {
       .catch(function (erreur) {
         console.log(erreur);
       });
+    verifyIsAllowed();
+    fetchSongIncurrent();
   });
 
-  //fetch titre en cours
-  useEffect(() => {
+  const fetchSongIncurrent = () => {
+    //fetch titre en cours
     axios
       .get(`${FETCH}/app/songinprogress`)
       .then((res) => {
@@ -34,7 +40,27 @@ export default function SongRequestBloc() {
       .catch(function (erreur) {
         console.log(erreur);
       });
-  });
+  };
+
+  const verifyIsAllowed = () => {
+    if (visitorInfo) {
+      // fetch permision
+      axios
+        .get(`${FETCH}/visitor/${visitorInfo.id}`)
+        .then((res) => {
+          if (res.data[0].isNotAllowed) {
+            setIsAllowed(false);
+          } else {
+            setIsAllowed(true);
+          }
+        })
+        .catch(function (erreur) {
+          console.log(erreur);
+        });
+    } else {
+      history.push("/new");
+    }
+  };
 
   const sortSongs = () => {
     let sortedList = songs.sort((a, b) =>
@@ -53,9 +79,13 @@ export default function SongRequestBloc() {
           </h3>
         </div>
         <div className="bg-white py-8 px-4 sm:px-6 lg:col-span-3  lg:px-8 xl:pl-12">
-          <SongRequestForm songs={songs} />
+          <SongRequestForm songs={songs} isAllowed={isAllowed} />
         </div>
-        <SongRequestInCurrent isLoading={isLoading} songs={sortSongs()} />
+        <SongRequestInCurrent
+          isLoading={isLoading}
+          songs={sortSongs()}
+          isAllowed={isAllowed}
+        />
       </div>
     </div>
   );
