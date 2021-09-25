@@ -10,7 +10,6 @@ import RouteLogin from "./router/RoutesLogin";
 import RouteAdmin from "./router/RouteAdmin";
 import WallPicture from "./Pages/WallPicture.jsx";
 import NewUser from "./Pages/NewUser";
-import { uuid } from "uuidv4";
 
 function App() {
   const [isAuthVerify, setAuth] = useState(false);
@@ -41,52 +40,9 @@ function App() {
     }
   };
 
-  // on verifie si l'evenement en cours correspond a celui de notre serveur
-  const verifyEvent = () => {
-    const nameEvent = localStorage.getItem("nameEvent");
-    let newEvent;
-    axios
-      .get(`${FETCH}/app`)
-      .then((response) => {
-        let result = response.data.filter((res) => res.type === "name");
-        newEvent = result[0].text;
-        if (nameEvent) {
-          if (newEvent !== nameEvent) {
-            localStorage.removeItem("idMusicVoting");
-            localStorage.setItem("nameEvent", newEvent);
-          }
-        } else {
-          localStorage.setItem("nameEvent", newEvent);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-  // on verifie si l'utilisateur est nouveau
-
   useEffect(() => {
     verifyToken();
   }, []);
-
-  useEffect(() => {
-    verifyEvent();
-  }, []);
-
-  useEffect(() => {
-    verifyUuidUser();
-  }, []);
-
-  const userInfo = localStorage.getItem("usInfoMusic");
-  const verifyUuidUser = () => {
-    if (!userInfo) {
-      console.log("nouveau");
-      //soit l'utilisateur est nouveau
-    } else {
-      console.log("ancien");
-      // soit il existe déja
-    }
-  };
 
   return (
     <div className="">

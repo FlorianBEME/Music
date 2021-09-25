@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   const sql = "SELECT * FROM visitor WHERE id=?";
-  connection.query(sql, (err, results) => {
+  connection.query(sql, [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
@@ -25,7 +25,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const sql = "INSERT INTO visitor SET ?";
+  const sql = "INSERT INTO visitor SET ? ";
   connection.query(sql, req.body, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
@@ -33,6 +33,27 @@ router.post("/", (req, res) => {
       res.status(201).json({ id: results.insertId, ...req.body });
     }
   });
+});
+
+router.post("/:id", (req, res) => {
+  const uuid = req.body.uuid;
+  if (!uuid) {
+    res.status(400).json({ errorMessage: "Please specify uuid" });
+  } else {
+    const sql = "SELECT * FROM visitor WHERE id = ? ;";
+    connection.query(sql, req.params.id, (err, result) => {
+      if (result.length > 0) {
+        if (result[0].uuid === uuid) {
+          res.status(200).send({ status: true });
+        } else {
+          console.log();
+          res.status(200).send({ status: false });
+        }
+      } else {
+        res.status(400).json({ errorMessage: "no Equal" });
+      }
+    });
+  }
 });
 
 router.put("/:id", verifyJWT, (req, res) => {

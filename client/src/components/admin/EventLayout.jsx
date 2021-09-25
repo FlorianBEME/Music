@@ -6,6 +6,7 @@ import { FETCH } from "../../FETCH";
 import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
 import MusicBandeau from "../../assets/musicbandeau.jpg";
+import { v4 as uuidv4 } from "uuid";
 
 const MySwal = withReactContent(Swal);
 
@@ -34,6 +35,7 @@ const EventLayout = () => {
         axios
           .post(`${FETCH}/events`, {
             name: newEvent,
+            uuid: uuidv4(),
           })
           .catch(function (error) {
             console.log(error);
@@ -54,6 +56,7 @@ const EventLayout = () => {
       .catch(function (error) {
         console.log(error);
       });
+    console.log("test");
   };
   // suprimer un event et la donnée
   const handleRemove = () => {
@@ -180,10 +183,9 @@ const EventLayout = () => {
       });
     }
   };
-
+  // fetchData();
   useEffect(() => {
     fetchData();
-    console.log(eventCurrent);
   }, []);
 
   return (

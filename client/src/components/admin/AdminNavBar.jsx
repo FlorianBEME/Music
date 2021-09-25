@@ -1,7 +1,7 @@
 import React from "react";
 import { Fragment } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { NavLink } from "react-router-dom";
 import AdminRoutes from "../../router/listRoute/AdminRoutes";
 import { useHistory } from "react-router-dom";

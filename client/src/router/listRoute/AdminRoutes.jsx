@@ -1,6 +1,7 @@
 import MusicLayout from "../../components/admin/MusicLayout";
 import EventLayout from "../../components/admin/EventLayout";
 import PictureLayout from "../../components/admin/PictureLayout";
+import VisitorLayout from "../../components/admin/VisitorLayout";
 
 export var AdminRoutes = [
   {
@@ -26,6 +27,14 @@ export var AdminRoutes = [
     icon: "mdi mdi-pencil-circle",
     redirect: false,
     component: EventLayout,
+  },
+  {
+    id: 4,
+    path: "/dashboard/visitor",
+    name: "Visiteur",
+    icon: "mdi mdi-pencil-circle",
+    redirect: false,
+    component: VisitorLayout,
   },
   {
     id: 4,
