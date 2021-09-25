@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FETCH } from "../../FETCH";
-import { BsFillTrashFill } from "react-icons/bs";
 import Switch from "@material-ui/core/Switch";
-
-import { CgUnavailable } from "react-icons/cg";
-import { AiOutlineCheck } from "react-icons/ai";
-import { removeInput } from "../common/removeInput";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -57,18 +52,20 @@ const VisitorLayout = () => {
 
   const handleAllowed = (id) => {
     MySwal.fire({
-      title: `Êtes-vous sûr de vouloir mettre cette chanson en indisponible?`,
+      title: `Êtes-vous sûr de vouloir modifier la permission de ce visiteur ?`,
       showCancelButton: true,
       confirmButtonText: "Valider",
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
         const index = visitorList.findIndex((visitor) => id === visitor.id);
-        console.log(index);
+        const status = visitorList[index].isNotAllowed;
+
+        console.log(status);
         axios
           .put(
             `${FETCH}/visitor/${id}`,
-            { isNotAllowed: !visitorList[0].isNotAllowed },
+            { isNotAllowed: status === 1 ? 0 : 1 },
             {
               headers: {
                 "x-access-token": token,

@@ -26,7 +26,8 @@ CREATE TABLE `currentsongs` (
 CREATE TABLE `events` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `bg_music` varchar(255) NULL
+  `bg_music` varchar(255) NULL,
+  `uuid` varchar(255) NOT NULL
 );
 
 CREATE TABLE `users` (

@@ -1,9 +1,6 @@
 import React from "react";
 import SongRequestBloc from "../components/songRequestBloc.jsx";
 import MusicBandeau from "../assets/musicbandeau.jpg";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { FETCH } from "../FETCH";
 
 const SongRequest = (props) => {
   return (

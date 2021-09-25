@@ -10,7 +10,6 @@ import RouteLogin from "./router/RoutesLogin";
 import RouteAdmin from "./router/RouteAdmin";
 import WallPicture from "./Pages/WallPicture.jsx";
 import NewUser from "./Pages/NewUser";
-import { uuid } from "uuidv4";
 
 function App() {
   const [isAuthVerify, setAuth] = useState(false);
@@ -41,35 +40,8 @@ function App() {
     }
   };
 
-  // on verifie si l'evenement en cours correspond a celui de notre serveur
-  const verifyEvent = () => {
-    const nameEvent = localStorage.getItem("nameEvent");
-    let newEvent;
-    axios
-      .get(`${FETCH}/events`)
-      .then((response) => {
-        let result = response.data.filter((res) => res.type === "name");
-        newEvent = result[0].text;
-        if (nameEvent) {
-          if (newEvent !== nameEvent) {
-            localStorage.removeItem("idMusicVoting");
-            localStorage.setItem("nameEvent", newEvent);
-          }
-        } else {
-          localStorage.setItem("nameEvent", newEvent);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
   useEffect(() => {
     verifyToken();
-  }, []);
-
-  useEffect(() => {
-    verifyEvent();
   }, []);
 
   return (

@@ -7,57 +7,80 @@ import SongRequest from "../components/SongRequest";
 import { useHistory } from "react-router-dom";
 
 const Home = () => {
-  let history = useHistory();
+  const history = useHistory();
 
   //Verification de la soirée
   const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
 
-  // Verification du visiteur
-  const verifyUser = new Promise((resolve, reject) => {
-    // si un visiteur n'est pas nouveau
-    if (localStorage.getItem("usInfoMusic")) {
-      const usInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
-      // on verifie que celui-ci figure bien dans la BDD
-      axios
-        .post(`${FETCH}/visitor/${usInfo.id}`, { uuid: usInfo.uuid })
-        .then((res) => {
-          if (!res.data.status) {
-            // On vide son local storage
-            localStorage.removeItem("usInfoMusic");
-            reject();
-          } else {
-            resolve();
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          reject();
-        });
-    } else {
-      reject();
-    }
-  });
-
   useEffect(() => {
-    verifyUser
-      .then((res) => {
+    // Verification du visiteur
+    const verifyUser = new Promise((resolve, reject) => {
+      // si un visiteur n'est pas nouveau
+      if (localStorage.getItem("usInfoMusic")) {
+        const usInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
+        // on verifie que celui-ci figure bien dans la BDD
         axios
-          .get(`${FETCH}/events`)
+          .post(`${FETCH}/visitor/${usInfo.id}`, { uuid: usInfo.uuid })
           .then((res) => {
-            setEvent(res.data);
-            setTimeout(function () {
-              setEventLoad(true);
-            }, 2000);
+            if (!res.data.status) {
+              // On vide son local storage
+              localStorage.removeItem("usInfoMusic");
+              reject();
+            } else {
+              resolve();
+            }
           })
-          .catch(function (erreur) {
-            console.log(erreur);
+          .catch((err) => {
+            console.log(err);
+            reject();
           });
-      })
-      .catch((err) => {
-        history.push("/new");
-      });
-  }, []);
+      } else {
+        reject();
+      }
+    });
+
+    const uuidEvent = localStorage.getItem("uuidEvent");
+    // on fetch la soirée en cours
+    axios.get(`${FETCH}/events`).then((res) => {
+      // si une soirée est en cours
+      if (res.data.length > 0) {
+        const currentEvent = res.data;
+        setEvent(currentEvent);
+        // on verifie le local storage
+        if (currentEvent[0].uuid !== uuidEvent || !uuidEvent) {
+          localStorage.removeItem("idMusicVoting");
+          localStorage.removeItem("usInfoMusic");
+          localStorage.setItem("uuidEvent", currentEvent[0].uuid);
+        }
+        // on verifie l'uuid du visiteur
+        verifyUser
+          .then((res) => {
+            axios
+              .get(`${FETCH}/events`)
+              .then((res) => {
+                setEvent(res.data);
+                setTimeout(function () {
+                  setEventLoad(true);
+                }, 2000);
+              })
+              .catch(function (erreur) {
+                console.log(erreur);
+              });
+          })
+          .catch((err) => {
+            history.push("/new");
+          });
+        console.log("ya un soirée");
+      } else {
+        // si pas de soirée en cours on vide le local storage
+        localStorage.removeItem("idMusicVoting");
+        localStorage.removeItem("usInfoMusic");
+        localStorage.removeItem("uuidEvent");
+        setEventLoad(true);
+      }
+    });
+  }, [history]);
 
   return (
     <div>

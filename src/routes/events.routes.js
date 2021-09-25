@@ -45,7 +45,8 @@ router.put("/:id", verifyJWT, (req, res) => {
 });
 
 router.delete("/remove/all", verifyJWT, (req, res) => {
-  const sql = "TRUNCATE TABLE events;TRUNCATE TABLE currentsongs";
+  const sql =
+    "TRUNCATE TABLE events;TRUNCATE TABLE currentsongs; TRUNCATE TABLE visitor";
   connection.query(sql, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });

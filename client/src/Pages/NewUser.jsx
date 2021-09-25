@@ -45,12 +45,9 @@ const NewUser = () => {
               Music Request
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              <a
-                href="#"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
+              <span className="font-medium text-indigo-600 hover:text-indigo-500">
                 Renseigner un pseudonyme
-              </a>
+              </span>
             </p>
           </div>
           <form
