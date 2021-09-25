@@ -6,7 +6,6 @@ import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
 import { removeInput } from "../common/removeInput";
 
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -14,7 +13,7 @@ const MySwal = withReactContent(Swal);
 
 const MusicLayout = () => {
   const token = localStorage.getItem("token");
-
+  const [compareType, setCompareType] = useState("");
   const [songs, setSongs] = useState([]);
   const [songsInCurrent, setSongsInCurrent] = useState(null);
 
@@ -72,8 +71,6 @@ const MusicLayout = () => {
               },
             })
             .then(() => {
-              console.log("yes");
-
               Swal.fire("Suprimée!", "", "success");
             });
         });
@@ -145,7 +142,6 @@ const MusicLayout = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(songsInCurrent);
         axios
           .put(
             `${FETCH}/app/songinprogress/0`,
@@ -160,13 +156,37 @@ const MusicLayout = () => {
             Swal.fire("Modifié!", "", "success");
             removeInput(["title"]);
             setSongsInCurrent("");
-            console.log(songsInCurrent);
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
           });
       }
     });
+  };
+
+  // function de trie
+  const compare = (a, b) => {
+    if (compareType === "indispo") {
+      if (a.unavailable === 1) {
+        return -1;
+      }
+      if (b.unavailable === 0) {
+        return 1;
+      }
+    } else if (compareType === "validé") {
+      if (a.isValid === 1) {
+        return -1;
+      }
+      if (b.isValid === 0) {
+        return 1;
+      }
+    } else if (compareType === "voteup") {
+      if (a.countVote > b.countVote) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
   };
 
   useEffect(() => {
@@ -205,15 +225,28 @@ const MusicLayout = () => {
               Valider
             </button>
           </div>
-          <button
-            onClick={() => {
-              handleAllDelete();
-            }}
-            type="button"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Tout supprimer
-          </button>
+          <div className="flex items-center space-x-2">
+            <label
+              htmlFor="location"
+              className="block text-xs font-medium text-gray-700"
+            >
+              Trier:
+            </label>
+            <select
+              defaultValue=""
+              id="location"
+              name="location"
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+              onChange={(e) => {
+                setCompareType(e.target.value);
+              }}
+            >
+              <option disabled></option>
+              <option value="indispo">Indisponible</option>
+              <option value="validé">Validé</option>
+              <option value="voteup">Top vote</option>
+            </select>
+          </div>
         </div>
       </div>
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -247,70 +280,83 @@ const MusicLayout = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {songs.map((song) => (
-                  <tr key={song.id}>
-                    <td className=" py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {song.name}
+                {songs
+                  .sort((a, b) => compare(a, b))
+                  .map((song) => (
+                    <tr key={song.id}>
+                      <td className=" py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {song.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {song.artist}
+                            </div>
                           </div>
-                          <div className="text-sm text-gray-500">
-                            {song.artist}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {song.isNew ? (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            En attente
+                          </span>
+                        ) : song.unavailable ? (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Indisponible
+                          </span>
+                        ) : song.isValid ? (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Validé
+                          </span>
+                        ) : null}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-gray-500">
+                          {song.countVote >= 0 ? song.countVote : null}
+                        </span>
+                      </td>
+                      <td className=" py-4 whitespace-nowrap ">
+                        <div className="flex items-center justify-center flex-wrap">
+                          <div
+                            className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                            onClick={() => handleDeleteMusic(song.id)}
+                          >
+                            <BsFillTrashFill size={24} />
+                          </div>
+                          <div
+                            className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                            onClick={() => handleUnavailableMusic(song.id)}
+                          >
+                            <CgUnavailable size={25} />
+
+                            {/* <AiOutlineCheck size={25} /> */}
+                          </div>
+                          <div
+                            className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                            onClick={() => handleValidMusic(song.id)}
+                          >
+                            {/* <CgUnavailable size={25} /> */}
+
+                            <AiOutlineCheck size={25} />
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {song.isNew ? (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                          En attente
-                        </span>
-                      ) : song.unavailable ? (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                          Indisponible
-                        </span>
-                      ) : song.isValid ? (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Validé
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-500">
-                        {song.countVote >= 0 ? song.countVote : null}
-                      </span>
-                    </td>
-                    <td className=" py-4 whitespace-nowrap ">
-                      <div className="flex items-center justify-center flex-wrap">
-                        <div
-                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
-                          onClick={() => handleDeleteMusic(song.id)}
-                        >
-                          <BsFillTrashFill size={24} />
-                        </div>
-                        <div
-                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
-                          onClick={() => handleUnavailableMusic(song.id)}
-                        >
-                          <CgUnavailable size={25} />
-
-                          {/* <AiOutlineCheck size={25} /> */}
-                        </div>
-                        <div
-                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
-                          onClick={() => handleValidMusic(song.id)}
-                        >
-                          {/* <CgUnavailable size={25} /> */}
-
-                          <AiOutlineCheck size={25} />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-5">
+            <button
+              onClick={() => {
+                handleAllDelete();
+              }}
+              type="button"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Tout supprimer
+            </button>
           </div>
         </div>
       </div>
