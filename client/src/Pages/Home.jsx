@@ -7,18 +7,23 @@ import SongRequest from "../components/SongRequest";
 import { useHistory } from "react-router-dom";
 
 const Home = () => {
+  let history = useHistory();
+
   //Verification de la soirée
   const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
-  let history = useHistory();
 
+  // Verification du visiteur
   const verifyUser = new Promise((resolve, reject) => {
+    // si un visiteur n'est pas nouveau
     if (localStorage.getItem("usInfoMusic")) {
       const usInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
+      // on verifie que celui-ci figure bien dans la BDD
       axios
         .post(`${FETCH}/visitor/${usInfo.id}`, { uuid: usInfo.uuid })
         .then((res) => {
           if (!res.data.status) {
+            // On vide son local storage
             localStorage.removeItem("usInfoMusic");
             reject();
           } else {
