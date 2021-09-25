@@ -71,8 +71,6 @@ const MusicLayout = () => {
               },
             })
             .then(() => {
-              console.log("yes");
-
               Swal.fire("Suprimée!", "", "success");
             });
         });
@@ -144,7 +142,6 @@ const MusicLayout = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(songsInCurrent);
         axios
           .put(
             `${FETCH}/app/songinprogress/0`,
@@ -159,7 +156,6 @@ const MusicLayout = () => {
             Swal.fire("Modifié!", "", "success");
             removeInput(["title"]);
             setSongsInCurrent("");
-            console.log(songsInCurrent);
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -237,15 +233,15 @@ const MusicLayout = () => {
               Trier:
             </label>
             <select
+              defaultValue=""
               id="location"
               name="location"
               className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-              // value={compareType}
               onChange={(e) => {
                 setCompareType(e.target.value);
               }}
             >
-              <option disabled selected value></option>
+              <option disabled></option>
               <option value="indispo">Indisponible</option>
               <option value="validé">Validé</option>
               <option value="voteup">Top vote</option>
