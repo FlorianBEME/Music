@@ -31,55 +31,29 @@ const VisitorLayout = () => {
   };
 
   // Suppression de la musique
-  const handleDelete = (id) => {
-    MySwal.fire({
-      title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
-      showCancelButton: true,
-      confirmButtonText: "Valider",
-      cancelButtonText: "Annuler",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`${FETCH}/currentsongs/${id}`, {
-            headers: {
-              "x-access-token": token,
-            },
-          })
-          .then(() => {
-            Swal.fire("Suprimée!", "", "success");
-          })
-          .catch(function (error) {
-            Swal.fire("Erreur!", "", "error");
-          });
-      }
-    });
-  };
-
-  // Suppression de toute les musiques
-  //   const handleAllDelete = () => {
-  //     MySwal.fire({
-  //       title: `Êtes-vous sûr de vouloir supprimer toutes les chansons?`,
-  //       showCancelButton: true,
-  //       confirmButtonText: "Valider",
-  //       cancelButtonText: "Annuler",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         songs.forEach((song) => {
-  //           axios
-  //             .delete(`${FETCH}/currentsongs/${song.id}`, {
-  //               headers: {
-  //                 "x-access-token": token,
-  //               },
-  //             })
-  //             .then(() => {
-  //               console.log("yes");
-
-  //               Swal.fire("Suprimée!", "", "success");
-  //             });
+  // const handleDelete = (id) => {
+  //   MySwal.fire({
+  //     title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
+  //     showCancelButton: true,
+  //     confirmButtonText: "Valider",
+  //     cancelButtonText: "Annuler",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .delete(`${FETCH}/currentsongs/${id}`, {
+  //           headers: {
+  //             "x-access-token": token,
+  //           },
+  //         })
+  //         .then(() => {
+  //           Swal.fire("Suprimée!", "", "success");
+  //         })
+  //         .catch(function (error) {
+  //           Swal.fire("Erreur!", "", "error");
   //         });
-  //       }
-  //     });
-  //   };
+  //     }
+  //   });
+  // };
 
   const handleAllowed = (id) => {
     MySwal.fire({
@@ -89,90 +63,31 @@ const VisitorLayout = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        //   axios
-        //     .put(
-        //       `${FETCH}/currentsongs/${id}`,
-        //       { unavailable: 1, isNew: 0, isValid: 0, countVote: -1 },
-        //       {
-        //         headers: {
-        //           "x-access-token": token,
-        //         },
-        //       }
-        //     )
-        //     .then(() => {
-        //       Swal.fire("Modifié!", "", "success");
-        //     })
-        //     .catch(function (error) {
-        //       Swal.fire("Erreur!", "", "error");
-        //     });
+        const index = visitorList.findIndex((visitor) => id === visitor.id);
+        console.log(index);
+        axios
+          .put(
+            `${FETCH}/visitor/${id}`,
+            { isNotAllowed: !visitorList[0].isNotAllowed },
+            {
+              headers: {
+                "x-access-token": token,
+              },
+            }
+          )
+          .then(() => {
+            Swal.fire("Modifié!", "", "success");
+          })
+          .catch(function (error) {
+            Swal.fire("Erreur!", "", "error");
+          });
       }
     });
   };
 
-  //   const handleValidMusic = (id) => {
-  //     MySwal.fire({
-  //       title: `Êtes-vous sûr de vouloir mettre cette chanson en validé?`,
-  //       showCancelButton: true,
-  //       confirmButtonText: "Valider",
-  //       cancelButtonText: "Annuler",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         axios
-  //           .put(
-  //             `${FETCH}/currentsongs/${id}`,
-  //             { unavailable: 0, isNew: 0, isValid: 1, countVote: -1 },
-  //             {
-  //               headers: {
-  //                 "x-access-token": token,
-  //               },
-  //             }
-  //           )
-  //           .then(() => {
-  //             Swal.fire("Modifié!", "", "success");
-  //           })
-  //           .catch(function (error) {
-  //             Swal.fire("Erreur!", "", "error");
-  //           });
-  //       }
-  //     });
-  //   };
-
-  // changer titre en cours
-  //   const handleChangeTitleInCurrent = () => {
-  //     MySwal.fire({
-  //       title: `Êtes-vous sûr de vouloir modifier le titre en cours ?`,
-  //       showCancelButton: true,
-  //       confirmButtonText: "Valider",
-  //       cancelButtonText: "Annuler",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         console.log(songsInCurrent);
-  //         axios
-  //           .put(
-  //             `${FETCH}/app/songinprogress/0`,
-  //             { titleincurent: songsInCurrent },
-  //             {
-  //               headers: {
-  //                 "x-access-token": token,
-  //               },
-  //             }
-  //           )
-  //           .then(() => {
-  //             Swal.fire("Modifié!", "", "success");
-  //             removeInput(["title"]);
-  //             setSongsInCurrent("");
-  //             console.log(songsInCurrent);
-  //           })
-  //           .catch(function (error) {
-  //             Swal.fire("Erreur!", "", "error");
-  //           });
-  //       }
-  //     });
-  //   };
-
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   return (
     <div className="flex flex-col">
@@ -227,26 +142,20 @@ const VisitorLayout = () => {
                     </td>
                     <td className=" py-4 whitespace-nowrap ">
                       <div className="flex items-center justify-center flex-wrap">
-                        <div
+                        {/* <div
                           className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
                           onClick={() => handleDelete(visitor.id)}
                         >
                           <BsFillTrashFill size={24} />
-                        </div>
+                        </div> */}
                         <div
                           className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
                           onClick={() => handleAllowed(visitor.id)}
                         >
-                          <Switch defaultChecked />
+                          <Switch
+                            checked={visitor.isNotAllowed ? false : true}
+                          />
                         </div>
-                        {/* <div
-                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
-                          onClick={() => handleValidMusic(song.id)}
-                        >
-                          {/* <CgUnavailable size={25} /> */}
-
-                        {/* <AiOutlineCheck size={25} />
-                        </div>  */}
                       </div>
                     </td>
                   </tr>

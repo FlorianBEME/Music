@@ -56,7 +56,7 @@ router.post("/:id", (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", verifyJWT, (req, res) => {
   let sql = "UPDATE visitor SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {

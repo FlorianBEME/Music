@@ -63,7 +63,6 @@ function App() {
         console.log(error);
       });
   };
-  // on verifie si l'utilisateur est nouveau
 
   useEffect(() => {
     verifyToken();
@@ -72,21 +71,6 @@ function App() {
   useEffect(() => {
     verifyEvent();
   }, []);
-
-  useEffect(() => {
-    verifyUuidUser();
-  }, []);
-
-  const userInfo = localStorage.getItem("usInfoMusic");
-  const verifyUuidUser = () => {
-    if (!userInfo) {
-      console.log("nouveau");
-      //soit l'utilisateur est nouveau
-    } else {
-      console.log("ancien");
-      // soit il existe déja
-    }
-  };
 
   return (
     <div className="">
