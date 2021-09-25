@@ -45,7 +45,6 @@ const Home = () => {
         axios
           .get(`${FETCH}/events`)
           .then((res) => {
-            console.log(res.data);
             setEvent(res.data);
             setTimeout(function () {
               setEventLoad(true);
