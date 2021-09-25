@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   const sql = "SELECT * FROM visitor WHERE id=?";
-  connection.query(sql, (err, results) => {
+  connection.query(sql, [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
@@ -35,7 +35,7 @@ router.post("/", (req, res) => {
   });
 });
 
-router.put("/:id", verifyJWT, (req, res) => {
+router.put("/:id", (req, res) => {
   let sql = "UPDATE visitor SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {

@@ -8,6 +8,7 @@ const NewUser = () => {
   let history = useHistory();
 
   const [pseudo, setPseudo] = useState(null);
+
   const enterInMusicRequest = () => {
     const newUuid = uuidv4();
     axios
@@ -17,11 +18,17 @@ const NewUser = () => {
         uuid: newUuid,
       })
       .then((res) => {
-        localStorage.setItem("usInfoMusic", res.data.uuid);
+        let usInfoMusic = {
+          id: res.data.id,
+          uuid: res.data.uuid,
+          pseudo: res.data.pseudo,
+        };
+        localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
         history.push("/");
       })
-      .catch(() => {});
-    // vide l'input
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -46,7 +53,7 @@ const NewUser = () => {
               </a>
             </p>
           </div>
-          <div class="mt-8 space-y-6">
+          <form class="mt-8 space-y-6">
             <input type="hidden" name="remember" value="true" />
             <div class="rounded-md shadow-sm -space-y-px">
               <div>
@@ -70,6 +77,7 @@ const NewUser = () => {
 
             <div>
               <button
+                type="button"
                 onClick={() => {
                   enterInMusicRequest();
                 }}
@@ -79,7 +87,7 @@ const NewUser = () => {
                 Entrer
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

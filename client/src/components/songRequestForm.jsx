@@ -25,36 +25,42 @@ const SongRequestForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // on vérifie si l'artiste est déja dans la liste
-    let artistFiltered = [];
-    props.songs.forEach((item) => {
-      if (item.artist.toLowerCase() === data.artist.toLowerCase()) {
-        artistFiltered.push(item);
-      }
-    });
-    // on vérifie si le titre est dans la liste
-    if (
-      artistFiltered.filter(
-        (item) => item.title.toLowerCase() === data.title.toLowerCase()
-      ).length < 1
-    ) {
-      axios
-        .post(`${FETCH}/currentSongs`, {
-          ...data,
-          countVote: 0,
-        })
-        .then(() => {
-          toast.success("Musique envoyé!", {
-            position: toast.POSITION.TOP_RIGHT,
+    if (props.isAllowed) {
+      // on vérifie si l'artiste est déja dans la liste
+      let artistFiltered = [];
+      props.songs.forEach((item) => {
+        if (item.artist.toLowerCase() === data.artist.toLowerCase()) {
+          artistFiltered.push(item);
+        }
+      });
+      // on vérifie si le titre est dans la liste
+      if (
+        artistFiltered.filter(
+          (item) => item.title.toLowerCase() === data.title.toLowerCase()
+        ).length < 1
+      ) {
+        axios
+          .post(`${FETCH}/currentSongs`, {
+            ...data,
+            countVote: 0,
+          })
+          .then(() => {
+            toast.success("Musique envoyé!", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            removeInput(["title", "artist"]);
+          })
+          .catch(function (error) {
+            toast.error("Erreur", { position: toast.POSITION.TOP_RIGHT });
+            console.log(error);
           });
-          removeInput(["title", "artist"]);
-        })
-        .catch(function (error) {
-          toast.error("Erreur", { position: toast.POSITION.TOP_RIGHT });
-          console.log(error);
+      } else {
+        toast.error("Chanson déja dans la liste", {
+          position: toast.POSITION.TOP_RIGHT,
         });
+      }
     } else {
-      toast.error("Chanson déja dans la liste", {
+      toast.error("Vous n'êtes pas autorisé!", {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
