@@ -46,7 +46,7 @@ function App() {
     const nameEvent = localStorage.getItem("nameEvent");
     let newEvent;
     axios
-      .get(`${FETCH}/app`)
+      .get(`${FETCH}/events`)
       .then((response) => {
         let result = response.data.filter((res) => res.type === "name");
         newEvent = result[0].text;

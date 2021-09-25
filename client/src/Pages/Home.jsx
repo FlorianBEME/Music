@@ -8,33 +8,58 @@ import { useHistory } from "react-router-dom";
 
 const Home = () => {
   //Verification de la soirée
-  const [event, setEvent] = useState();
+  const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
   let history = useHistory();
 
-  useEffect(() => {
+  const verifyUser = new Promise((resolve, reject) => {
     if (localStorage.getItem("usInfoMusic")) {
+      const usInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
       axios
-        .get(`${FETCH}/events`)
+        .post(`${FETCH}/visitor/${usInfo.id}`, { uuid: usInfo.uuid })
         .then((res) => {
-          setEvent(res.data);
-          setTimeout(function () {
-            setEventLoad(true);
-          }, 2000);
+          if (!res.data.status) {
+            localStorage.removeItem("usInfoMusic");
+            reject();
+          } else {
+            resolve();
+          }
         })
-        .catch(function (erreur) {
-          console.log(erreur);
+        .catch((err) => {
+          console.log(err);
+          reject();
         });
     } else {
-      history.push("/new");
+      reject();
     }
+  });
+
+  useEffect(() => {
+    verifyUser
+      .then((res) => {
+        axios
+          .get(`${FETCH}/events`)
+          .then((res) => {
+            console.log(res.data);
+            setEvent(res.data);
+            setTimeout(function () {
+              setEventLoad(true);
+            }, 2000);
+          })
+          .catch(function (erreur) {
+            console.log(erreur);
+          });
+      })
+      .catch((err) => {
+        history.push("/new");
+      });
   }, []);
 
   return (
     <div>
       {eventLoad ? (
         event.length > 0 ? (
-          <SongRequest />
+          <SongRequest event={event} eventLoad={eventLoad} />
         ) : (
           <div className="bg-white ">
             <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">

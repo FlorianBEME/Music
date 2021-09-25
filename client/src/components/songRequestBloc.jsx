@@ -28,7 +28,7 @@ export default function SongRequestBloc() {
       });
     verifyIsAllowed();
     fetchSongIncurrent();
-  });
+  }, []);
 
   const fetchSongIncurrent = () => {
     //fetch titre en cours

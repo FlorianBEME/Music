@@ -5,33 +5,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 
-const SongRequest = () => {
-  //Verification de la soirée
-  const [event, setEvent] = useState();
-  const [eventLoad, setEventLoad] = useState(false);
-
-  useEffect(() => {
-    axios
-      .get(`${FETCH}/events`)
-      .then((res) => {
-        setEvent(res.data);
-        setEventLoad(true);
-      })
-      .catch(function (erreur) {
-        console.log(erreur);
-      });
-  }, []);
-
+const SongRequest = (props) => {
   return (
     <div className="bg-gray-50">
       <div className="relative h-40">
         <div className="absolute inset-0">
-          {eventLoad ? (
+          {props.eventLoad ? (
             <img
               className="w-full h-full object-cover"
               src={
-                event.length > 0 && event[0].bg_music !== null
-                  ? `/uploads/${event[0].bg_music}`
+                props.event.length > 0 && props.event[0].bg_music !== null
+                  ? `/uploads/${props.event[0].bg_music}`
                   : MusicBandeau
               }
               alt="banniere"
