@@ -56,18 +56,18 @@ export default function SongRequestInCurrent(props) {
   };
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-md">
-      <ul className="divide-y divide-gray-200">
+    <div className="bg-white dark:bg-gray-700 shadow overflow-hidden sm:rounded-md">
+      <ul className="divide-y divide-gray-200 dark:divide-gray-500">
         {props.isLoading
           ? props.songs.map((song) => (
               <li key={song.id}>
                 <div className=" flex items-center justify-between px-4 py-4 sm:px-6 flex-col md:flex-row">
-                  <div className="flex flex-col items-center md:items-start ">
-                    <p className=" capitalize text-sm font-medium text-gray-800 break-all text-center md:text-left">
-                      {song.name}
+                  <div className="flex flex-col items-center md:items-start text-gray-800 dark:text-gray-100">
+                    <p className=" text-sm font-medium break-all text-center md:text-left">
+                      {song.title}
                     </p>
 
-                    <p className=" capitalize text-sm font-medium text-gray-800 break-all text-center md:text-left">
+                    <p className=" text-sm font-medium break-all text-center md:text-left">
                       {song.artist}
                     </p>
                   </div>
@@ -76,7 +76,7 @@ export default function SongRequestInCurrent(props) {
                     {song.countVote >= 0 ? (
                       <div className="flex items-center">
                         <div className="px-4 ">
-                          <p className="capitalize text-sm font-medium text-gray-500">
+                          <p className="capitalize text-sm font-medium text-gray-500 dark:text-gray-400">
                             Vote: {song.countVote}
                           </p>
                         </div>

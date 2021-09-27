@@ -82,13 +82,15 @@ const Home = () => {
     });
   }, [history]);
 
+  console.log(event);
+
   return (
     <div>
       {eventLoad ? (
         event.length > 0 ? (
           <SongRequest event={event} eventLoad={eventLoad} />
         ) : (
-          <div className="bg-white ">
+          <div className="bg-white">
             <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
               <div className="text-center">
                 {/*<h2 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">Request*/}

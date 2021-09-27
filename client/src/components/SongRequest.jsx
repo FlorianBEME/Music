@@ -1,11 +1,13 @@
 import React from "react";
 import SongRequestBloc from "../components/songRequestBloc.jsx";
 import MusicBandeau from "../assets/musicbandeau.jpg";
+import ThemeSelect from "./common/ThemeSelect";
+import NavBar from "./NavBar.jsx";
 
 const SongRequest = (props) => {
   return (
-    <div className="bg-gray-50">
-      <div className="relative h-40">
+    <div className="bg-gray-50 dark:bg-gray-800">
+      <div className="relative h-32">
         <div className="absolute inset-0">
           {props.eventLoad ? (
             <img
@@ -19,12 +21,15 @@ const SongRequest = (props) => {
             />
           ) : null}
         </div>
-        <div className="relative max-w-7xl mx-auto h-40  flex items-center sm:px-8 px-2">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Music Request
-          </h1>
+        <div className="relative max-w-7xl mx-auto h-32 sm:px-8 px-2">
+          <div className="flex items-center justify-center h-full">
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl ">
+              {props.event[0].name}
+            </h1>
+          </div>
         </div>
       </div>
+      <NavBar />
       <SongRequestBloc />
     </div>
   );
