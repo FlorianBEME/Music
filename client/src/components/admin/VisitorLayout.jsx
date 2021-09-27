@@ -97,17 +97,17 @@ const VisitorLayout = () => {
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr className="text-gray-500 dark:text-gray-50">
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
                     Pseudo
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
                     Uuid
                   </th>
@@ -116,13 +116,13 @@ const VisitorLayout = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-400 dark:divide-white divide-y divide-gray-200">
                 {visitorList.map((visitor) => (
                   <tr key={visitor.id}>
                     <td className=" py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium dark:text-white text-gray-900">
                             {visitor.pseudo}
                           </div>
                         </div>
@@ -131,7 +131,7 @@ const VisitorLayout = () => {
                     <td className=" py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium dark:text-white text-gray-900">
                             {visitor.uuid}
                           </div>
                         </div>

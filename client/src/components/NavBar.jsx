@@ -1,17 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
-import {
-  ChartBarIcon,
-  CursorClickIcon,
-  DocumentReportIcon,
-  MenuIcon,
-  RefreshIcon,
-  ShieldCheckIcon,
-  ViewGridIcon,
-  XIcon,
-} from "@heroicons/react/outline";
-import { ChevronDownIcon } from "@heroicons/react/solid";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
 
 import { BsFillLockFill } from "react-icons/bs";
 import { useHistory, useLocation } from "react-router";
@@ -20,7 +10,7 @@ import ThemeSelect from "./common/ThemeSelect";
 export default function NavBar() {
   const location = useLocation();
   const history = useHistory();
-  console.log(location);
+
   return (
     <Popover className=" ">
       <div className="flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
