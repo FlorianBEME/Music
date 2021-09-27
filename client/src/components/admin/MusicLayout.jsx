@@ -28,7 +28,6 @@ const MusicLayout = () => {
         console.log(erreur);
       });
   };
-
   // Suppression de la musique
   const handleDeleteMusic = (id) => {
     MySwal.fire({
@@ -53,7 +52,6 @@ const MusicLayout = () => {
       }
     });
   };
-
   // Suppression de toute les musiques
   const handleAllDelete = () => {
     MySwal.fire({
@@ -77,7 +75,6 @@ const MusicLayout = () => {
       }
     });
   };
-
   const handleUnavailableMusic = (id) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir mettre cette chanson en indisponible?`,
@@ -105,7 +102,6 @@ const MusicLayout = () => {
       }
     });
   };
-
   const handleValidMusic = (id) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir mettre cette chanson en validé?`,
@@ -163,7 +159,6 @@ const MusicLayout = () => {
       }
     });
   };
-
   // function de trie
   const compare = (a, b) => {
     if (compareType === "indispo") {
@@ -218,8 +213,8 @@ const MusicLayout = () => {
               type="button"
               className={
                 songsInCurrent === null || songsInCurrent === ""
-                  ? "inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-gray-700 bg-gray-100 cursor-not-allowed"
-                  : "inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  ? "inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-gray-700 bg-gray-100 cursor-not-allowed dark:bg-gray-500 dark:text-gray-200"
+                  : "inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-green-700 dark:bg-green-700 dark:text-green-100 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               }
             >
               Valider
@@ -228,7 +223,7 @@ const MusicLayout = () => {
           <div className="flex items-center space-x-2">
             <label
               htmlFor="location"
-              className="block text-xs font-medium text-gray-700"
+              className="block text-xs font-medium text-gray-700 dark:text-gray-200"
             >
               Trier:
             </label>
@@ -253,24 +248,24 @@ const MusicLayout = () => {
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr className="text-gray-500 dark:text-gray-50">
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
                     Musique
                   </th>
 
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
                   >
                     Vote
                   </th>
@@ -279,7 +274,7 @@ const MusicLayout = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-400 dark:divide-white divide-y divide-gray-200">
                 {songs
                   .sort((a, b) => compare(a, b))
                   .map((song) => (
@@ -287,10 +282,10 @@ const MusicLayout = () => {
                       <td className=" py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {song.name}
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {song.title}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-gray-500 dark:text-gray-300">
                               {song.artist}
                             </div>
                           </div>
@@ -298,15 +293,15 @@ const MusicLayout = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {song.isNew ? (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:text-gray-100 dark:bg-gray-800">
                             En attente
                           </span>
                         ) : song.unavailable ? (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">
                             Indisponible
                           </span>
                         ) : song.isValid ? (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
                             Validé
                           </span>
                         ) : null}
@@ -317,27 +312,23 @@ const MusicLayout = () => {
                         </span>
                       </td>
                       <td className=" py-4 whitespace-nowrap ">
-                        <div className="flex items-center justify-center flex-wrap">
+                        <div className="flex items-center justify-center flex-wrap text-indigo-600 hover:text-indigo-900 dark:text-blue-700">
                           <div
-                            className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                            className="cursor-pointer mx-2 my-1"
                             onClick={() => handleDeleteMusic(song.id)}
                           >
                             <BsFillTrashFill size={24} />
                           </div>
                           <div
-                            className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                            className=" cursor-pointer mx-2 my-1"
                             onClick={() => handleUnavailableMusic(song.id)}
                           >
                             <CgUnavailable size={25} />
-
-                            {/* <AiOutlineCheck size={25} /> */}
                           </div>
                           <div
-                            className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                            className="cursor-pointer mx-2 my-1"
                             onClick={() => handleValidMusic(song.id)}
                           >
-                            {/* <CgUnavailable size={25} /> */}
-
                             <AiOutlineCheck size={25} />
                           </div>
                         </div>
@@ -353,7 +344,7 @@ const MusicLayout = () => {
                 handleAllDelete();
               }}
               type="button"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md dark:text-red-100 dark:bg-red-700   text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Tout supprimer
             </button>

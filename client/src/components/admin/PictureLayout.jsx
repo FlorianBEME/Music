@@ -1,11 +1,12 @@
-import React from 'react';
+import React from "react";
+import InBuild from "../common/InBuild";
 
 const PictureLayout = () => {
-    return (
-        <div>
-            Picture
-        </div>
-    );
-}
+  return (
+    <div className="h-86">
+      <InBuild />
+    </div>
+  );
+};
 
 export default PictureLayout;
