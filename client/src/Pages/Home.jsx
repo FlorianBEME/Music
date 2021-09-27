@@ -82,8 +82,6 @@ const Home = () => {
     });
   }, [history]);
 
-  console.log(event);
-
   return (
     <div>
       {eventLoad ? (

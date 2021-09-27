@@ -1,12 +1,11 @@
 import React from "react";
 import SongRequestBloc from "../components/songRequestBloc.jsx";
 import MusicBandeau from "../assets/musicbandeau.jpg";
-import ThemeSelect from "./common/ThemeSelect";
 import NavBar from "./NavBar.jsx";
 
 const SongRequest = (props) => {
   return (
-    <div className="bg-gray-50 dark:bg-gray-800">
+    <div className="bg-gray-50 dark:bg-gray-800 pb-6">
       <div className="relative h-32">
         <div className="absolute inset-0">
           {props.eventLoad ? (
