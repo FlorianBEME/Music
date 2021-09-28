@@ -9,10 +9,7 @@ const RouteVisitor = ({ component: Component, ...rest }) => {
       {...rest}
       render={(props) => (
         <Fragment>
-          <div className="bg-gray-50">
-            <Component {...props} />
-            <Footer />
-          </div>
+          <Component {...props} />
         </Fragment>
       )}
     />

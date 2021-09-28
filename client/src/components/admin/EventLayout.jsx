@@ -13,8 +13,13 @@ const MySwal = withReactContent(Swal);
 const EventLayout = () => {
   const token = localStorage.getItem("token");
   const [dataLoad, setDataLoad] = useState(false);
-  const [newEvent, setNewEvent] = useState("");
+  const [newEvent, setNewEvent] = useState({
+    name: "",
+    active_wall_picture: false,
+    active_music_request: false,
+  });
   const [eventCurrent, setEventCurrent] = useState();
+
   const [imagePreview, setImagePreview] = useState({
     file: null,
     imagePreviewUrl: null,
@@ -34,7 +39,9 @@ const EventLayout = () => {
       if (result.isConfirmed) {
         axios
           .post(`${FETCH}/events`, {
-            name: newEvent,
+            name: newEvent.name,
+            active_music_request: newEvent.active_music_request,
+            active_wall_picture: newEvent.active_wall_picture,
             uuid: uuidv4(),
           })
           .catch(function (error) {
@@ -45,18 +52,17 @@ const EventLayout = () => {
       }
     });
   };
-
   const fetchData = () => {
     axios
       .get(`${FETCH}/events`)
       .then((response) => {
+        console.log(response.data);
         setEventCurrent(response.data[0]);
         setDataLoad(true);
       })
       .catch(function (error) {
         console.log(error);
       });
-    console.log("test");
   };
   // suprimer un event et la donnée
   const handleRemove = () => {
@@ -160,7 +166,6 @@ const EventLayout = () => {
       }
     });
   };
-
   // preview image
   const handleImageChange = (e) => {
     if (e.target.files[0] !== undefined) {
@@ -183,6 +188,43 @@ const EventLayout = () => {
       });
     }
   };
+  // modifier les permissions d'accès
+  const handleChangeAcces = (e) => {
+    MySwal.fire({
+      title: "Êtes-vous sur ?",
+      text: "Cela modifira les acccès au fonctionnalitées",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, je suis sur !",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        new Promise((resolve, reject) => {
+          axios
+            .put(`${FETCH}/events/${eventCurrent.id}`, eventCurrent, {
+              headers: {
+                "x-access-token": token,
+              },
+            })
+            .then((res) => {
+              resolve(res);
+            })
+            .catch(function (error) {
+              reject(error);
+            });
+        })
+          .then(() => {
+            Swal.fire("Modifié!", "L'évenement est modifié", "success");
+            setEventCurrent(null);
+            fetchData();
+          })
+          .catch(() => {
+            Swal.fire("Erreur!", "Une erreur est survenue", "error");
+          });
+      }
+    });
+  };
   // fetchData();
   useEffect(() => {
     fetchData();
@@ -190,6 +232,114 @@ const EventLayout = () => {
 
   return (
     <div>
+      {dataLoad ? (
+        eventCurrent === null || eventCurrent === undefined ? null : (
+          <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                Accès
+              </h3>
+              <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
+                <p>Gérer l'accès au fonctionnalitées</p>
+              </div>
+              <div className="">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleChangeAcces();
+                  }}
+                >
+                  <fieldset className="space-y-5">
+                    <legend className="sr-only">Notifications</legend>
+                    <div className="relative flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="active_music_request"
+                          aria-describedby="comments-description"
+                          name="active_music_request"
+                          type="checkbox"
+                          onChange={(e) => {
+                            setEventCurrent({
+                              ...eventCurrent,
+                              [e.target.name]:
+                                !eventCurrent.active_music_request,
+                            });
+                          }}
+                          defaultChecked={
+                            eventCurrent.active_music_request === 1
+                              ? true
+                              : false
+                          }
+                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="comments"
+                          className="font-medium text-gray-700 dark:text-white"
+                        >
+                          Music Request
+                        </label>
+                        <p
+                          id="comments-description"
+                          className="text-gray-500 dark:text-gray-400"
+                        >
+                          Get notified when someones posts a comment on a
+                          posting.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="relative flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          onChange={(e) => {
+                            setEventCurrent({
+                              ...eventCurrent,
+                              [e.target.name]:
+                                !eventCurrent.active_wall_picture,
+                            });
+                          }}
+                          defaultChecked={
+                            eventCurrent.active_wall_picture === 1
+                              ? true
+                              : false
+                          }
+                          id="active_wall_picture"
+                          aria-describedby="active_wall_picture"
+                          name="active_wall_picture"
+                          type="checkbox"
+                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="candidates"
+                          className="font-medium text-gray-700 dark:text-white"
+                        >
+                          Wall Picture
+                        </label>
+                        <p
+                          id="candidates-description"
+                          className="text-gray-500 dark:text-gray-400"
+                        >
+                          Get notified when a candidate applies for a job.
+                        </p>
+                      </div>
+                    </div>
+                  </fieldset>
+                  <button
+                    type="submit"
+                    className="mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-5  sm:w-auto sm:text-sm"
+                  >
+                    Modifier
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        )
+      ) : null}
+
       {dataLoad ? (
         eventCurrent === null || eventCurrent === undefined ? (
           <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
@@ -203,17 +353,16 @@ const EventLayout = () => {
                   affiché sur la page d'accueil.
                 </p>
               </div>
-              <form
-                className="mt-5 sm:flex sm:items-center"
-                onSubmit={(e) => addNewEvent(e)}
-              >
+              <form className="mt-5 " onSubmit={(e) => addNewEvent(e)}>
                 <div className="w-full sm:max-w-xs">
                   <label htmlFor="name" className="sr-only">
                     Nom de l'évenement
                   </label>
                   <input
                     required
-                    onChange={(e) => setNewEvent(e.target.value)}
+                    onChange={(e) =>
+                      setNewEvent({ ...newEvent, name: e.target.value })
+                    }
                     type="text"
                     name="eventName"
                     id="eventName"
@@ -221,9 +370,77 @@ const EventLayout = () => {
                     placeholder="Romain's birthday"
                   />
                 </div>
+                <div className="">
+                  <fieldset className="space-y-5">
+                    <legend className="sr-only">Notifications</legend>
+                    <div className="relative flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="comments"
+                          aria-describedby="comments-description"
+                          onChange={(e) =>
+                            setNewEvent({
+                              ...newEvent,
+                              active_music_request: e.target.checked,
+                            })
+                          }
+                          name="comments"
+                          type="checkbox"
+                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="comments"
+                          className="font-medium text-gray-700 dark:text-white"
+                        >
+                          Music Request
+                        </label>
+                        <p
+                          id="comments-description"
+                          className="text-gray-500 dark:text-gray-400"
+                        >
+                          Get notified when someones posts a comment on a
+                          posting.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="relative flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="candidates"
+                          aria-describedby="candidates-description"
+                          onChange={(e) =>
+                            setNewEvent({
+                              ...newEvent,
+                              active_wall_picture: e.target.checked,
+                            })
+                          }
+                          name="candidates"
+                          type="checkbox"
+                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor="candidates"
+                          className="font-medium text-gray-700 dark:text-white"
+                        >
+                          Wall Picture
+                        </label>
+                        <p
+                          id="candidates-description"
+                          className="text-gray-500 dark:text-gray-400"
+                        >
+                          Get notified when a candidate applies for a job.
+                        </p>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
                 <button
                   type="submit"
-                  className="mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-5  sm:w-auto sm:text-sm"
                 >
                   Créer
                 </button>
@@ -231,7 +448,7 @@ const EventLayout = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
+          <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                 Suppression
@@ -257,7 +474,7 @@ const EventLayout = () => {
       ) : null}
 
       {eventCurrent === null || eventCurrent === undefined ? null : (
-        <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg mt-5">
+        <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
               Image d'en-tete

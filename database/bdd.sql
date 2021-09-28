@@ -27,7 +27,9 @@ CREATE TABLE `events` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `bg_music` varchar(255) NULL,
-  `uuid` varchar(255) NOT NULL
+  `uuid` varchar(255) NOT NULL,
+  `active_music_request` BOOLEAN NOT NULL,
+  `active_wall_picture` BOOLEAN NOT NULL
 );
 
 CREATE TABLE `users` (
@@ -46,7 +48,7 @@ CREATE TABLE `visitor` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
-  `isNotAllowed`boolean NOT NULL
+  `isNotAllowed`BOOLEAN NOT NULL
 );
 INSERT INTO users ( user_name , user_password ) VALUES ("Admin","$2b$10$dH1ZvM2SRCwGBwWxl/CDlurofNaiTIAOW5f0kx7XY0Ej.kknFf9j2");
 INSERT INTO users ( user_name , user_password ) VALUES ("Alek","$2b$10$vr613HdUrNoPVQ//USyxgOPtA3RKB1jzYz0EDBsBNY/D0wzj0mE42");

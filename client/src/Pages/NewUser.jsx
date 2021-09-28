@@ -24,7 +24,7 @@ const NewUser = () => {
           pseudo: res.data.pseudo,
         };
         localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
-        history.push("/");
+        history.push("/app");
       })
       .catch((err) => {
         console.log(err);
