@@ -102,6 +102,7 @@ const Home = () => {
               .get(`${FETCH}/events`)
               .then((res) => {
                 setEvent(res.data);
+                // fonction pour le loader
                 setTimeout(function () {
                   setEventLoad(true);
                 }, 2000);
@@ -111,6 +112,7 @@ const Home = () => {
               });
           })
           .catch((err) => {
+            // si erreur on renvoie vers la page nouvel utilisateur
             history.push("/new");
           });
       } else {
