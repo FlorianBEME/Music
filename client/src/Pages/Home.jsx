@@ -1,17 +1,59 @@
 import React, { useEffect, useState } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 import { FiLoader } from "react-icons/fi";
-import SongRequest from "../components/SongRequest";
-import { useHistory } from "react-router-dom";
+
+import Footer from "../components/footer";
+import NavBar from "../components/NavBar";
+import MusicBandeau from "../assets/musicbandeau.jpg";
+
+import WallPicture from "../components/WallPicture";
+import SongRequestBloc from "../components/songRequestBloc";
 
 const Home = () => {
   const history = useHistory();
-
-  //Verification de la soirée
   const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
+
+  let VisitorRoutes = [
+    {
+      id: 0,
+      activate: false,
+      path: "/app/music",
+      name: "Musique",
+      icon: "mdi mdi-pencil-circle",
+      redirect: false,
+      component: SongRequestBloc,
+    },
+    {
+      id: 1,
+      activate: false,
+      path: "/app/",
+      pathTo: "/app/music",
+      name: "App",
+      redirect: true,
+    },
+    {
+      id: 2,
+      activate: false,
+      path: "/app/picture",
+      name: "Photo",
+      icon: "mdi mdi-pencil-circle",
+      redirect: false,
+      component: WallPicture,
+    },
+    {
+      id: 3,
+      activate: false,
+      path: "/app/",
+      pathTo: "/app/picture",
+      name: "App",
+      redirect: true,
+    },
+  ];
 
   useEffect(() => {
     // Verification du visiteur
@@ -71,7 +113,6 @@ const Home = () => {
           .catch((err) => {
             history.push("/new");
           });
-        console.log("ya un soirée");
       } else {
         // si pas de soirée en cours on vide le local storage
         localStorage.removeItem("idMusicVoting");
@@ -82,13 +123,88 @@ const Home = () => {
     });
   }, [history]);
 
+  // on met en place le router en fonction des choix fait par l'admin sur le pannel
+  if (eventLoad) {
+    if (
+      event[0].active_music_request === false &&
+      event[0].active_wall_picture === false
+    ) {
+      // a traiter!!!!
+      console.log("aucune fonctionnalité activé!");
+    } else if (event[0].active_music_request && !event[0].active_wall_picture) {
+      VisitorRoutes[0].activate = true;
+      VisitorRoutes[1].activate = true;
+    } else if (!event[0].active_music_request && event[0].active_wall_picture) {
+      VisitorRoutes[2].activate = true;
+      VisitorRoutes[3].activate = true;
+    } else {
+      VisitorRoutes.forEach((route) => {
+        if (route.id !== 3) {
+          route.activate = true;
+        }
+      });
+    }
+  }
+
   return (
     <div>
       {eventLoad ? (
         event.length > 0 ? (
-          <SongRequest event={event} eventLoad={eventLoad} />
+          <div className="bg-gray-50 dark:bg-gray-800 min-h-screen flex flex-col justify-between">
+            <div>
+              <div className="relative h-32">
+                <div className="absolute inset-0">
+                  {eventLoad ? (
+                    <img
+                      className="w-full h-full object-cover"
+                      src={
+                        event.length > 0 && event[0].bg_music !== null
+                          ? `/uploads/${event[0].bg_music}`
+                          : MusicBandeau
+                      }
+                      alt="banniere"
+                    />
+                  ) : null}
+                </div>
+                <div className="relative max-w-7xl mx-auto h-32 sm:px-8 px-2">
+                  <div className="flex items-center justify-center h-full">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl ">
+                      {event[0].name}
+                    </h1>
+                  </div>
+                </div>
+              </div>
+              <NavBar event={event} />
+            </div>
+            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+              <Switch>
+                {VisitorRoutes.filter((route) => route.activate === true).map(
+                  (prop, key) => {
+                    console.log(
+                      VisitorRoutes.filter((route) => route.activate === true),
+                      "dans le rendu"
+                    );
+                    if (prop.redirect) {
+                      return (
+                        <Redirect from={prop.path} to={prop.pathTo} key={key} />
+                      );
+                    } else {
+                      return (
+                        <Route
+                          path={prop.path}
+                          component={prop.component}
+                          key={key}
+                        />
+                      );
+                    }
+                  }
+                )}
+              </Switch>
+            </div>
+            <Footer />
+          </div>
         ) : (
-          <div className="bg-white">
+          <div className="bg-white min-h-screen">
             <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
               <div className="text-center">
                 {/*<h2 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">Request*/}
