@@ -31,6 +31,10 @@ export default function SongRequestBloc() {
     fetchSongIncurrent();
   });
 
+  useEffect(() => {
+    console.log("test");
+  }, []);
+
   const fetchSongIncurrent = () => {
     //fetch titre en cours
     axios

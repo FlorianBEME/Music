@@ -15,13 +15,13 @@ import SongRequestBloc from "../components/songRequestBloc";
 
 const Home = () => {
   const history = useHistory();
-  //Verification de la soirée
   const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
 
   let VisitorRoutes = [
     {
-      id: 1,
+      id: 0,
+      activate: false,
       path: "/app/music",
       name: "Musique",
       icon: "mdi mdi-pencil-circle",
@@ -29,7 +29,16 @@ const Home = () => {
       component: SongRequestBloc,
     },
     {
+      id: 1,
+      activate: false,
+      path: "/app/",
+      pathTo: "/app/music",
+      name: "App",
+      redirect: true,
+    },
+    {
       id: 2,
+      activate: false,
       path: "/app/picture",
       name: "Photo",
       icon: "mdi mdi-pencil-circle",
@@ -37,9 +46,10 @@ const Home = () => {
       component: WallPicture,
     },
     {
-      id: 4,
-      path: "/app",
-      pathTo: "/app/music",
+      id: 3,
+      activate: false,
+      path: "/app/",
+      pathTo: "/app/picture",
       name: "App",
       redirect: true,
     },
@@ -103,7 +113,6 @@ const Home = () => {
           .catch((err) => {
             history.push("/new");
           });
-        console.log("ya un soirée");
       } else {
         // si pas de soirée en cours on vide le local storage
         localStorage.removeItem("idMusicVoting");
@@ -113,6 +122,29 @@ const Home = () => {
       }
     });
   }, [history]);
+
+  // on met en place le router en fonction des choix fait par l'admin sur le pannel
+  if (eventLoad) {
+    if (
+      event[0].active_music_request === false &&
+      event[0].active_wall_picture === false
+    ) {
+      // a traiter!!!!
+      console.log("aucune fonctionnalité activé!");
+    } else if (event[0].active_music_request && !event[0].active_wall_picture) {
+      VisitorRoutes[0].activate = true;
+      VisitorRoutes[1].activate = true;
+    } else if (!event[0].active_music_request && event[0].active_wall_picture) {
+      VisitorRoutes[2].activate = true;
+      VisitorRoutes[3].activate = true;
+    } else {
+      VisitorRoutes.forEach((route) => {
+        if (route.id !== 3) {
+          route.activate = true;
+        }
+      });
+    }
+  }
 
   return (
     <div>
@@ -144,34 +176,34 @@ const Home = () => {
               </div>
               <NavBar event={event} />
             </div>
-
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-              {/* Replace with your content */}
-
               <Switch>
-                {/* <Route path="/app/music" component={SongRequest} /> */}
-                {VisitorRoutes.map((prop, key) => {
-                  if (prop.redirect) {
-                    return (
-                      <Redirect from={prop.path} to={prop.pathTo} key={key} />
+                {VisitorRoutes.filter((route) => route.activate === true).map(
+                  (prop, key) => {
+                    console.log(
+                      VisitorRoutes.filter((route) => route.activate === true),
+                      "dans le rendu"
                     );
-                  } else {
-                    return (
-                      <Route
-                        path={prop.path}
-                        component={prop.component}
-                        key={key}
-                      />
-                    );
+                    if (prop.redirect) {
+                      return (
+                        <Redirect from={prop.path} to={prop.pathTo} key={key} />
+                      );
+                    } else {
+                      return (
+                        <Route
+                          path={prop.path}
+                          component={prop.component}
+                          key={key}
+                        />
+                      );
+                    }
                   }
-                })}
+                )}
               </Switch>
             </div>
-
             <Footer />
           </div>
         ) : (
-          // <SongRequest event={event} eventLoad={eventLoad} />
           <div className="bg-white min-h-screen">
             <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
               <div className="text-center">
