@@ -31,7 +31,7 @@ const EventLayout = () => {
   const addNewEvent = (e) => {
     e.preventDefault();
     MySwal.fire({
-      title: `Êtes-vous sûr de vouloir créer l'évenement ${newEvent}?`,
+      title: `Êtes-vous sûr de vouloir créer l'évenement ${newEvent.name}?`,
       showCancelButton: true,
       confirmButtonText: "Valider",
       cancelButtonText: "Annuler",
@@ -284,8 +284,8 @@ const EventLayout = () => {
                           id="comments-description"
                           className="text-gray-500 dark:text-gray-400"
                         >
-                          Get notified when someones posts a comment on a
-                          posting.
+                          {/* Get notified when someones posts a comment on a
+                          posting. */}
                         </p>
                       </div>
                     </div>
@@ -322,7 +322,7 @@ const EventLayout = () => {
                           id="candidates-description"
                           className="text-gray-500 dark:text-gray-400"
                         >
-                          Get notified when a candidate applies for a job.
+                          {/* Get notified when a candidate applies for a job. */}
                         </p>
                       </div>
                     </div>

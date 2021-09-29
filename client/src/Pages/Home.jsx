@@ -81,7 +81,6 @@ const Home = () => {
         reject();
       }
     });
-
     const uuidEvent = localStorage.getItem("uuidEvent");
     // on fetch la soirée en cours
     axios.get(`${FETCH}/events`).then((res) => {
@@ -126,7 +125,7 @@ const Home = () => {
   }, [history]);
 
   // on met en place le router en fonction des choix fait par l'admin sur le pannel
-  if (eventLoad) {
+  if (eventLoad && event.length > 0) {
     if (
       event[0].active_music_request === false &&
       event[0].active_wall_picture === false
@@ -153,7 +152,7 @@ const Home = () => {
       {eventLoad ? (
         event.length > 0 ? (
           <div className="bg-gray-50 dark:bg-gray-800 min-h-screen flex flex-col justify-between">
-            <div>
+            <div className="flex flex-col">
               <div className="relative h-32">
                 <div className="absolute inset-0">
                   {eventLoad ? (
@@ -177,32 +176,39 @@ const Home = () => {
                 </div>
               </div>
               <NavBar event={event} />
-            </div>
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-              <Switch>
-                {VisitorRoutes.filter((route) => route.activate === true).map(
-                  (prop, key) => {
-                    console.log(
-                      VisitorRoutes.filter((route) => route.activate === true),
-                      "dans le rendu"
-                    );
-                    if (prop.redirect) {
-                      return (
-                        <Redirect from={prop.path} to={prop.pathTo} key={key} />
+              <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+                <Switch>
+                  {VisitorRoutes.filter((route) => route.activate === true).map(
+                    (prop, key) => {
+                      console.log(
+                        VisitorRoutes.filter(
+                          (route) => route.activate === true
+                        ),
+                        "dans le rendu"
                       );
-                    } else {
-                      return (
-                        <Route
-                          path={prop.path}
-                          component={prop.component}
-                          key={key}
-                        />
-                      );
+                      if (prop.redirect) {
+                        return (
+                          <Redirect
+                            from={prop.path}
+                            to={prop.pathTo}
+                            key={key}
+                          />
+                        );
+                      } else {
+                        return (
+                          <Route
+                            path={prop.path}
+                            component={prop.component}
+                            key={key}
+                          />
+                        );
+                      }
                     }
-                  }
-                )}
-              </Switch>
+                  )}
+                </Switch>
+              </div>
             </div>
+
             <Footer />
           </div>
         ) : (
