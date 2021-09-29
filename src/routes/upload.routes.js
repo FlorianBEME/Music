@@ -26,7 +26,6 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
       return res.status(500).send({ errorMessage: err.message });
     } else {
       event = results[0];
-
       if (event.bg_music !== null) {
         // si un bg est deja assigné on supprime le ficheier existant
         fs.unlink(`${front}/${event.bg_music}`, (err) => {

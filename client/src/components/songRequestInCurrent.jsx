@@ -102,7 +102,7 @@ export default function SongRequestInCurrent(props) {
                           )
                         ) : song.unavailable === 1 ? (
                           <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-yellow-600 bg-yellow-100">
-                            <div>Indispo</div>
+                            <div>Indisponible</div>
                           </div>
                         ) : song.isValid === 1 ? (
                           <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-green-600 bg-green-100">
