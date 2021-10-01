@@ -8,8 +8,11 @@ import { removeInput } from "../common/removeInput";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import io from "socket.io-client";
 
 const MySwal = withReactContent(Swal);
+
+let socket;
 
 const MusicLayout = () => {
   const token = localStorage.getItem("token");
@@ -45,6 +48,7 @@ const MusicLayout = () => {
           })
           .then(() => {
             Swal.fire("Suprimée!", "", "success");
+            socket.emit("update", "musiclist");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -70,6 +74,7 @@ const MusicLayout = () => {
             })
             .then(() => {
               Swal.fire("Suprimée!", "", "success");
+              socket.emit("update", "musiclist");
             });
         });
       }
@@ -95,6 +100,7 @@ const MusicLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
+            socket.emit("update", "musiclist");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -122,6 +128,7 @@ const MusicLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
+            socket.emit("update", "musiclist");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -152,6 +159,7 @@ const MusicLayout = () => {
             Swal.fire("Modifié!", "", "success");
             removeInput(["title"]);
             setSongsInCurrent("");
+            socket.emit("update", "title");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -186,7 +194,14 @@ const MusicLayout = () => {
 
   useEffect(() => {
     fetchData();
-  });
+    socket = io("http://localhost:8000");
+    socket.on("musicupdate", (args) => {
+      console.log("jai bien recu et je met a jour");
+      if (args) {
+        fetchData();
+      }
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">

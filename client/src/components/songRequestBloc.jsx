@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 import { useHistory } from "react-router-dom";
-import Loader from "./common/Loader";
+import io from "socket.io-client";
+
+let socket;
 
 export default function SongRequestBloc() {
   // useState
@@ -16,8 +18,26 @@ export default function SongRequestBloc() {
   const history = useHistory();
   const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
 
-  //Fecth liste de musique
   useEffect(() => {
+    socket = io("http://localhost:8000");
+    fetchData();
+    verifyIsAllowed();
+    fetchSongIncurrent();
+    socket.on("musicupdate", (args) => {
+      console.log("jai bien recu et je met a jour");
+      if (args) {
+        fetchData();
+      }
+    });
+    socket.on("titleupdate", (args) => {
+      console.log("jai bien recu et je met a jour");
+      if (args) {
+        fetchSongIncurrent();
+      }
+    });
+  }, []);
+
+  const fetchData = () => {
     axios
       .get(`${FETCH}/currentSongs`)
       .then((res) => {
@@ -27,10 +47,7 @@ export default function SongRequestBloc() {
       .catch(function (erreur) {
         console.log(erreur);
       });
-    verifyIsAllowed();
-    fetchSongIncurrent();
-  });
-
+  };
   const fetchSongIncurrent = () => {
     //fetch titre en cours
     axios

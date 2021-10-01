@@ -24,7 +24,7 @@ app.use(
 );
 
 app.use("/api", router);
-app.use("/*", (_, res) => {
+app.use("/", (_, res) => {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
