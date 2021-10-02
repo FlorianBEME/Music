@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
+import { FETCH, ENDPOINT } from "../../FETCH";
 import { BsFillTrashFill } from "react-icons/bs";
 import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -194,7 +194,7 @@ const MusicLayout = () => {
 
   useEffect(() => {
     fetchData();
-    socket = io("http://localhost:8000");
+    socket = io(ENDPOINT);
     socket.on("musicupdate", (args) => {
       console.log("jai bien recu et je met a jour");
       if (args) {

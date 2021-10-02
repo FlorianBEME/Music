@@ -2,7 +2,7 @@ import SongRequestForm from "./songRequestForm";
 import SongRequestInCurrent from "./songRequestInCurrent";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { FETCH, ENDPOINT } from "../FETCH";
 import { useHistory } from "react-router-dom";
 import io from "socket.io-client";
 
@@ -19,7 +19,7 @@ export default function SongRequestBloc() {
   const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
 
   useEffect(() => {
-    socket = io("http://localhost:8000");
+    socket = io(ENDPOINT);
     fetchData();
     verifyIsAllowed();
     fetchSongIncurrent();

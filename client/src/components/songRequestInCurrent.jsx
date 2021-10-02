@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { FETCH, ENDPOINT } from "../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import io from "socket.io-client";
@@ -49,7 +49,7 @@ export default function SongRequestInCurrent(props) {
               localStorage.setItem("idMusicVoting", result);
             }
           }
-          socket = io("http://localhost:8000");
+          socket = io(ENDPOINT);
           socket.emit("update", "musiclist");
         });
       forceUpdate();

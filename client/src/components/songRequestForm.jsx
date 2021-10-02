@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { FETCH, ENDPOINT } from "../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { removeInput } from "./common/removeInput";
@@ -28,7 +28,7 @@ const SongRequestForm = (props) => {
   };
 
   const emit = () => {
-    socket = io("http://localhost:8000");
+    socket = io(ENDPOINT);
     socket.emit("update", "musiclist");
   };
 
