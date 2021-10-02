@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
+import { FETCH, ENDPOINT } from "../../FETCH";
 import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
 import MusicBandeau from "../../assets/musicbandeau.jpg";
 import { v4 as uuidv4 } from "uuid";
+import io from "socket.io-client";
+let socket;
 
 const MySwal = withReactContent(Swal);
 
 const EventLayout = () => {
+  socket = io(ENDPOINT);
   const token = localStorage.getItem("token");
   const [dataLoad, setDataLoad] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -95,6 +98,7 @@ const EventLayout = () => {
             Swal.fire("Suprimé!", "L'évenement est supprimé", "success");
             setEventCurrent(null);
             fetchData();
+            socket.emit("update", "event");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");
@@ -159,6 +163,7 @@ const EventLayout = () => {
         })
           .then(() => {
             Swal.fire("Succés!", "L'image est changé", "success");
+            socket.emit("update", "event");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");
@@ -218,6 +223,7 @@ const EventLayout = () => {
             Swal.fire("Modifié!", "L'évenement est modifié", "success");
             setEventCurrent(null);
             fetchData();
+            socket.emit("update", "event");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");

@@ -1,11 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { FETCH, ENDPOINT } from "../FETCH";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory } from "react-router-dom";
+import io from "socket.io-client";
+
+let socket;
 
 const NewUser = () => {
   let history = useHistory();
+
+  const emit = () => {
+    socket = io(ENDPOINT);
+    socket.emit("update", "user");
+  };
 
   const [pseudo, setPseudo] = useState(null);
 
@@ -24,6 +32,7 @@ const NewUser = () => {
           pseudo: res.data.pseudo,
         };
         localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
+        emit();
         history.push("/app");
       })
       .catch((err) => {

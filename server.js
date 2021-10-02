@@ -22,6 +22,15 @@ io.on("connection", (socket) => {
     } else if (args === "title") {
       console.log("SOCKET: MAJ titre music");
       socket.broadcast.emit("titleupdate", true);
+    } else if (args === "user") {
+      console.log("SOCKET: MAJ visiteur");
+      socket.broadcast.emit("userupdate", true);
+    } else if (args === "visitorallowed") {
+      console.log("SOCKET: MAJ visiteur permission");
+      socket.broadcast.emit("visitorallowed", true);
+    } else if (args === "event") {
+      console.log("SOCKET: MAJ event");
+      socket.broadcast.emit("event", true);
     }
   });
 

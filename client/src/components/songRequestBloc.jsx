@@ -16,9 +16,30 @@ export default function SongRequestBloc() {
   const [isAllowed, setIsAllowed] = useState(true);
 
   const history = useHistory();
-  const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
 
   useEffect(() => {
+    const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
+
+    const verifyIsAllowed = () => {
+      if (visitorInfo) {
+        // fetch permision
+        axios
+          .get(`${FETCH}/visitor/${visitorInfo.id}`)
+          .then((res) => {
+            if (res.data[0].isNotAllowed) {
+              setIsAllowed(false);
+            } else {
+              setIsAllowed(true);
+            }
+          })
+          .catch(function (erreur) {
+            console.log(erreur);
+          });
+      } else {
+        history.push("/new");
+      }
+    };
+
     socket = io(ENDPOINT);
     fetchData();
     verifyIsAllowed();
@@ -33,6 +54,12 @@ export default function SongRequestBloc() {
       console.log("jai bien recu et je met a jour");
       if (args) {
         fetchSongIncurrent();
+      }
+    });
+    socket.on("visitorallowed", (args) => {
+      console.log("jai bien recu et je met a jour");
+      if (args) {
+        verifyIsAllowed();
       }
     });
   }, []);
@@ -58,26 +85,6 @@ export default function SongRequestBloc() {
       .catch(function (erreur) {
         console.log(erreur);
       });
-  };
-
-  const verifyIsAllowed = () => {
-    if (visitorInfo) {
-      // fetch permision
-      axios
-        .get(`${FETCH}/visitor/${visitorInfo.id}`)
-        .then((res) => {
-          if (res.data[0].isNotAllowed) {
-            setIsAllowed(false);
-          } else {
-            setIsAllowed(true);
-          }
-        })
-        .catch(function (erreur) {
-          console.log(erreur);
-        });
-    } else {
-      history.push("/new");
-    }
   };
 
   const sortSongs = () => {

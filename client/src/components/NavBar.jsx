@@ -4,12 +4,11 @@ import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 
 import { BsFillLockFill } from "react-icons/bs";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import ThemeSelect from "./common/ThemeSelect";
 
 export default function NavBar(props) {
-  const location = useLocation();
   const history = useHistory();
 
   return (
