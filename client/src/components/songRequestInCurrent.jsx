@@ -74,6 +74,10 @@ export default function SongRequestInCurrent(props) {
                     <p className=" text-sm font-medium break-all text-center md:text-left">
                       {song.artist}
                     </p>
+                    <p className=" text-sm font-light break-all text-center md:text-left">
+                      Proposé par{" "}
+                      <span className="capitalize">{song.pseudo}</span>
+                    </p>
                   </div>
 
                   <div className="flex flex-row mt-2 md:mt-0">

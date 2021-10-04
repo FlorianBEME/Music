@@ -19,12 +19,6 @@ export default function NavBar(props) {
             <span className="sr-only">Open menu</span>
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </Popover.Button>
-          <span
-            onClick={() => history.push("/login")}
-            className="p-2 inline-flex items-center justify-center border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-          >
-            <BsFillLockFill className="h-6 w-6" />
-          </span>
         </div>
         <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
           <Popover.Group as="nav" className="flex space-x-10">

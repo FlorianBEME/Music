@@ -286,6 +286,12 @@ const MusicLayout = () => {
                   >
                     Vote
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  >
+                    Par
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -324,8 +330,13 @@ const MusicLayout = () => {
                         ) : null}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-500 dark:text-gray-200">
                           {song.countVote >= 0 ? song.countVote : null}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-gray-500 dark:text-gray-200">
+                          {song.pseudo}
                         </span>
                       </td>
                       <td className=" py-4 whitespace-nowrap ">
