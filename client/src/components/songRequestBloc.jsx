@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 import { useHistory } from "react-router-dom";
+import { subscribeToSocket } from "./common/socket";
+
 export default function SongRequestBloc() {
   // useState
   const [songs, setSongs] = useState([]);
@@ -12,35 +14,11 @@ export default function SongRequestBloc() {
   const [isAllowed, setIsAllowed] = useState(true);
 
   const history = useHistory();
+  const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
 
-  useEffect(() => {
-    const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
-
-    const verifyIsAllowed = () => {
-      if (visitorInfo) {
-        // fetch permision
-        axios
-          .get(`${FETCH}/visitor/${visitorInfo.id}`)
-          .then((res) => {
-            if (res.data[0].isNotAllowed) {
-              setIsAllowed(false);
-            } else {
-              setIsAllowed(true);
-            }
-          })
-          .catch(function (erreur) {
-            console.log(erreur);
-          });
-      } else {
-        history.push("/new");
-      }
-    };
-    fetchData();
-    verifyIsAllowed();
-    fetchSongIncurrent();
-  }, []);
-
-  useEffect(() => {}, []);
+  if (!visitorInfo) {
+    history.push("/new");
+  }
 
   const fetchData = () => {
     axios
@@ -53,6 +31,10 @@ export default function SongRequestBloc() {
         console.log(erreur);
       });
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchSongIncurrent = () => {
     //fetch titre en cours
     axios
@@ -64,6 +46,57 @@ export default function SongRequestBloc() {
         console.log(erreur);
       });
   };
+  useEffect(() => {
+    fetchSongIncurrent();
+  }, [titleIncurent]);
+
+  const verifyIsAllowed = () => {
+    axios
+      .get(`${FETCH}/visitor/${visitorInfo.id}`)
+      .then((res) => {
+        if (res.data[0].isNotAllowed) {
+          setIsAllowed(false);
+        } else {
+          setIsAllowed(true);
+        }
+      })
+      .catch(function (erreur) {
+        console.log(erreur);
+      });
+  };
+  useEffect(() => {
+    axios
+      .get(`${FETCH}/visitor/${visitorInfo.id}`)
+      .then((res) => {
+        if (res.data[0].isNotAllowed) {
+          setIsAllowed(false);
+        } else {
+          setIsAllowed(true);
+        }
+      })
+      .catch(function (erreur) {
+        console.log(erreur);
+      });
+  }, [visitorInfo]);
+
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "visitorallowed") {
+        verifyIsAllowed();
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "musicupdate") {
+        console.log();
+        fetchData();
+      } else if (args === "title") {
+        fetchSongIncurrent();
+      }
+    });
+  }, []);
 
   const sortSongs = () => {
     let sortedList = songs.sort((a, b) =>
@@ -82,9 +115,14 @@ export default function SongRequestBloc() {
           </h3>
         </div>
         <div className="py-8 px-4 sm:px-6 lg:col-span-3  lg:px-8 xl:pl-12">
-          <SongRequestForm songs={songs} isAllowed={isAllowed} />
+          <SongRequestForm
+            songs={songs}
+            isAllowed={isAllowed}
+            refetch={fetchData}
+          />
         </div>
         <SongRequestInCurrent
+          refetch={fetchData}
           isLoading={isLoading}
           songs={sortSongs()}
           isAllowed={isAllowed}

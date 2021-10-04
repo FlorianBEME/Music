@@ -49,6 +49,7 @@ export default function SongRequestInCurrent(props) {
           }
 
           emitEvent("update", "musiclist");
+          props.refetch();
         });
       forceUpdate();
     } else {

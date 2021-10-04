@@ -4,7 +4,7 @@ import { FETCH } from "../../FETCH";
 import Switch from "@material-ui/core/Switch";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { emitEvent } from "../common/socket";
+import { emitEvent, subscribeToSocket } from "../common/socket";
 
 const MySwal = withReactContent(Swal);
 
@@ -24,6 +24,17 @@ const VisitorLayout = () => {
         console.log(erreur);
       });
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "userupdate" || args === "visitorallowed") {
+        fetchData();
+      }
+    });
+  }, []);
 
   // Suppression de la musique
   // const handleDelete = (id) => {
@@ -73,8 +84,9 @@ const VisitorLayout = () => {
             }
           )
           .then(() => {
-            Swal.fire("Modifié!", "", "success");
             emitEvent("update", "visitorallowed");
+            fetchData();
+            Swal.fire("Modifié!", "", "success");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -83,22 +95,9 @@ const VisitorLayout = () => {
     });
   };
 
-  // useEffect(() => {
-  //   socket = io(ENDPOINT);
-  //   socket.on("userupdate", (args) => {
-  //     console.log("jai bien recu un nouveeau user");
-  //     if (args) {
-  //       fetchData();
-  //     }
-  //   });
-  //   socket.on("visitorallowed", (args) => {
-  //     console.log("jai bien recu un nouveeau user");
-  //     if (args) {
-  //       fetchData();
-  //     }
-  //   });
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-col">

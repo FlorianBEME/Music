@@ -50,6 +50,8 @@ const SongRequestForm = (props) => {
               position: toast.POSITION.TOP_RIGHT,
             });
             emitEvent("update", "musiclist");
+            console.log("dans le form");
+            props.refetch();
             removeInput(["title", "artist"]);
           })
           .catch(function (error) {

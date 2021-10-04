@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../FETCH";
+import { FETCH } from "../FETCH";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory } from "react-router-dom";
 import { emitEvent } from "../components/common/socket";

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../../FETCH";
+import { FETCH } from "../../FETCH";
 import { BsFillTrashFill } from "react-icons/bs";
 import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
 import { removeInput } from "../common/removeInput";
-import { emitEvent, subscribeToSocket, disconnect } from "../common/socket";
+import { emitEvent, subscribeToSocket } from "../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -45,7 +45,8 @@ const MusicLayout = () => {
           })
           .then(() => {
             Swal.fire("Suprimée!", "", "success");
-            // emitEvent("update", "musiclist");
+            emitEvent("update", "musiclist");
+            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -71,7 +72,8 @@ const MusicLayout = () => {
             })
             .then(() => {
               Swal.fire("Suprimée!", "", "success");
-              // emitEvent("update", "musiclist");
+              emitEvent("update", "musiclist");
+              fetchData();
             });
         });
       }
@@ -97,7 +99,8 @@ const MusicLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
-            // emitEvent("update", "musiclist");
+            emitEvent("update", "musiclist");
+            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -125,7 +128,8 @@ const MusicLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
-            // emitEvent("update", "musiclist");
+            emitEvent("update", "musiclist");
+            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -156,7 +160,7 @@ const MusicLayout = () => {
             Swal.fire("Modifié!", "", "success");
             removeInput(["title"]);
             setSongsInCurrent("");
-            // emitEvent("update", "title");
+            emitEvent("update", "title");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -199,9 +203,6 @@ const MusicLayout = () => {
         fetchData();
       }
     });
-    return function cleanup() {
-      disconnect();
-    };
   }, []);
 
   return (

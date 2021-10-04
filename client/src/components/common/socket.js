@@ -2,13 +2,12 @@ import { ENDPOINT } from "../../FETCH";
 import io from "socket.io-client";
 
 const socket = io(ENDPOINT);
-console.log(socket);
+
 const initiateSocket = (args) => {
   console.log(`Connecting socket...`);
 };
 
 const subscribeToSocket = (data) => {
-  console.log(socket);
   if (!socket) return true;
 
   socket.on("musicupdate", () => {
@@ -26,6 +25,14 @@ const subscribeToSocket = (data) => {
   socket.on("visitorallowed", (args) => {
     console.log("visitorallowed: jai bien recu et je met a jour");
     return data("visitorallowed");
+  });
+  socket.on("userupdate", (args) => {
+    console.log("userupdate: jai bien recu et je met a jour");
+    return data("userupdate");
+  });
+  socket.on("event", (args) => {
+    console.log("userupdate: jai bien recu et je met a jour");
+    return data("event");
   });
 };
 

@@ -9,6 +9,7 @@ import RouteVisitor from "./router/RouteVisitor";
 import RouteLogin from "./router/RoutesLogin";
 import RouteAdmin from "./router/RouteAdmin";
 import NewUser from "./Pages/NewUser";
+import { disconnect } from "./components/common/socket";
 
 function App() {
   const [isAuthVerify, setAuth] = useState(false);
@@ -41,6 +42,9 @@ function App() {
 
   useEffect(() => {
     verifyToken();
+    return function cleanup() {
+      disconnect();
+    };
   }, []);
 
   return (
