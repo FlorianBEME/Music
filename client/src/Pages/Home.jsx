@@ -101,7 +101,7 @@ const Home = () => {
   }, [history]);
 
   useEffect(() => {
-    if (eventLoad) {
+    if (eventLoad && event.length > 0) {
       if (event[0].active_music_request) {
         changeComponent("music");
       } else if (

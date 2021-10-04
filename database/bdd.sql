@@ -20,7 +20,8 @@ CREATE TABLE `currentsongs` (
   `countVote` varchar(255) NOT NULL,
   `unavailable` boolean NOT NULL, 
   `isValid` boolean NOT NULL, 
-  `isNew` boolean NOT NULL
+  `isNew` boolean NOT NULL,
+  `visitor_id` int NOT NULL ON DELETE CASCADE
 );
 
 CREATE TABLE `events` (
@@ -38,19 +39,15 @@ CREATE TABLE `users` (
   `user_password` varchar(255) NOT NULL
 );
 
-CREATE TABLE `songInCurrent` (
-  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(255) NOT NULL,
-  `user_password` varchar(255) NOT NULL
-);
-
 CREATE TABLE `visitor` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
   `isNotAllowed`BOOLEAN NOT NULL
 );
+
+ALTER TABLE `currentsongs` ADD FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`id`)  ON DELETE CASCADE;  
+
+
 INSERT INTO users ( user_name , user_password ) VALUES ("Admin","$2b$10$dH1ZvM2SRCwGBwWxl/CDlurofNaiTIAOW5f0kx7XY0Ej.kknFf9j2");
 INSERT INTO users ( user_name , user_password ) VALUES ("Alek","$2b$10$vr613HdUrNoPVQ//USyxgOPtA3RKB1jzYz0EDBsBNY/D0wzj0mE42");
-
-INSERT INTO app (text, type) VALUEs ("Anniversaire de Valentin" , "Name");
