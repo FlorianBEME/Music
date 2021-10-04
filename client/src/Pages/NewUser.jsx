@@ -3,6 +3,7 @@ import axios from "axios";
 import { FETCH } from "../FETCH";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory } from "react-router-dom";
+import { emitEvent } from "../components/common/socket";
 
 const NewUser = () => {
   let history = useHistory();
@@ -24,6 +25,7 @@ const NewUser = () => {
           pseudo: res.data.pseudo,
         };
         localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
+        emitEvent("update", "user");
         history.push("/app");
       })
       .catch((err) => {

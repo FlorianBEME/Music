@@ -4,6 +4,7 @@ import { FETCH } from "../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { removeInput } from "./common/removeInput";
+import { emitEvent } from "./common/socket";
 
 const SongRequestForm = (props) => {
   const [data, setData] = useState({
@@ -40,7 +41,7 @@ const SongRequestForm = (props) => {
         ).length < 1
       ) {
         axios
-          .post(`${FETCH}/currentSongs`, {
+          .post(`${FETCH}/currentsongs`, {
             ...data,
             countVote: 0,
           })
@@ -48,6 +49,9 @@ const SongRequestForm = (props) => {
             toast.success("Musique envoyé!", {
               position: toast.POSITION.TOP_RIGHT,
             });
+            emitEvent("update", "musiclist");
+            console.log("dans le form");
+            props.refetch();
             removeInput(["title", "artist"]);
           })
           .catch(function (error) {

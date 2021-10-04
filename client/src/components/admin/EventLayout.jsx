@@ -7,6 +7,7 @@ import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
 import MusicBandeau from "../../assets/musicbandeau.jpg";
 import { v4 as uuidv4 } from "uuid";
+import { emitEvent } from "../common/socket.js";
 
 const MySwal = withReactContent(Swal);
 
@@ -30,27 +31,32 @@ const EventLayout = () => {
   // ajout d'un nouvel event
   const addNewEvent = (e) => {
     e.preventDefault();
-    MySwal.fire({
-      title: `Êtes-vous sûr de vouloir créer l'évenement ${newEvent.name}?`,
-      showCancelButton: true,
-      confirmButtonText: "Valider",
-      cancelButtonText: "Annuler",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .post(`${FETCH}/events`, {
-            name: newEvent.name,
-            active_music_request: newEvent.active_music_request,
-            active_wall_picture: newEvent.active_wall_picture,
-            uuid: uuidv4(),
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        Swal.fire("Créer!", "", "success");
-        fetchData();
-      }
-    });
+    if (!newEvent.active_music_request && !newEvent.active_wall_picture) {
+      Swal.fire("Erreur!", "Sélectionner au moins une catégorie", "error");
+    } else {
+      MySwal.fire({
+        title: `Êtes-vous sûr de vouloir créer l'évenement ${newEvent.name}?`,
+        showCancelButton: true,
+        confirmButtonText: "Valider",
+        cancelButtonText: "Annuler",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .post(`${FETCH}/events`, {
+              name: newEvent.name,
+              active_music_request: newEvent.active_music_request,
+              active_wall_picture: newEvent.active_wall_picture,
+              uuid: uuidv4(),
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          Swal.fire("Créer!", "", "success");
+          emitEvent("update", "event");
+          fetchData();
+        }
+      });
+    }
   };
   const fetchData = () => {
     axios
@@ -95,6 +101,7 @@ const EventLayout = () => {
             Swal.fire("Suprimé!", "L'évenement est supprimé", "success");
             setEventCurrent(null);
             fetchData();
+            emitEvent("update", "event");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");
@@ -103,7 +110,7 @@ const EventLayout = () => {
     });
   };
   // changement de l'image d'en-tête
-  const changeImageTop = async (e) => {
+  const changeImageTop = (e) => {
     e.preventDefault();
     MySwal.fire({
       title: "Êtes-vous sur de vouloir modifier l'image d'en-tête?",
@@ -159,6 +166,7 @@ const EventLayout = () => {
         })
           .then(() => {
             Swal.fire("Succés!", "L'image est changé", "success");
+            emitEvent("update", "event");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");
@@ -190,40 +198,48 @@ const EventLayout = () => {
   };
   // modifier les permissions d'accès
   const handleChangeAcces = (e) => {
-    MySwal.fire({
-      title: "Êtes-vous sur ?",
-      text: "Cela modifira les acccès au fonctionnalitées",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Oui, je suis sur !",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        new Promise((resolve, reject) => {
-          axios
-            .put(`${FETCH}/events/${eventCurrent.id}`, eventCurrent, {
-              headers: {
-                "x-access-token": token,
-              },
-            })
-            .then((res) => {
-              resolve(res);
-            })
-            .catch(function (error) {
-              reject(error);
-            });
-        })
-          .then(() => {
-            Swal.fire("Modifié!", "L'évenement est modifié", "success");
-            setEventCurrent(null);
-            fetchData();
+    if (
+      !eventCurrent.active_music_request &&
+      !eventCurrent.active_wall_picture
+    ) {
+      Swal.fire("Erreur!", "Sélectionner au moins une catégorie", "error");
+    } else {
+      MySwal.fire({
+        title: "Êtes-vous sur ?",
+        text: "Cela modifira les acccès au fonctionnalitées",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Oui, je suis sur !",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          new Promise((resolve, reject) => {
+            axios
+              .put(`${FETCH}/events/${eventCurrent.id}`, eventCurrent, {
+                headers: {
+                  "x-access-token": token,
+                },
+              })
+              .then((res) => {
+                resolve(res);
+              })
+              .catch(function (error) {
+                reject(error);
+              });
           })
-          .catch(() => {
-            Swal.fire("Erreur!", "Une erreur est survenue", "error");
-          });
-      }
-    });
+            .then(() => {
+              Swal.fire("Modifié!", "L'évenement est modifié", "success");
+              setEventCurrent(null);
+              fetchData();
+              emitEvent("update", "event");
+            })
+            .catch(() => {
+              Swal.fire("Erreur!", "Une erreur est survenue", "error");
+            });
+        }
+      });
+    }
   };
   // fetchData();
   useEffect(() => {
@@ -396,13 +412,13 @@ const EventLayout = () => {
                         >
                           Music Request
                         </label>
-                        <p
+                        {/* <p
                           id="comments-description"
                           className="text-gray-500 dark:text-gray-400"
                         >
                           Get notified when someones posts a comment on a
                           posting.
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                     <div className="relative flex items-start">
@@ -428,12 +444,12 @@ const EventLayout = () => {
                         >
                           Wall Picture
                         </label>
-                        <p
+                        {/* <p
                           id="candidates-description"
                           className="text-gray-500 dark:text-gray-400"
                         >
                           Get notified when a candidate applies for a job.
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   </fieldset>

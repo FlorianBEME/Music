@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FETCH } from "../../FETCH";
 import Switch from "@material-ui/core/Switch";
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { emitEvent, subscribeToSocket } from "../common/socket";
 
 const MySwal = withReactContent(Swal);
 
@@ -24,6 +24,17 @@ const VisitorLayout = () => {
         console.log(erreur);
       });
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "userupdate" || args === "visitorallowed") {
+        fetchData();
+      }
+    });
+  }, []);
 
   // Suppression de la musique
   // const handleDelete = (id) => {
@@ -73,6 +84,8 @@ const VisitorLayout = () => {
             }
           )
           .then(() => {
+            emitEvent("update", "visitorallowed");
+            fetchData();
             Swal.fire("Modifié!", "", "success");
           })
           .catch(function (error) {
@@ -84,7 +97,7 @@ const VisitorLayout = () => {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   return (
     <div className="flex flex-col">

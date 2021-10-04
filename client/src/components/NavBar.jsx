@@ -4,12 +4,11 @@ import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 
 import { BsFillLockFill } from "react-icons/bs";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import ThemeSelect from "./common/ThemeSelect";
 
 export default function NavBar(props) {
-  const location = useLocation();
   const history = useHistory();
 
   return (
@@ -29,22 +28,25 @@ export default function NavBar(props) {
         </div>
         <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
           <Popover.Group as="nav" className="flex space-x-10">
-            {props.event[0].active_wall_picture ? (
-              <Link
-                to="/app/picture"
-                className="text-base font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
-              >
-                Wall Picture
-              </Link>
-            ) : null}
-
             {props.event[0].active_music_request ? (
-              <Link
-                to="/app/music"
+              <div
+                onClick={() => {
+                  props.changeComponent("music");
+                }}
                 className="text-base font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
               >
                 Music Request
-              </Link>
+              </div>
+            ) : null}
+            {props.event[0].active_wall_picture ? (
+              <div
+                onClick={() => {
+                  props.changeComponent("picture");
+                }}
+                className="text-base font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
+              >
+                Wall Picture
+              </div>
             ) : null}
           </Popover.Group>
           <div className="flex items-center md:ml-12 cursor-pointer">

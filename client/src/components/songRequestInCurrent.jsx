@@ -3,6 +3,7 @@ import axios from "axios";
 import { FETCH } from "../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { emitEvent } from "./common/socket";
 
 export default function SongRequestInCurrent(props) {
   // Hook pour le rendu du composant
@@ -46,6 +47,9 @@ export default function SongRequestInCurrent(props) {
               localStorage.setItem("idMusicVoting", result);
             }
           }
+
+          emitEvent("update", "musiclist");
+          props.refetch();
         });
       forceUpdate();
     } else {

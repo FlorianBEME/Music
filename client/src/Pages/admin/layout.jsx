@@ -1,7 +1,4 @@
-/* This example requires Tailwind CSS v2.0+ */
-
 import { Route, Switch, Redirect } from "react-router-dom";
-
 import AdminRoutes from "../../router/listRoute/AdminRoutes";
 
 export default function Layout() {

@@ -5,7 +5,7 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
 import { removeInput } from "../common/removeInput";
-
+import { emitEvent, subscribeToSocket } from "../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -45,6 +45,8 @@ const MusicLayout = () => {
           })
           .then(() => {
             Swal.fire("Suprimée!", "", "success");
+            emitEvent("update", "musiclist");
+            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -70,6 +72,8 @@ const MusicLayout = () => {
             })
             .then(() => {
               Swal.fire("Suprimée!", "", "success");
+              emitEvent("update", "musiclist");
+              fetchData();
             });
         });
       }
@@ -95,6 +99,8 @@ const MusicLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
+            emitEvent("update", "musiclist");
+            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -122,6 +128,8 @@ const MusicLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
+            emitEvent("update", "musiclist");
+            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -152,6 +160,7 @@ const MusicLayout = () => {
             Swal.fire("Modifié!", "", "success");
             removeInput(["title"]);
             setSongsInCurrent("");
+            emitEvent("update", "title");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -186,7 +195,15 @@ const MusicLayout = () => {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
+
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "musicupdate") {
+        fetchData();
+      }
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">

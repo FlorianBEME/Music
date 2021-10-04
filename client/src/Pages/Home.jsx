@@ -5,55 +5,30 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 import { FiLoader } from "react-icons/fi";
-
 import Footer from "../components/footer";
 import NavBar from "../components/NavBar";
 import MusicBandeau from "../assets/musicbandeau.jpg";
-
 import WallPicture from "../components/WallPicture";
 import SongRequestBloc from "../components/songRequestBloc";
+
+import { subscribeToSocket } from "../components/common/socket";
 
 const Home = () => {
   const history = useHistory();
   const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
+  const [component, setComponent] = useState();
 
-  let VisitorRoutes = [
-    {
-      id: 0,
-      activate: false,
-      path: "/app/music",
-      name: "Musique",
-      icon: "mdi mdi-pencil-circle",
-      redirect: false,
-      component: SongRequestBloc,
-    },
-    {
-      id: 1,
-      activate: false,
-      path: "/app/",
-      pathTo: "/app/music",
-      name: "App",
-      redirect: true,
-    },
-    {
-      id: 2,
-      activate: false,
-      path: "/app/picture",
-      name: "Photo",
-      icon: "mdi mdi-pencil-circle",
-      redirect: false,
-      component: WallPicture,
-    },
-    {
-      id: 3,
-      activate: false,
-      path: "/app/",
-      pathTo: "/app/picture",
-      name: "App",
-      redirect: true,
-    },
-  ];
+  const componentRender = () => {
+    if (component === "music") {
+      return <SongRequestBloc />;
+    } else if (component === "picture") {
+      return <WallPicture />;
+    }
+  };
+  const changeComponent = (component) => {
+    setComponent(component);
+  };
 
   useEffect(() => {
     // Verification du visiteur
@@ -80,7 +55,8 @@ const Home = () => {
       } else {
         reject();
       }
-    });
+    }, []);
+
     const uuidEvent = localStorage.getItem("uuidEvent");
     // on fetch la soirée en cours
     axios.get(`${FETCH}/events`).then((res) => {
@@ -124,28 +100,26 @@ const Home = () => {
     });
   }, [history]);
 
-  // on met en place le router en fonction des choix fait par l'admin sur le pannel
-  if (eventLoad && event.length > 0) {
-    if (
-      event[0].active_music_request === false &&
-      event[0].active_wall_picture === false
-    ) {
-      // a traiter!!!!
-      console.log("aucune fonctionnalité activé!");
-    } else if (event[0].active_music_request && !event[0].active_wall_picture) {
-      VisitorRoutes[0].activate = true;
-      VisitorRoutes[1].activate = true;
-    } else if (!event[0].active_music_request && event[0].active_wall_picture) {
-      VisitorRoutes[2].activate = true;
-      VisitorRoutes[3].activate = true;
-    } else {
-      VisitorRoutes.forEach((route) => {
-        if (route.id !== 3) {
-          route.activate = true;
-        }
-      });
+  useEffect(() => {
+    if (eventLoad) {
+      if (event[0].active_music_request) {
+        changeComponent("music");
+      } else if (
+        !event[0].active_music_request &&
+        event[0].active_wall_picture
+      ) {
+        changeComponent("picture");
+      }
     }
-  }
+  }, [event, eventLoad]);
+
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "event") {
+        history.go(0);
+      }
+    });
+  }, [history]);
 
   return (
     <div>
@@ -175,37 +149,9 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <NavBar event={event} />
+              <NavBar event={event} changeComponent={changeComponent} />
               <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-                <Switch>
-                  {VisitorRoutes.filter((route) => route.activate === true).map(
-                    (prop, key) => {
-                      console.log(
-                        VisitorRoutes.filter(
-                          (route) => route.activate === true
-                        ),
-                        "dans le rendu"
-                      );
-                      if (prop.redirect) {
-                        return (
-                          <Redirect
-                            from={prop.path}
-                            to={prop.pathTo}
-                            key={key}
-                          />
-                        );
-                      } else {
-                        return (
-                          <Route
-                            path={prop.path}
-                            component={prop.component}
-                            key={key}
-                          />
-                        );
-                      }
-                    }
-                  )}
-                </Switch>
+                {componentRender()}
               </div>
             </div>
 
