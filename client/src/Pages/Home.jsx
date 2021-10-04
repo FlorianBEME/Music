@@ -3,16 +3,13 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../FETCH";
+import { FETCH } from "../FETCH";
 import { FiLoader } from "react-icons/fi";
 import Footer from "../components/footer";
 import NavBar from "../components/NavBar";
 import MusicBandeau from "../assets/musicbandeau.jpg";
 import WallPicture from "../components/WallPicture";
 import SongRequestBloc from "../components/songRequestBloc";
-import io from "socket.io-client";
-
-let socket;
 
 const Home = () => {
   const history = useHistory();
@@ -125,12 +122,12 @@ const Home = () => {
       }
     });
 
-    socket = io(ENDPOINT);
-    socket.on("event", (args) => {
-      if (args) {
-        history.push("/");
-      }
-    });
+    // socket = io(ENDPOINT);
+    // socket.on("event", (args) => {
+    //   if (args) {
+    //     history.push("/");
+    //   }
+    // });
   }, [history]);
 
   // on met en place le router en fonction des choix fait par l'admin sur le pannel

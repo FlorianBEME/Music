@@ -2,12 +2,8 @@ import SongRequestForm from "./songRequestForm";
 import SongRequestInCurrent from "./songRequestInCurrent";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../FETCH";
+import { FETCH } from "../FETCH";
 import { useHistory } from "react-router-dom";
-import io from "socket.io-client";
-
-let socket;
-
 export default function SongRequestBloc() {
   // useState
   const [songs, setSongs] = useState([]);
@@ -39,30 +35,12 @@ export default function SongRequestBloc() {
         history.push("/new");
       }
     };
-
-    socket = io(ENDPOINT);
     fetchData();
     verifyIsAllowed();
     fetchSongIncurrent();
-    socket.on("musicupdate", (args) => {
-      console.log("jai bien recu et je met a jour");
-      if (args) {
-        fetchData();
-      }
-    });
-    socket.on("titleupdate", (args) => {
-      console.log("jai bien recu et je met a jour");
-      if (args) {
-        fetchSongIncurrent();
-      }
-    });
-    socket.on("visitorallowed", (args) => {
-      console.log("jai bien recu et je met a jour");
-      if (args) {
-        verifyIsAllowed();
-      }
-    });
   }, []);
+
+  useEffect(() => {}, []);
 
   const fetchData = () => {
     axios

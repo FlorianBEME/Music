@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../../FETCH";
+import { FETCH } from "../../FETCH";
 import Switch from "@material-ui/core/Switch";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import io from "socket.io-client";
-let socket;
+import { emitEvent } from "../common/socket";
 
 const MySwal = withReactContent(Swal);
 
@@ -75,9 +74,7 @@ const VisitorLayout = () => {
           )
           .then(() => {
             Swal.fire("Modifié!", "", "success");
-
-            socket = io(ENDPOINT);
-            socket.emit("update", "visitorallowed");
+            emitEvent("update", "visitorallowed");
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -86,22 +83,22 @@ const VisitorLayout = () => {
     });
   };
 
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.on("userupdate", (args) => {
-      console.log("jai bien recu un nouveeau user");
-      if (args) {
-        fetchData();
-      }
-    });
-    socket.on("visitorallowed", (args) => {
-      console.log("jai bien recu un nouveeau user");
-      if (args) {
-        fetchData();
-      }
-    });
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   socket = io(ENDPOINT);
+  //   socket.on("userupdate", (args) => {
+  //     console.log("jai bien recu un nouveeau user");
+  //     if (args) {
+  //       fetchData();
+  //     }
+  //   });
+  //   socket.on("visitorallowed", (args) => {
+  //     console.log("jai bien recu un nouveeau user");
+  //     if (args) {
+  //       fetchData();
+  //     }
+  //   });
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="flex flex-col">

@@ -1,13 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../FETCH";
+import { FETCH } from "../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { removeInput } from "./common/removeInput";
-
-import io from "socket.io-client";
-
-let socket;
+import { emitEvent } from "./common/socket";
 
 const SongRequestForm = (props) => {
   const [data, setData] = useState({
@@ -25,11 +22,6 @@ const SongRequestForm = (props) => {
 
   const changeArtist = (e) => {
     setData({ ...data, artist: e.target.value });
-  };
-
-  const emit = () => {
-    socket = io(ENDPOINT);
-    socket.emit("update", "musiclist");
   };
 
   const handleSubmit = (e) => {
@@ -57,7 +49,7 @@ const SongRequestForm = (props) => {
             toast.success("Musique envoyé!", {
               position: toast.POSITION.TOP_RIGHT,
             });
-            emit();
+            emitEvent("update", "musiclist");
             removeInput(["title", "artist"]);
           })
           .catch(function (error) {

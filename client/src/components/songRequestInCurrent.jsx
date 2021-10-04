@@ -1,11 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH, ENDPOINT } from "../FETCH";
+import { FETCH } from "../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import io from "socket.io-client";
-
-let socket;
+import { emitEvent } from "./common/socket";
 
 export default function SongRequestInCurrent(props) {
   // Hook pour le rendu du composant
@@ -49,8 +47,8 @@ export default function SongRequestInCurrent(props) {
               localStorage.setItem("idMusicVoting", result);
             }
           }
-          socket = io(ENDPOINT);
-          socket.emit("update", "musiclist");
+
+          emitEvent("update", "musiclist");
         });
       forceUpdate();
     } else {
