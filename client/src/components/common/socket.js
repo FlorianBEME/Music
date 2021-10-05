@@ -31,12 +31,18 @@ const subscribeToSocket = (data) => {
     return data("userupdate");
   });
   socket.on("event", (args) => {
-    console.log("userupdate: jai bien recu et je met a jour");
+    console.log("event: jai bien recu et je met a jour");
     return data("event");
   });
+  // couleur et position du titre evenement
+  socket.on("settitle", (args) => {
+    console.log("TitleEvent: jai bien recu et je met a jour");
+    return data("settitle");
+  });
+  // Pop Up
   socket.on("pop", (args) => {
     console.log(data);
-    console.log("userupdate: jai bien recu et je met a jour");
+    console.log("pop: jai bien recu et je met a jour");
     return data("pop" + data);
   });
 };

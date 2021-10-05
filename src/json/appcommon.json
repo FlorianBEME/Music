@@ -3,6 +3,10 @@
     "id": 0,
     "app": {
       "titleincurent": "Titre en cours ..."
+    },
+    "titleEventappStyle": {
+      "position": "center",
+      "color": "#ffffff"
     }
   }
 ]

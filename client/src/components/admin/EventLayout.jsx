@@ -7,8 +7,8 @@ import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
 import MusicBandeau from "../../assets/musicbandeau.jpg";
 import { v4 as uuidv4 } from "uuid";
-import { emitEvent } from "../common/socket.js";
-
+import { emitEvent, subscribeToSocket } from "../common/socket.js";
+import { HexColorPicker } from "react-colorful";
 const MySwal = withReactContent(Swal);
 
 const EventLayout = () => {
@@ -27,6 +27,8 @@ const EventLayout = () => {
   });
 
   const [currentFile, setCurrentFile] = useState(null);
+  const [color, setColor] = useState("#aabbcc");
+  const [positionTitle, setPositionTitle] = useState("");
 
   // ajout d'un nouvel event
   const addNewEvent = (e) => {
@@ -58,11 +60,11 @@ const EventLayout = () => {
       });
     }
   };
+  //fetch event
   const fetchData = () => {
     axios
       .get(`${FETCH}/events`)
       .then((response) => {
-        console.log(response.data);
         setEventCurrent(response.data[0]);
         setDataLoad(true);
       })
@@ -241,9 +243,115 @@ const EventLayout = () => {
       });
     }
   };
+  //modifier position du titre
+  const handleChangePositionTitle = () => {
+    MySwal.fire({
+      title: "Êtes-vous sur ?",
+      text: "Cela modifira la position du titre",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, je suis sur !",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        new Promise((resolve, reject) => {
+          axios
+            .put(
+              `${FETCH}/app/titleEventappStyle/position/0`,
+              { position: positionTitle },
+              {
+                headers: {
+                  "x-access-token": token,
+                },
+              }
+            )
+            .then((res) => {
+              resolve(res);
+            })
+            .catch(function (error) {
+              reject(error);
+            });
+        })
+          .then(() => {
+            Swal.fire("Modifié!", "L'évenement est modifié", "success");
+            fetchTitleEvent();
+            emitEvent("update", "settitle");
+          })
+          .catch(() => {
+            Swal.fire("Erreur!", "Une erreur est survenue", "error");
+          });
+      }
+    });
+  };
+  //modifier position du titre
+  const handleChangePositionColor = () => {
+    MySwal.fire({
+      title: "Êtes-vous sur ?",
+      text: "Cela modifira la couleur du titre",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, je suis sur !",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        new Promise((resolve, reject) => {
+          axios
+            .put(
+              `${FETCH}/app/titleEventappStyle/color/0`,
+              { color: color },
+              {
+                headers: {
+                  "x-access-token": token,
+                },
+              }
+            )
+            .then((res) => {
+              resolve(res);
+            })
+            .catch(function (error) {
+              reject(error);
+            });
+        })
+          .then(() => {
+            Swal.fire("Modifié!", "L'évenement est modifié", "success");
+            fetchTitleEvent();
+            emitEvent("update", "settitle");
+          })
+          .catch(() => {
+            Swal.fire("Erreur!", "Une erreur est survenue", "error");
+          });
+      }
+    });
+  };
+  //fetch style du titre
+  const fetchTitleEvent = () => {
+    axios
+      .get(`${FETCH}/app/app`)
+      .then((res) => {
+        setColor(res.data.titleEventappStyle.color);
+        setPositionTitle(res.data.titleEventappStyle.position);
+      })
+      .catch(function (erreur) {
+        console.log(erreur);
+      });
+  };
+
   // fetchData();
   useEffect(() => {
     fetchData();
+    fetchTitleEvent();
+  }, []);
+
+  // socket;
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "settitle") {
+        console.log("je recoit");
+        fetchTitleEvent();
+      }
+    });
   }, []);
 
   return (
@@ -349,6 +457,79 @@ const EventLayout = () => {
                   >
                     Modifier
                   </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        )
+      ) : null}
+
+      {dataLoad ? (
+        eventCurrent === null || eventCurrent === undefined ? null : (
+          <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                Modifier la position
+              </h3>
+              <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
+                <p>Modifier pour changer la position du titre</p>
+              </div>
+              <div className=" flex items-start">
+                <form
+                  className="space-y-5 mt-4"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleChangePositionTitle();
+                  }}
+                >
+                  <div className=" flex items-center space-x-4">
+                    <select
+                      defaultValue={positionTitle}
+                      id="location"
+                      name="location"
+                      className=" block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                      onChange={(e) => {
+                        setPositionTitle(e.target.value);
+                      }}
+                    >
+                      <option value="left">Gauche</option>
+                      <option value="center">Centré</option>
+                      <option value="right">Droite</option>
+                    </select>
+                    <button
+                      type="submit"
+                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500   sm:w-auto sm:text-sm"
+                    >
+                      Modifier
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div className="px-4 pb-7 sm:px-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                Modifier la couleur
+              </h3>
+              <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
+                <p>Modifier pour changer la couleur du titre</p>
+              </div>
+              <div className=" flex items-start">
+                <form
+                  className="space-y-5 mt-4"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleChangePositionColor();
+                  }}
+                >
+                  <div className=" flex items-end space-x-4">
+                    <HexColorPicker color={color} onChange={setColor} />
+                    <button
+                      type="submit"
+                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500   sm:w-auto sm:text-sm"
+                    >
+                      Modifier
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
