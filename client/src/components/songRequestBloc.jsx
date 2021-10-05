@@ -40,7 +40,7 @@ export default function SongRequestBloc() {
   const fetchSongIncurrent = () => {
     //fetch titre en cours
     axios
-      .get(`${FETCH}/app/songinprogress`)
+      .get(`${FETCH}/app/app`)
       .then((res) => {
         setTitleIncurent(res.data.app.titleincurent);
       })
