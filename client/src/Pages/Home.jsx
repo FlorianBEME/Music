@@ -12,6 +12,11 @@ import SongRequestBloc from "../components/songRequestBloc";
 
 import { subscribeToSocket } from "../components/common/socket";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
 const Home = () => {
   const history = useHistory();
   const [event, setEvent] = useState([]);
@@ -113,9 +118,14 @@ const Home = () => {
   }, [event, eventLoad]);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args, data) => {
       if (args === "event") {
         history.go(0);
+      } else if (args === "pop") {
+        Swal.fire({
+          title: "Sweet!",
+          text: "Modal with a custom image.",
+        });
       }
     });
   }, [history]);

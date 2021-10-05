@@ -34,6 +34,11 @@ const subscribeToSocket = (data) => {
     console.log("userupdate: jai bien recu et je met a jour");
     return data("event");
   });
+  socket.on("pop", (args) => {
+    console.log(data);
+    console.log("userupdate: jai bien recu et je met a jour");
+    return data("pop" + data);
+  });
 };
 
 const emitEvent = (eventemit, args) => {
