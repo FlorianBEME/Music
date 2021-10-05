@@ -14,6 +14,7 @@ const SongRequestForm = (props) => {
     unavailable: 0,
     isValid: 0,
     isNew: 1,
+    visitor_id: props.visitorInfo.id,
   });
 
   const changeName = (e) => {
@@ -26,6 +27,7 @@ const SongRequestForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (props.isAllowed) {
       // on vérifie si l'artiste est déja dans la liste
       let artistFiltered = [];

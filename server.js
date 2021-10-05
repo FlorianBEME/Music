@@ -15,7 +15,7 @@ io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 
   socket.on("update", (args) => {
-    console.log("SOCKET: ajout", "args: " + args);
+    console.log("SOCKET: ", "args: " + args);
     if (args === "musiclist") {
       console.log("SOCKET: MAJ music");
       socket.broadcast.emit("musicupdate", true);
@@ -31,6 +31,9 @@ io.on("connection", (socket) => {
     } else if (args === "event") {
       console.log("SOCKET: MAJ event");
       socket.broadcast.emit("event", true);
+    } else if (args === "settitle") {
+      console.log("SOCKET: MAJ Title");
+      socket.broadcast.emit("settitle", true);
     }
   });
 

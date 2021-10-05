@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -13,11 +12,22 @@ import SongRequestBloc from "../components/songRequestBloc";
 
 import { subscribeToSocket } from "../components/common/socket";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
 const Home = () => {
   const history = useHistory();
   const [event, setEvent] = useState([]);
   const [eventLoad, setEventLoad] = useState(false);
   const [component, setComponent] = useState();
+  const [positionTitle, setPositionTitle] = useState("center");
+  const [color, setColor] = useState("#ffffff");
 
   const componentRender = () => {
     if (component === "music") {
@@ -29,6 +39,21 @@ const Home = () => {
   const changeComponent = (component) => {
     setComponent(component);
   };
+  const fetchTitleStyle = () => {
+    axios
+      .get(`${FETCH}/app/app`)
+      .then((res) => {
+        setPositionTitle(res.data.titleEventappStyle.position);
+        setColor(res.data.titleEventappStyle.color);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    fetchTitleStyle();
+  }, []);
 
   useEffect(() => {
     // Verification du visiteur
@@ -101,7 +126,7 @@ const Home = () => {
   }, [history]);
 
   useEffect(() => {
-    if (eventLoad) {
+    if (eventLoad && event.length > 0) {
       if (event[0].active_music_request) {
         changeComponent("music");
       } else if (
@@ -114,9 +139,16 @@ const Home = () => {
   }, [event, eventLoad]);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args, data) => {
       if (args === "event") {
         history.go(0);
+      } else if (args === "pop") {
+        Swal.fire({
+          title: "Sweet!",
+          text: "Modal with a custom image.",
+        });
+      } else if (args === "settitle") {
+        fetchTitleStyle();
       }
     });
   }, [history]);
@@ -142,8 +174,20 @@ const Home = () => {
                   ) : null}
                 </div>
                 <div className="relative max-w-7xl mx-auto h-32 sm:px-8 px-2">
-                  <div className="flex items-center justify-center h-full">
-                    <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl ">
+                  <div
+                    className={classNames(
+                      positionTitle === "center"
+                        ? "justify-center"
+                        : positionTitle === "left"
+                        ? "justify-start"
+                        : "justify-end",
+                      "flex items-center h-full"
+                    )}
+                  >
+                    <h1
+                      className="text-4xl font-extrabold tracking-tight sm:text-5xl "
+                      style={{ color: color }}
+                    >
                       {event[0].name}
                     </h1>
                   </div>

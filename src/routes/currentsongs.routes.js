@@ -3,7 +3,8 @@ const router = require("express").Router();
 const { verifyJWT } = require("../middlewares/isuserauth.js");
 
 router.get("/", (req, res) => {
-  const sql = "SELECT * FROM currentsongs";
+  const sql =
+    "SELECT currentsongs.id, title,artist,countVote, unavailable,isValid,isNew,uuid,pseudo FROM currentsongs INNER JOIN visitor ON visitor_id = visitor.id";
   connection.query(sql, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });

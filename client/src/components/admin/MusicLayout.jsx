@@ -8,6 +8,7 @@ import { removeInput } from "../common/removeInput";
 import { emitEvent, subscribeToSocket } from "../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { compare } from "../common/sortMusic";
 
 const MySwal = withReactContent(Swal);
 
@@ -168,30 +169,6 @@ const MusicLayout = () => {
       }
     });
   };
-  // function de trie
-  const compare = (a, b) => {
-    if (compareType === "indispo") {
-      if (a.unavailable === 1) {
-        return -1;
-      }
-      if (b.unavailable === 0) {
-        return 1;
-      }
-    } else if (compareType === "validé") {
-      if (a.isValid === 1) {
-        return -1;
-      }
-      if (b.isValid === 0) {
-        return 1;
-      }
-    } else if (compareType === "voteup") {
-      if (a.countVote > b.countVote) {
-        return -1;
-      } else {
-        return 1;
-      }
-    }
-  };
 
   useEffect(() => {
     fetchData();
@@ -286,6 +263,12 @@ const MusicLayout = () => {
                   >
                     Vote
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                  >
+                    Par
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -293,7 +276,7 @@ const MusicLayout = () => {
               </thead>
               <tbody className="bg-white dark:bg-gray-400 dark:divide-white divide-y divide-gray-200">
                 {songs
-                  .sort((a, b) => compare(a, b))
+                  .sort((a, b) => compare(a, b, compareType))
                   .map((song) => (
                     <tr key={song.id}>
                       <td className=" py-4 whitespace-nowrap">
@@ -324,8 +307,13 @@ const MusicLayout = () => {
                         ) : null}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-500 dark:text-gray-200">
                           {song.countVote >= 0 ? song.countVote : null}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm text-gray-500 dark:text-gray-200">
+                          {song.pseudo}
                         </span>
                       </td>
                       <td className=" py-4 whitespace-nowrap ">
