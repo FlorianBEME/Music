@@ -2,17 +2,21 @@
 
 ## Technological stack
 A list of technologies used within the project:
-* [Node.js](https://nodejs.org/en/): Version 12.3
+* [Node.js](https://nodejs.org/en/): Version 14.15.5
 * [React](https://en.reactjs.org/): Version ^17.0.2
 * [MySQL](https://www.mysql.com/): Version ^2.18.1
-* 
+* [TailwindCSS](https://tailwindcss.com/):  Version ^2.18.1
 
-# Contributor
+## Instruction
+
+npm install
+cd client 
+npm install
+cd .. 
+
+Start the project on local
+npm run dev 
+
+
+## Contributor
 Bême Florian
-
-# Technological stack
-React / NodeJS / Tailwind CSS / MySql
-
-# Instruction
-
-npm install && npm run dev 
