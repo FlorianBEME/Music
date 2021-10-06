@@ -1,7 +1,35 @@
 import { Route, Switch, Redirect } from "react-router-dom";
 import AdminRoutes from "../../router/listRoute/AdminRoutes";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { FETCH } from "../../FETCH";
+import { subscribeToSocket } from "../../components/common/socket";
 
 export default function Layout() {
+  const [event, setevent] = useState(null);
+
+  //Fecth event et
+  const fetchEvent = () => {
+    axios
+      .get(`${FETCH}/events`)
+      .then((res) => {
+        setevent(res.data[0]);
+      })
+      .catch(function (erreur) {
+        console.log(erreur);
+      });
+  };
+  useEffect(() => {
+    fetchEvent();
+  }, []);
+  useEffect(() => {
+    subscribeToSocket((args) => {
+      if (args === "event") {
+        fetchEvent();
+      }
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-800">
       <div className="py-5">
@@ -18,8 +46,9 @@ export default function Layout() {
                 } else {
                   return (
                     <Route
+                      test={event}
                       path={prop.path}
-                      component={prop.component}
+                      component={() => <prop.component event={event} />}
                       key={key}
                     />
                   );

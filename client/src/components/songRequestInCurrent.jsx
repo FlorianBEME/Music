@@ -63,28 +63,30 @@ export default function SongRequestInCurrent(props) {
 
   return (
     <div>
-      <div className="flex items-center justify-end space-x-2 mb-4">
-        <label
-          htmlFor="location"
-          className="block text-xs font-medium text-gray-700 dark:text-gray-200"
-        >
-          Trier:
-        </label>
-        <select
-          defaultValue=""
-          id="location"
-          name="location"
-          className="mt-1 block  pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          onChange={(e) => {
-            setCompareType(e.target.value);
-          }}
-        >
-          <option disabled></option>
-          <option value="indispo">Indisponible</option>
-          <option value="validé">Validé</option>
-          <option value="voteup">Top vote</option>
-        </select>
-      </div>
+      {props.songs > 0 ? (
+        <div className="flex items-center justify-end space-x-2 mb-4">
+          <label
+            htmlFor="location"
+            className="block text-xs font-medium text-gray-700 dark:text-gray-200"
+          >
+            Trier:
+          </label>
+          <select
+            defaultValue=""
+            id="location"
+            name="location"
+            className="mt-1 block  pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            onChange={(e) => {
+              setCompareType(e.target.value);
+            }}
+          >
+            <option disabled></option>
+            <option value="indispo">Indisponible</option>
+            <option value="validé">Validé</option>
+            <option value="voteup">Top vote</option>
+          </select>
+        </div>
+      ) : null}
 
       <div className="bg-white dark:bg-gray-700 shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200 dark:divide-gray-500">
