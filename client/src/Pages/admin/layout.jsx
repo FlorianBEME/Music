@@ -7,8 +7,9 @@ import { subscribeToSocket } from "../../components/common/socket";
 
 export default function Layout() {
   const [event, setevent] = useState(null);
-  //Fecth feature
-  const fetchFeature = () => {
+
+  //Fecth event et
+  const fetchEvent = () => {
     axios
       .get(`${FETCH}/events`)
       .then((res) => {
@@ -19,12 +20,12 @@ export default function Layout() {
       });
   };
   useEffect(() => {
-    fetchFeature();
+    fetchEvent();
   }, []);
   useEffect(() => {
     subscribeToSocket((args) => {
       if (args === "event") {
-        fetchFeature();
+        fetchEvent();
       }
     });
   }, []);
