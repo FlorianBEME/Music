@@ -52,7 +52,7 @@ function App() {
       <Router>
         <Switch>
           <Redirect exact path="/" to="/app" />
-          <RouteVisitor path="/app" component={Home} />
+          <RouteVisitor exact path="/app" component={Home} />
           <RouteVisitor exact path="/new" component={NewUser} />
           <RouteLogin path="/login" component={Login} isAuth={isAuthVerify} />
           <RouteAdmin

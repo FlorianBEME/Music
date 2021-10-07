@@ -172,6 +172,9 @@ const MusicLayout = (props) => {
 
   useEffect(() => {
     fetchData();
+    return () => {
+      setSongs([]);
+    };
   }, []);
 
   useEffect(() => {
