@@ -116,7 +116,7 @@ export default function SongRequestBloc() {
             {titleIncurent}
           </h3>
         </div>
-        <div className="pt-8 px-4 sm:px-6 lg:col-span-3  lg:px-8 xl:pl-12">
+        <div className="pt-8 px-4 sm:px-6 lg:col-span-3  lg:px-8 xl:pl-12 border-b border-gray-200 dark:border-gray-400 py-5">
           <SongRequestForm
             songs={songs}
             isAllowed={isAllowed}

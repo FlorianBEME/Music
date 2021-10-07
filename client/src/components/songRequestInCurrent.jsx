@@ -65,7 +65,7 @@ export default function SongRequestInCurrent(props) {
     <div>
       {props.songs ? (
         props.songs.length > 0 ? (
-          <div className="flex items-center justify-end space-x-2 mb-4">
+          <div className="flex items-center justify-end space-x-2 my-4 ">
             <label
               htmlFor="location"
               className="block text-xs font-medium text-gray-700 dark:text-gray-200"
