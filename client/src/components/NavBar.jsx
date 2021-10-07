@@ -2,15 +2,9 @@
 import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
-
-import { BsFillLockFill } from "react-icons/bs";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
 import ThemeSelect from "./common/ThemeSelect";
 
 export default function NavBar(props) {
-  const history = useHistory();
-
   return (
     <Popover className=" ">
       <div className="flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
@@ -73,7 +67,7 @@ export default function NavBar(props) {
                   />
                 </div> */}
                 <div className="-mr-2 flex justify-between w-full items-center">
-                  <Popover.Button className="bg-white dark:bg-gray-500 dark:text-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                  <Popover.Button className=" dark:text-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                     <span className="sr-only">Close menu</span>
                     <XIcon className="h-6 w-6" aria-hidden="true" />
                   </Popover.Button>
@@ -83,18 +77,26 @@ export default function NavBar(props) {
             </div>
             <div className="py-6 px-5">
               <div className="flex flex-col space-y-3">
-                <Link
-                  to="/app/picture"
-                  className="text-base font-medium text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
-                >
-                  Wall Picture
-                </Link>
-                <Link
-                  to="/app/music"
-                  className="text-base font-medium text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
-                >
-                  Music Request
-                </Link>
+                {props.event[0].active_music_request ? (
+                  <div
+                    className="text-base text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
+                    onClick={() => {
+                      props.changeComponent("music");
+                    }}
+                  >
+                    <Popover.Button>Music Request</Popover.Button>
+                  </div>
+                ) : null}
+                {props.event[0].active_wall_picture ? (
+                  <div
+                    className="text-base  text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
+                    onClick={() => {
+                      props.changeComponent("picture");
+                    }}
+                  >
+                    <Popover.Button> Wall Picture</Popover.Button>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

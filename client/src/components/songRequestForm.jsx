@@ -73,12 +73,12 @@ const SongRequestForm = (props) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto lg:max-w-none">
+    <div className="max-w-lg mx-auto lg:max-w-none  ">
       <form
         onSubmit={(e) => handleSubmit(e)}
         className="flex flex-col justify-center items-center space-y-4"
       >
-        <div className="flex space-x-4">
+        <div className="flex flex-col space-y-3 sm:space-x-4 sm:space-y-0 sm:flex-row">
           <div>
             <label htmlFor="title" className="sr-only">
               Titre
