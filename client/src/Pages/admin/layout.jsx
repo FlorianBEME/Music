@@ -13,7 +13,7 @@ export default function Layout() {
     axios
       .get(`${FETCH}/events`)
       .then((res) => {
-        setevent(res.data[0]);
+        setevent(res.data);
       })
       .catch(function (erreur) {
         console.log(erreur);
