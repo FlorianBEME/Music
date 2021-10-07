@@ -21,7 +21,7 @@ CREATE TABLE `currentsongs` (
   `unavailable` boolean NOT NULL, 
   `isValid` boolean NOT NULL, 
   `isNew` boolean NOT NULL,
-  `visitor_id` int NOT NULL ON DELETE CASCADE
+  `visitor_id` int NOT NULL
 );
 
 CREATE TABLE `events` (
