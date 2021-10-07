@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e836c8c3.chunk.css",
+    "main.js": "/static/js/main.ea8703e0.chunk.js",
+    "main.js.map": "/static/js/main.ea8703e0.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.4ec1926f.js",
+    "runtime-main.js.map": "/static/js/runtime-main.4ec1926f.js.map",
+    "static/css/2.aff6dd0d.chunk.css": "/static/css/2.aff6dd0d.chunk.css",
+    "static/js/2.d25c4e1d.chunk.js": "/static/js/2.d25c4e1d.chunk.js",
+    "static/js/2.d25c4e1d.chunk.js.map": "/static/js/2.d25c4e1d.chunk.js.map",
+    "static/js/3.213682c1.chunk.js": "/static/js/3.213682c1.chunk.js",
+    "static/js/3.213682c1.chunk.js.map": "/static/js/3.213682c1.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.aff6dd0d.chunk.css.map": "/static/css/2.aff6dd0d.chunk.css.map",
+    "static/css/main.e836c8c3.chunk.css.map": "/static/css/main.e836c8c3.chunk.css.map",
+    "static/js/2.d25c4e1d.chunk.js.LICENSE.txt": "/static/js/2.d25c4e1d.chunk.js.LICENSE.txt",
+    "static/media/musicbandeau.2e60f5b1.jpg": "/static/media/musicbandeau.2e60f5b1.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4ec1926f.js",
+    "static/css/2.aff6dd0d.chunk.css",
+    "static/js/2.d25c4e1d.chunk.js",
+    "static/css/main.e836c8c3.chunk.css",
+    "static/js/main.ea8703e0.chunk.js"
+  ]
+}
