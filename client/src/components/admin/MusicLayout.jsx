@@ -184,8 +184,8 @@ const MusicLayout = (props) => {
 
   return (
     <div className="flex flex-col">
-      {/* {props.event !=== null ? ( */}
-      props.event.active_music_request ? (
+  
+      {props.event.active_music_request ? (
       <div>
         <div className="w-full">
           <div className="flex justify-between mb-5">
@@ -366,7 +366,7 @@ const MusicLayout = (props) => {
       <div className="w-full flex justify-center items-center">
         <p className="dark:text-gray-100 py-52">Fonctionnalitée désactivée</p>
       </div>
-      ){/* ) : null} */}
+      
     </div>
   );
 };
