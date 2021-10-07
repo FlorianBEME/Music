@@ -2,13 +2,9 @@
 import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
 import ThemeSelect from "./common/ThemeSelect";
 
 export default function NavBar(props) {
-  const history = useHistory();
-
   return (
     <Popover className=" ">
       <div className="flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
