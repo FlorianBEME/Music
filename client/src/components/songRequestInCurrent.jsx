@@ -100,7 +100,7 @@ export default function SongRequestInCurrent(props) {
                     key={song.id}
                     className=" flex items-center justify-between px-4 py-4 sm:px-6 flex-col md:flex-row"
                   >
-                    <div className="flex flex-col items-center md:items-start text-gray-800 dark:text-gray-100">
+                    <div className="flex sm:w-80 flex-col items-center md:items-start text-gray-800 dark:text-gray-100">
                       <p className=" text-sm font-medium break-all text-center md:text-left">
                         {song.title}
                       </p>
@@ -114,7 +114,13 @@ export default function SongRequestInCurrent(props) {
                       </p>
                     </div>
 
-                    <div className="w-full sm:w-auto items-center justify-between flex flex-row mt-2 md:mt-0">
+                    <div
+                      className={
+                        song.countVote >= 0
+                          ? "justify-between w-full sm:w-auto items-center flex flex-row mt-2 md:mt-0"
+                          : "justify-center w-full sm:w-auto items-center flex flex-row mt-2 md:mt-0"
+                      }
+                    >
                       {song.countVote >= 0 ? (
                         <div className="px-4 ">
                           <p className="capitalize text-sm font-medium text-gray-500 dark:text-gray-400">

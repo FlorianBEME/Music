@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FETCH } from "../../FETCH";
 import { subscribeToSocket } from "../../components/common/socket";
+import { useHistory } from "react-router-dom";
 
 export default function Layout() {
+  const history = useHistory();
   const [event, setevent] = useState(null);
 
   //Fecth event et
@@ -22,6 +24,32 @@ export default function Layout() {
   useEffect(() => {
     fetchEvent();
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("il y a un token");
+      axios
+        .get(`${FETCH}/login/isuserauth`, {
+          headers: {
+            "x-access-token": token,
+          },
+        })
+        .then((response) => {
+          if (!response.data.auth) {
+            localStorage.removeItem("token");
+            history.push("login");
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      localStorage.removeItem("token");
+      history.push("/login");
+    }
+  }, []);
+
   useEffect(() => {
     subscribeToSocket((args) => {
       if (args === "event") {

@@ -9,6 +9,8 @@ import MusicBandeau from "../../assets/musicbandeau.jpg";
 import { v4 as uuidv4 } from "uuid";
 import { emitEvent, subscribeToSocket } from "../common/socket.js";
 import { HexColorPicker } from "react-colorful";
+import { useHistory } from "react-router-dom";
+
 const MySwal = withReactContent(Swal);
 
 const EventLayout = () => {
@@ -29,6 +31,8 @@ const EventLayout = () => {
   const [currentFile, setCurrentFile] = useState(null);
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
+
+  const history = useHistory();
 
   // ajout d'un nouvel event
   const addNewEvent = (e) => {
@@ -267,25 +271,28 @@ const EventLayout = () => {
               }
             )
             .then((res) => {
+              console.log(res);
               resolve(res);
             })
-            .catch(function (error) {
-              reject(error);
+            .catch((error) => {
+              if (error.response.status === 401) {
+                localStorage.removeItem("token");
+                history.go(0);
+              } else {
+                reject();
+              }
             });
-        })
-          .then(() => {
-            Swal.fire("Modifié!", "L'évenement est modifié", "success");
-            fetchTitleEvent();
-            emitEvent("update", "settitle");
-          })
-          .catch(() => {
-            Swal.fire("Erreur!", "Une erreur est survenue", "error");
-          });
+        }).then((res) => {
+          console.log(res.data);
+          Swal.fire("Modifié!", "L'évenement est modifié", "success");
+          fetchTitleEvent();
+          emitEvent("update", "settitle");
+        });
       }
     });
   };
-  //modifier position du titre
-  const handleChangePositionColor = () => {
+  //modifier color du titre
+  const handleChangeColorTitle = () => {
     MySwal.fire({
       title: "Êtes-vous sur ?",
       text: "Cela modifira la couleur du titre",
@@ -311,7 +318,12 @@ const EventLayout = () => {
               resolve(res);
             })
             .catch(function (error) {
-              reject(error);
+              if (error.response.status === 401) {
+                localStorage.removeItem("token");
+                history.go(0);
+              } else {
+                reject();
+              }
             });
         })
           .then(() => {
@@ -518,7 +530,7 @@ const EventLayout = () => {
                   className="space-y-5 mt-4"
                   onSubmit={(e) => {
                     e.preventDefault();
-                    handleChangePositionColor();
+                    handleChangeColorTitle();
                   }}
                 >
                   <div className=" flex items-end space-x-4">

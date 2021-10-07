@@ -16,8 +16,6 @@ export default function SongRequestBloc() {
   const history = useHistory();
   const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
 
-  console.log(visitorInfo);
-
   if (!visitorInfo) {
     history.push("/new");
   }
