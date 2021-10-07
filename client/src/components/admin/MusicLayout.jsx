@@ -189,7 +189,7 @@ const MusicLayout = (props) => {
           <div className="w-full flex justify-center items-center">
             <p className="dark:text-gray-100 py-52">Pas d'évenement en cours</p>
           </div>
-        ) : props.event.active_music_request ? (
+        ) : props.event[0].active_music_request ? (
           <div>
             <div className="w-full">
               <div className="flex justify-between mb-5">
