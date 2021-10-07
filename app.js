@@ -17,9 +17,6 @@ app.use(
     secret: "subscribe",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      expires: 60 * 60 * 24,
-    },
   })
 );
 
