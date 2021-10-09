@@ -10,7 +10,11 @@ const verifyJWT = (req, res, next) => {
       if (err) {
         res
           .status(401)
-          .json({ auth: false, errorMessage: "L'authentification a échouée" });
+          .json({
+            auth: false,
+            errorMessage: "L'authentification a échouée",
+            status: 401,
+          });
       } else {
         req.userId = decoded.id;
         next();
