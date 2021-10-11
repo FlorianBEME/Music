@@ -2,9 +2,9 @@ import SongRequestForm from "./songRequestForm";
 import SongRequestInCurrent from "./songRequestInCurrent";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { FETCH } from "../../FETCH";
 import { useHistory } from "react-router-dom";
-import { subscribeToSocket } from "./common/socket";
+import { subscribeToSocket } from "../common/socket";
 
 export default function SongRequestBloc() {
   // useState

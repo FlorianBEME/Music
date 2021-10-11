@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 import { FiLoader } from "react-icons/fi";
-import Footer from "../components/footer";
-import NavBar from "../components/NavBar";
+import Footer from "../components/visitor/footer";
+import NavBar from "../components/visitor/NavBar";
 import MusicBandeau from "../assets/musicbandeau.jpg";
-import WallPicture from "../components/WallPicture";
-import SongRequestBloc from "../components/songRequestBloc";
+import WallPicture from "../components/visitor/WallPicture";
+import SongRequestBloc from "../components/visitor/songRequestBloc";
 
 import { subscribeToSocket } from "../components/common/socket";
 
@@ -28,6 +28,8 @@ const Home = () => {
   const [component, setComponent] = useState();
   const [positionTitle, setPositionTitle] = useState("center");
   const [color, setColor] = useState("#ffffff");
+  const [pop, setPop] = useState([]);
+  const [loadPop, setLoadPop] = useState(false);
 
   const componentRender = () => {
     if (component === "music") {
@@ -50,6 +52,36 @@ const Home = () => {
         console.log(err);
       });
   };
+
+  // const fetchPopUp = () => {
+  //   axios
+  //     .get(`${FETCH}/pop/available`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setPop(res.data);
+  //       setLoadPop(true);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+  // useEffect(() => {
+  //   fetchPopUp();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (loadPop) {
+  //     if (pop.length > 1) {
+  //       console.log("ok");
+  //       pop.forEach((popup) => {
+  //         Swal.fire({
+  //           title: popup.title,
+  //           text: popup.text_content,
+  //         });
+  //       });
+  //     }
+  //   }
+  // }, [loadPop, pop]);
 
   useEffect(() => {
     fetchTitleStyle();

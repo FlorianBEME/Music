@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { FETCH } from "../../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { emitEvent } from "./common/socket";
-import { compare } from "./common/sortMusic";
+import { emitEvent } from "../common/socket";
+import { compare } from "../common/sortMusic";
 
 export default function SongRequestInCurrent(props) {
   // Hook pour le rendu du composant

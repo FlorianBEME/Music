@@ -714,7 +714,7 @@ const EventLayout = () => {
                       ) : (
                         <AiOutlineDownload
                           size={20}
-                          className="text-gray-600"
+                          className="text-gray-600 dark:text-white"
                         />
                       )}
                     </i>
@@ -722,7 +722,7 @@ const EventLayout = () => {
                       className={
                         imagePreview.file !== null
                           ? "text-green-600"
-                          : "text-gray-600"
+                          : "text-gray-600 dark:text-white"
                       }
                     >
                       Upload
