@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { FETCH } from "../FETCH";
 import { FiLoader } from "react-icons/fi";
-import Footer from "../components/footer";
-import NavBar from "../components/NavBar";
+import Footer from "../components/visitor/footer";
+import NavBar from "../components/visitor/NavBar";
 import MusicBandeau from "../assets/musicbandeau.jpg";
-import WallPicture from "../components/WallPicture";
-import SongRequestBloc from "../components/songRequestBloc";
+import WallPicture from "../components/visitor/WallPicture";
+import SongRequestBloc from "../components/visitor/songRequestBloc/songRequestBloc";
 
 import { subscribeToSocket } from "../components/common/socket";
 
@@ -28,6 +28,7 @@ const Home = () => {
   const [component, setComponent] = useState();
   const [positionTitle, setPositionTitle] = useState("center");
   const [color, setColor] = useState("#ffffff");
+  const [pop, setPop] = useState([]);
 
   const componentRender = () => {
     if (component === "music") {
@@ -50,6 +51,20 @@ const Home = () => {
         console.log(err);
       });
   };
+  const fetchPopUp = () => {
+    axios
+      .get(`${FETCH}/pop/available`)
+      .then((res) => {
+        console.log(res.data);
+        setPop(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    fetchPopUp();
+  }, []);
 
   useEffect(() => {
     fetchTitleStyle();
@@ -93,6 +108,7 @@ const Home = () => {
         if (currentEvent[0].uuid !== uuidEvent || !uuidEvent) {
           localStorage.removeItem("idMusicVoting");
           localStorage.removeItem("usInfoMusic");
+          localStorage.removeItem("popid");
           localStorage.setItem("uuidEvent", currentEvent[0].uuid);
         }
         // on verifie l'uuid du visiteur
@@ -120,6 +136,7 @@ const Home = () => {
         localStorage.removeItem("idMusicVoting");
         localStorage.removeItem("usInfoMusic");
         localStorage.removeItem("uuidEvent");
+        localStorage.removeItem("popid");
         setEventLoad(true);
       }
     });
@@ -139,19 +156,67 @@ const Home = () => {
   }, [event, eventLoad]);
 
   useEffect(() => {
-    subscribeToSocket((args, data) => {
+    subscribeToSocket((args) => {
       if (args === "event") {
         history.go(0);
-      } else if (args === "pop") {
-        Swal.fire({
-          title: "Sweet!",
-          text: "Modal with a custom image.",
-        });
       } else if (args === "settitle") {
         fetchTitleStyle();
+      } else if (args === "pop") {
+        fetchPopUp();
       }
     });
   }, [history]);
+
+  useEffect(() => {
+    let popinLocalStorage = [];
+    let popId = localStorage.getItem("popid");
+    if (popId) {
+      let arr = popId.split(",");
+      arr.forEach((item) => {
+        popinLocalStorage.push(parseInt(item));
+      });
+    }
+    async function verifyPopAndDisplay() {
+      for (const item of pop) {
+        // on vérifie que le pop up n'as as deja était vu et traité
+        if (!popinLocalStorage.includes(item.id)) {
+          if (!item.filePath) {
+            await Swal.fire({
+              title: item.title,
+              text: item.text_content,
+              confirmButtonText: "Ok! ",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                popinLocalStorage.push(item.id);
+                localStorage.setItem("popid", popinLocalStorage.toString());
+              }
+            });
+          } else {
+            await Swal.fire({
+              title: item.title,
+              text: item.text_content,
+              confirmButtonText: "Ok!",
+              imageUrl: item.filePath,
+              imageWidth: 400,
+              imageHeight: 200,
+              imageAlt: item.title,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                popinLocalStorage.push(item.id);
+                localStorage.setItem("popid", popinLocalStorage.toString());
+              }
+            });
+          }
+        }
+      }
+    }
+    // on met un timer
+    setTimeout(() => {
+      if (pop.length >= 1) {
+        verifyPopAndDisplay();
+      }
+    }, 8000);
+  }, [pop]);
 
   return (
     <div>
