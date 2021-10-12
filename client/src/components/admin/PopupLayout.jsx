@@ -1,12 +1,16 @@
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { AiOutlineDownload } from "react-icons/ai";
-import { FaRegCheckSquare } from "react-icons/fa";
-import { v4 as uuidv4 } from "uuid";
+// import { AiOutlineDownload } from "react-icons/ai";
+// import { FaRegCheckSquare } from "react-icons/fa";
 
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { emitEvent } from "../common/socket";
 import axios from "axios";
+
 import { FETCH } from "../../FETCH";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 export default function PopupLayout() {
   const [imagePreview, setImagePreview] = useState({
     file: null,
@@ -56,7 +60,22 @@ export default function PopupLayout() {
       axios
         .post(`${FETCH}/pop/`, newPopup)
         .then((res) => {
-          console.log(res.data);
+          emitEvent("update", "pop");
+          MySwal.fire({
+            title: "Êtes vous sur de vouloir envoyer ce pop-up?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Oui",
+            cancelButtonText: "Non",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              MySwal.fire(
+                "Envoyé!",
+                "Le pop-uo s'affichera dans quelques secondes",
+                "success"
+              );
+            }
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -153,7 +172,7 @@ export default function PopupLayout() {
             </div>
           </div>
           {/* Photo */}
-          <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
+          {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
             <label
               htmlFor="photo"
               className="block text-sm font-medium text-gray-700 dark:text-gray-200"
@@ -206,7 +225,7 @@ export default function PopupLayout() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="pt-6 sm:pt-5">

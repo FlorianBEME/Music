@@ -14,7 +14,7 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 
-  socket.on("update", (args) => {
+  socket.on("update", (args, data) => {
     console.log("SOCKET: ", "args: " + args);
     if (args === "musiclist") {
       console.log("SOCKET: MAJ music");
@@ -34,6 +34,8 @@ io.on("connection", (socket) => {
     } else if (args === "settitle") {
       console.log("SOCKET: MAJ Title");
       socket.broadcast.emit("settitle", true);
+    } else if (args === "pop") {
+      socket.broadcast.emit("pop", true);
     }
   });
 
