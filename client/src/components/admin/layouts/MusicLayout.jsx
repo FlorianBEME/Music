@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
+import { FETCH } from "../../../FETCH";
 import { BsFillTrashFill } from "react-icons/bs";
 import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
-import { removeInput } from "../common/removeInput";
-import { emitEvent, subscribeToSocket } from "../common/socket";
+import { removeInput } from "../../common/removeInput";
+import { emitEvent, subscribeToSocket } from "../../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { compare } from "../common/sortMusic";
+import { compare } from "../../common/sortMusic";
 
 const MySwal = withReactContent(Swal);
 
@@ -188,7 +188,7 @@ const MusicLayout = (props) => {
   return (
     <div className="flex flex-col">
       {props.event ? (
-        props.event.length < 0 ? (
+        props.event.length <= 0 ? (
           <div className="w-full flex justify-center items-center">
             <p className="dark:text-gray-100 py-52">Pas d'évenement en cours</p>
           </div>
@@ -291,10 +291,10 @@ const MusicLayout = (props) => {
                         .sort((a, b) => compare(a, b, compareType))
                         .map((song) => (
                           <tr key={song.id}>
-                            <td className=" py-4 whitespace-nowrap">
+                            <td className=" py-4 ">
                               <div className="flex items-center">
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                <div className="ml-4  max-w-xl overflow-auto">
+                                  <div className="text-sm font-medium text-gray-900 dark:text-white 	">
                                     {song.title}
                                   </div>
                                   <div className="text-sm text-gray-500 dark:text-gray-300">

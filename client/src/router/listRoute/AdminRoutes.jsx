@@ -1,7 +1,8 @@
-import MusicLayout from "../../components/admin/MusicLayout";
-import EventLayout from "../../components/admin/EventLayout";
-import PictureLayout from "../../components/admin/PictureLayout";
-import VisitorLayout from "../../components/admin/VisitorLayout";
+import MusicLayout from "../../components/admin/layouts/MusicLayout";
+import EventLayout from "../../components/admin/layouts/EventLayout";
+import PictureLayout from "../../components/admin/layouts/PictureLayout";
+import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
+import PopupLayout from "../../components/admin/layouts/PopupLayout";
 
 export var AdminRoutes = [
   {
@@ -37,7 +38,15 @@ export var AdminRoutes = [
     component: VisitorLayout,
   },
   {
-    id: 4,
+    id: 5,
+    path: "/dashboard/pop",
+    name: "Annonce",
+    icon: "mdi mdi-pencil-circle",
+    redirect: false,
+    component: PopupLayout,
+  },
+  {
+    id: 6,
     path: "/dashboard",
     pathTo: "/dashboard/music",
     name: "Dashboard",

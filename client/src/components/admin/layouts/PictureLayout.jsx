@@ -1,5 +1,5 @@
 import React from "react";
-import InBuild from "../common/InBuild";
+import InBuild from "../../common/InBuild";
 
 const PictureLayout = () => {
   return (
