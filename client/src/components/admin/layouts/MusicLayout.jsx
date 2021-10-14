@@ -291,10 +291,10 @@ const MusicLayout = (props) => {
                         .sort((a, b) => compare(a, b, compareType))
                         .map((song) => (
                           <tr key={song.id}>
-                            <td className=" py-4 whitespace-nowrap">
+                            <td className=" py-4 ">
                               <div className="flex items-center">
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                <div className="ml-4  max-w-xl overflow-auto">
+                                  <div className="text-sm font-medium text-gray-900 dark:text-white 	">
                                     {song.title}
                                   </div>
                                   <div className="text-sm text-gray-500 dark:text-gray-300">
