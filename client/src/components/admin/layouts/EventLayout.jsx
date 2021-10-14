@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
+import { FETCH } from "../../../FETCH";
 import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
-import MusicBandeau from "../../assets/musicbandeau.jpg";
+import MusicBandeau from "../../../assets/musicbandeau.jpg";
 import { v4 as uuidv4 } from "uuid";
-import { emitEvent, subscribeToSocket } from "../common/socket.js";
+import { emitEvent, subscribeToSocket } from "../../common/socket.js";
 import { HexColorPicker } from "react-colorful";
 import { useHistory } from "react-router-dom";
 

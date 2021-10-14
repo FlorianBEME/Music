@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
+import { FETCH } from "../../../FETCH";
 import { BsFillTrashFill } from "react-icons/bs";
 import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
-import { removeInput } from "../common/removeInput";
-import { emitEvent, subscribeToSocket } from "../common/socket";
+import { removeInput } from "../../common/removeInput";
+import { emitEvent, subscribeToSocket } from "../../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { compare } from "../common/sortMusic";
+import { compare } from "../../common/sortMusic";
 
 const MySwal = withReactContent(Swal);
 

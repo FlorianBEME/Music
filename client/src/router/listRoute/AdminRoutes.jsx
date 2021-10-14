@@ -1,8 +1,8 @@
-import MusicLayout from "../../components/admin/MusicLayout";
-import EventLayout from "../../components/admin/EventLayout";
-import PictureLayout from "../../components/admin/PictureLayout";
-import VisitorLayout from "../../components/admin/VisitorLayout";
-import PopupLayout from "../../components/admin/PopupLayout";
+import MusicLayout from "../../components/admin/layouts/MusicLayout";
+import EventLayout from "../../components/admin/layouts/EventLayout";
+import PictureLayout from "../../components/admin/layouts/PictureLayout";
+import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
+import PopupLayout from "../../components/admin/layouts/PopupLayout";
 
 export var AdminRoutes = [
   {
@@ -40,7 +40,7 @@ export var AdminRoutes = [
   {
     id: 5,
     path: "/dashboard/pop",
-    name: "Pop-up",
+    name: "Annonce",
     icon: "mdi mdi-pencil-circle",
     redirect: false,
     component: PopupLayout,
