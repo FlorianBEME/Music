@@ -46,7 +46,7 @@ router.put("/:id", verifyJWT, (req, res) => {
 
 router.delete("/remove/all", verifyJWT, (req, res) => {
   const sql =
-    "TRUNCATE TABLE events; SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE visitor; TRUNCATE TABLE currentsongs;SET FOREIGN_KEY_CHECKS = 1;";
+    "TRUNCATE TABLE events; SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE visitor; TRUNCATE TABLE currentsongs; TRUNCATE TABLE popup; SET FOREIGN_KEY_CHECKS = 1;";
   connection.query(sql, (err, results) => {
     if (err) {
       console.log(err);
