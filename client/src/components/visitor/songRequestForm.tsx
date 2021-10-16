@@ -6,7 +6,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { removeInput } from "../common/removeInput";
 import { emitEvent } from "../common/socket";
 
-const SongRequestForm = (props) => {
+type RequestFormProps = {
+  visitorInfo: any;
+  isAllowed: Boolean;
+  songs: [];
+  refetch: Function;
+};
+
+const SongRequestForm = ({
+  visitorInfo,
+  isAllowed,
+  songs,
+  refetch,
+}: RequestFormProps) => {
   const [data, setData] = useState({
     title: "",
     artist: "",
@@ -14,37 +26,38 @@ const SongRequestForm = (props) => {
     unavailable: 0,
     isValid: 0,
     isNew: 1,
-    visitor_id: props.visitorInfo.id,
+    visitor_id: null,
   });
 
-  const changeName = (e) => {
+  const changeName = (e: any) => {
     setData({ ...data, title: e.target.value });
   };
 
-  const changeArtist = (e) => {
+  const changeArtist = (e: any) => {
     setData({ ...data, artist: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-
-    if (props.isAllowed) {
+    console.log(visitorInfo);
+    if (isAllowed) {
       // on vérifie si l'artiste est déja dans la liste
-      let artistFiltered = [];
-      props.songs.forEach((item) => {
-        if (item.artist.toLowerCase() === data.artist.toLowerCase()) {
-          artistFiltered.push(item);
+      let artistFiltered: object[] = [];
+      songs.forEach((song: any) => {
+        if (song.artist.toLowerCase() === data.artist.toLowerCase()) {
+          artistFiltered.push(song);
         }
       });
       // on vérifie si le titre est dans la liste
       if (
         artistFiltered.filter(
-          (item) => item.title.toLowerCase() === data.title.toLowerCase()
+          (item: any) => item.title.toLowerCase() === data.title.toLowerCase()
         ).length < 1
       ) {
         axios
           .post(`${FETCH}/currentsongs`, {
             ...data,
+            visitor_id: visitorInfo,
             countVote: 0,
           })
           .then(() => {
@@ -52,8 +65,7 @@ const SongRequestForm = (props) => {
               position: toast.POSITION.TOP_RIGHT,
             });
             emitEvent("update", "musiclist");
-            console.log("dans le form");
-            props.refetch();
+            refetch();
             removeInput(["title", "artist"]);
           })
           .catch(function (error) {

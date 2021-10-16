@@ -118,7 +118,7 @@ export default function SongRequestBloc() {
             songs={songs}
             isAllowed={isAllowed}
             refetch={fetchData}
-            visitorInfo={visitorInfo ? visitorInfo : null}
+            visitorInfo={visitorInfo ? visitorInfo.id : null}
           />
         </div>
         <SongRequestInCurrent

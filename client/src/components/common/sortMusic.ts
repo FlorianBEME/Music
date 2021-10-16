@@ -1,19 +1,21 @@
 // function de trie
-const compare = (a, b, compareType) => {
+const compare = (a: any, b: any, compareType: string) => {
   if (compareType === "indispo") {
-    if (a.unavailable === 1) {
+    if (!a.unavailable) {
       return -1;
     }
-    if (b.unavailable === 0) {
+    if (b.unavailable) {
       return 1;
     }
+    // return 0;
   } else if (compareType === "validé") {
-    if (a.isValid === 1) {
+    if (!a.isValid) {
       return -1;
     }
-    if (b.isValid === 0) {
+    if (b.isValid) {
       return 1;
     }
+    // return 0;
   } else if (compareType === "voteup") {
     if (a.countVote > b.countVote) {
       return -1;
@@ -22,7 +24,4 @@ const compare = (a, b, compareType) => {
     }
   }
 };
-
-module.exports = {
-  compare: compare,
-};
+export default compare;
