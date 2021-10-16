@@ -8,7 +8,7 @@ import { removeInput } from "../../common/removeInput";
 import { emitEvent, subscribeToSocket } from "../../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { compare } from "../../common/sortMusic";
+import compare from "../../common/sortMusic";
 
 const MySwal = withReactContent(Swal);
 

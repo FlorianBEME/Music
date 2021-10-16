@@ -258,7 +258,11 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <NavBar event={event} changeComponent={changeComponent} />
+              <NavBar
+                active_wall_picture={event[0].active_wall_picture}
+                active_music_request={event[0].active_music_request}
+                changeComponent={changeComponent}
+              />
               <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
                 {componentRender()}
               </div>
