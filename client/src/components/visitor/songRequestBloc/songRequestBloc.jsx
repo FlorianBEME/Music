@@ -97,13 +97,6 @@ export default function SongRequestBloc() {
     });
   }, []);
 
-  const sortSongs = () => {
-    let sortedList = songs.sort((a, b) =>
-      a.countVote > b.countVote ? -1 : b.countVote > a.countVote ? 1 : 0
-    );
-    return sortedList;
-  };
-
   return (
     <div className="pb-8 mx-auto px-4 sm:px-6 lg:px-8  lg:rounded-md bg-white dark:bg-gray-900 shadow sm:mb-8">
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
@@ -124,7 +117,7 @@ export default function SongRequestBloc() {
         <SongRequestInCurrent
           refetch={fetchData}
           isLoading={isLoading}
-          songs={sortSongs()}
+          songs={songs}
           isAllowed={isAllowed}
         />
       </div>
