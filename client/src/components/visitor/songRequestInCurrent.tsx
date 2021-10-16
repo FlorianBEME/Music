@@ -4,9 +4,21 @@ import { FETCH } from "../../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { emitEvent } from "../common/socket";
-import { compare } from "../common/sortMusic";
+import compare from "../common/sortMusic";
 
-export default function SongRequestInCurrent(props) {
+type SongRequestInCurrentProps = {
+  isAllowed: boolean;
+  refetch: Function;
+  songs: any;
+  isLoading: boolean;
+};
+
+export default function SongRequestInCurrent({
+  isAllowed,
+  refetch,
+  songs,
+  isLoading,
+}: SongRequestInCurrentProps) {
   // Hook pour le rendu du composant
   function useForceUpdate() {
     //eslint-disable-next-line
@@ -17,8 +29,8 @@ export default function SongRequestInCurrent(props) {
   const forceUpdate = useForceUpdate();
 
   // Fonction pour désactivé le vote
-  const votingDisable = (id) => {
-    let idVoting = localStorage.getItem("idMusicVoting");
+  const votingDisable = (id: number) => {
+    let idVoting: any = localStorage.getItem("idMusicVoting");
     if (idVoting !== null) {
       return idVoting.includes(id);
     } else {
@@ -26,31 +38,30 @@ export default function SongRequestInCurrent(props) {
     }
   };
 
-  const handleVote = (id, count) => {
-    if (props.isAllowed) {
-      let newCount = parseInt(count) + 1;
+  const handleVote = (id: number, count: number) => {
+    if (isAllowed) {
+      let newCount: number = count + 1;
       axios
         .put(`${FETCH}/currentSongs/${id}`, {
           countVote: newCount,
         })
-        .then((result, err) => {
+        .then((result: object) => {
           if (
             localStorage.getItem("idMusicVoting") === null &&
             localStorage.getItem("date") === null
           ) {
-            localStorage.setItem("idMusicVoting", id);
+            localStorage.setItem("idMusicVoting", JSON.stringify(id));
           } else {
             let oldId = localStorage.getItem("idMusicVoting");
             if (oldId !== null) {
-              let result = oldId.split(",");
-              result.push(id);
+              let result: string[] = oldId.split(",");
+              result.push(id.toString());
               localStorage.removeItem("idMusicVoting");
-              localStorage.setItem("idMusicVoting", result);
+              localStorage.setItem("idMusicVoting", JSON.stringify(result));
             }
           }
-
           emitEvent("update", "musiclist");
-          props.refetch();
+          refetch();
         });
       forceUpdate();
     } else {
@@ -63,8 +74,8 @@ export default function SongRequestInCurrent(props) {
 
   return (
     <div>
-      {props.songs ? (
-        props.songs.length > 0 ? (
+      {songs ? (
+        songs.length > 0 ? (
           <div className="flex items-center justify-end space-x-2 my-4 ">
             <label
               htmlFor="location"
@@ -92,10 +103,12 @@ export default function SongRequestInCurrent(props) {
 
       <div className="bg-white dark:bg-gray-700 shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200 dark:divide-gray-500">
-          {props.isLoading
-            ? props.songs
-                .sort((a, b) => compare(a, b, compareType))
-                .map((song) => (
+          {isLoading
+            ? songs
+                .sort((a: any, b: any) => {
+                  return compare(a, b, compareType);
+                })
+                .map((song: any) => (
                   <li
                     key={song.id}
                     className=" flex items-center justify-between px-4 py-4 sm:px-6 flex-col md:flex-row"
@@ -130,7 +143,7 @@ export default function SongRequestInCurrent(props) {
                       ) : null}
                       <div className="min-w-0  flex items-center">
                         <div className="min-w-0  px-4 md:grid md:grid-cols-3 md:gap-4">
-                          {song.isNew === 1 ? (
+                          {song.isNew ? (
                             votingDisable(song.id) ? (
                               <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-400 bg-gray-100">
                                 Voté!
@@ -146,11 +159,11 @@ export default function SongRequestInCurrent(props) {
                                 Voter
                               </button>
                             )
-                          ) : song.unavailable === 1 ? (
+                          ) : song.unavailable ? (
                             <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-yellow-600 bg-yellow-100">
                               <div>Indisponible</div>
                             </div>
-                          ) : song.isValid === 1 ? (
+                          ) : song.isValid ? (
                             <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-green-600 bg-green-100">
                               <div>Validé</div>
                             </div>

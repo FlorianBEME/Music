@@ -17,7 +17,7 @@ CREATE TABLE `currentsongs` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `artist` varchar(255) NOT NULL,
-  `countVote` varchar(255) NOT NULL,
+  `countVote` INT NOT NULL,
   `unavailable` boolean NOT NULL, 
   `isValid` boolean NOT NULL, 
   `isNew` boolean NOT NULL,
