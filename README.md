@@ -9,13 +9,12 @@ A list of technologies used within the project:
 
 ## Instruction
 
-npm install
-cd client 
-npm install
-cd .. 
-
-Start the project on local
-npm run dev 
+* npm install
+* cd client 
+* npm install
+* cd .. 
+* Start the project on local:
+* npm run dev 
 
 
 ## Contributor
