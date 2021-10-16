@@ -2,9 +2,19 @@
 import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
-import ThemeSelect from "./common/ThemeSelect";
+import ThemeSelect from "../common/ThemeSelect";
 
-export default function NavBar(props) {
+type NavBarProps = {
+  active_music_request: boolean;
+  active_wall_picture: boolean;
+  changeComponent: Function;
+};
+
+export default function NavBar({
+  active_music_request,
+  changeComponent,
+  active_wall_picture,
+}: NavBarProps) {
   return (
     <Popover className=" ">
       <div className="flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
@@ -16,20 +26,20 @@ export default function NavBar(props) {
         </div>
         <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
           <Popover.Group as="nav" className="flex space-x-10">
-            {props.event[0].active_music_request ? (
+            {active_music_request ? (
               <div
                 onClick={() => {
-                  props.changeComponent("music");
+                  changeComponent("music");
                 }}
                 className="text-base font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
               >
                 Music Request
               </div>
             ) : null}
-            {props.event[0].active_wall_picture ? (
+            {active_wall_picture ? (
               <div
                 onClick={() => {
-                  props.changeComponent("picture");
+                  changeComponent("picture");
                 }}
                 className="text-base font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
               >
@@ -77,21 +87,21 @@ export default function NavBar(props) {
             </div>
             <div className="py-6 px-5">
               <div className="flex flex-col space-y-3">
-                {props.event[0].active_music_request ? (
+                {active_music_request ? (
                   <div
                     className="text-base text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
                     onClick={() => {
-                      props.changeComponent("music");
+                      changeComponent("music");
                     }}
                   >
                     <Popover.Button>Music Request</Popover.Button>
                   </div>
                 ) : null}
-                {props.event[0].active_wall_picture ? (
+                {active_wall_picture ? (
                   <div
                     className="text-base  text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
                     onClick={() => {
-                      props.changeComponent("picture");
+                      changeComponent("picture");
                     }}
                   >
                     <Popover.Button> Wall Picture</Popover.Button>

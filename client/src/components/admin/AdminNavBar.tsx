@@ -1,4 +1,3 @@
-import React from "react";
 import { Fragment } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
@@ -27,7 +26,7 @@ const AdminNavBar = () => {
               <div className="flex">
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                   {AdminRoutes.filter((item) => item.redirect === false).map(
-                    (item) => (
+                    (item: any) => (
                       <NavLink
                         to={item.path}
                         key={item.name}

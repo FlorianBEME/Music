@@ -3,7 +3,7 @@ import { Switch } from "@headlessui/react";
 import { BiSun } from "react-icons/bi";
 import { BsMoon } from "react-icons/bs";
 
-function classNames(...classes) {
+function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -12,7 +12,9 @@ export default function ThemeSelect() {
   return (
     <Switch
       checked={theme === "dark" ? true : false}
-      onChange={() => setTheme(colorTheme)}
+      onChange={() => {
+        setTheme(colorTheme);
+      }}
       className={classNames(
         theme === "dark" ? "bg-blue-700" : "bg-gray-200",
         "relative inline-flex flex-shrink-0 h-5 w-10 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"

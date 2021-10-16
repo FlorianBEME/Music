@@ -17,7 +17,7 @@ CREATE TABLE `currentsongs` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `artist` varchar(255) NOT NULL,
-  `countVote` varchar(255) NOT NULL,
+  `countVote` INT NOT NULL,
   `unavailable` boolean NOT NULL, 
   `isValid` boolean NOT NULL, 
   `isNew` boolean NOT NULL,
@@ -44,6 +44,17 @@ CREATE TABLE `visitor` (
   `uuid` varchar(255) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
   `isNotAllowed`BOOLEAN NOT NULL
+);
+
+CREATE TABLE `popup` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL,
+  `text_content` varchar(255) NULL,
+  `filePath` varchar(255) NULL,
+  `uuid` varchar(255) NOT NULL,
+  `time` int NOT NULL,
+  `send_at` datetime NOT NULL,
+  `expire_at` datetime NOT NULL
 );
 
 ALTER TABLE `currentsongs` ADD FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`id`)  ON DELETE CASCADE;  
