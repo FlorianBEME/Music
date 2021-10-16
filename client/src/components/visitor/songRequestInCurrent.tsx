@@ -70,7 +70,7 @@ export default function SongRequestInCurrent({
       });
     }
   };
-  const [compareType, setCompareType] = useState("voteup");
+  const [compareType, setCompareType] = useState("");
 
   return (
     <div>
@@ -105,8 +105,8 @@ export default function SongRequestInCurrent({
         <ul className="divide-y divide-gray-200 dark:divide-gray-500">
           {isLoading
             ? songs
-                .sort((song1: any, song2: any) => {
-                  compare(song1, song2, compareType);
+                .sort((a: any, b: any) => {
+                  return compare(a, b, compareType);
                 })
                 .map((song: any) => (
                   <li
@@ -159,11 +159,11 @@ export default function SongRequestInCurrent({
                                 Voter
                               </button>
                             )
-                          ) : !song.unavailable ? (
+                          ) : song.unavailable ? (
                             <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-yellow-600 bg-yellow-100">
                               <div>Indisponible</div>
                             </div>
-                          ) : !song.isValid ? (
+                          ) : song.isValid ? (
                             <div className="w-full md:w-28 col-start-2 col-span-2 inline-flex items-center justify-center px-8 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-green-600 bg-green-100">
                               <div>Validé</div>
                             </div>

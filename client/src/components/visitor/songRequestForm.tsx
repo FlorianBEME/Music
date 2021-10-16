@@ -9,7 +9,7 @@ import { emitEvent } from "../common/socket";
 type RequestFormProps = {
   visitorInfo: any;
   isAllowed: Boolean;
-  songs: [];
+  songs: never[];
   refetch: Function;
 };
 
