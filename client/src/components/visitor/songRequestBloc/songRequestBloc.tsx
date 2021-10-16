@@ -13,7 +13,7 @@ export default function SongRequestBloc() {
   const [isAllowed, setIsAllowed] = useState(true);
 
   const history = useHistory();
-  const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
+  const visitorInfo = JSON.parse(localStorage.getItem("usInfoMusic") || "{}");
 
   if (!visitorInfo) {
     history.push("/new");
@@ -79,16 +79,10 @@ export default function SongRequestBloc() {
   }, [visitorInfo]);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args: string) => {
       if (args === "visitorallowed") {
         verifyIsAllowed();
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    subscribeToSocket((args) => {
-      if (args === "musicupdate") {
+      } else if (args === "musicupdate") {
         console.log();
         fetchData();
       } else if (args === "title") {
