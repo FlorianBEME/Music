@@ -136,17 +136,12 @@ const EventLayout = () => {
           const formData = new FormData();
           formData.append("file", currentFile);
           axios
-            .post(
-              `${FETCH}/upload/bg/${eventCurrent.id}`,
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  "x-access-token": token,
-                },
-              }
-              // { oldFileName: eventCurrent.bg_music }
-            )
+            .post(`${FETCH}/upload/bg/${eventCurrent.id}`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "x-access-token": token,
+              },
+            })
             .then((res) => {
               axios
                 .put(
