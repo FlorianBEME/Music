@@ -6,7 +6,7 @@ import { AiOutlineArrowUp } from "react-icons/ai";
 type AccordionProps = {
   title: string;
   text_content: string;
-  status: string;
+  status: string | null;
 };
 
 function Accordion({ title, text_content, status }: AccordionProps) {

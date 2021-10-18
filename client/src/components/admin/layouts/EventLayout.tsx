@@ -21,21 +21,18 @@ const EventLayout = () => {
     active_wall_picture: false,
     active_music_request: false,
   });
-  const [eventCurrent, setEventCurrent] = useState();
+  const [eventCurrent, setEventCurrent] = useState<any>({});
 
-  const [imagePreview, setImagePreview] = useState({
-    file: null,
-    imagePreviewUrl: null,
-  });
+  const [imagePreview, setImagePreview] = useState<any>({});
 
-  const [currentFile, setCurrentFile] = useState(null);
+  const [currentFile, setCurrentFile] = useState<any>();
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
 
   const history = useHistory();
 
   // ajout d'un nouvel event
-  const addNewEvent = (e) => {
+  const addNewEvent = (e: any) => {
     e.preventDefault();
     if (!newEvent.active_music_request && !newEvent.active_wall_picture) {
       Swal.fire("Erreur!", "Sélectionner au moins une catégorie", "error");
@@ -105,7 +102,7 @@ const EventLayout = () => {
         })
           .then(() => {
             Swal.fire("Suprimé!", "L'évenement est supprimé", "success");
-            setEventCurrent(null);
+            setEventCurrent([]);
             fetchData();
             emitEvent("update", "event");
           })
@@ -116,7 +113,7 @@ const EventLayout = () => {
     });
   };
   // changement de l'image d'en-tête
-  const changeImageTop = (e) => {
+  const changeImageTop = (e: any) => {
     e.preventDefault();
     MySwal.fire({
       title: "Êtes-vous sur de vouloir modifier l'image d'en-tête?",
@@ -129,7 +126,11 @@ const EventLayout = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         new Promise((resolve, reject) => {
-          const extension = currentFile.name.split(".").pop();
+          let extension: string | undefined;
+          if (currentFile) {
+            extension = currentFile.name.split(".").pop();
+          }
+
           const nameFile = "bg-music." + extension;
 
           const formData = new FormData();
@@ -143,8 +144,8 @@ const EventLayout = () => {
                   "Content-Type": "multipart/form-data",
                   "x-access-token": token,
                 },
-              },
-              { oldFileName: eventCurrent.bg_music }
+              }
+              // { oldFileName: eventCurrent.bg_music }
             )
             .then((res) => {
               axios
@@ -181,7 +182,7 @@ const EventLayout = () => {
     });
   };
   // preview image
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any) => {
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
@@ -203,7 +204,7 @@ const EventLayout = () => {
     }
   };
   // modifier les permissions d'accès
-  const handleChangeAcces = (e) => {
+  const handleChangeAcces = () => {
     if (
       !eventCurrent.active_music_request &&
       !eventCurrent.active_wall_picture
@@ -282,7 +283,7 @@ const EventLayout = () => {
                 reject();
               }
             });
-        }).then((res) => {
+        }).then((res: any) => {
           console.log(res.data);
           Swal.fire("Modifié!", "L'évenement est modifié", "success");
           fetchTitleEvent();
@@ -358,7 +359,7 @@ const EventLayout = () => {
 
   // socket;
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args: string) => {
       if (args === "settitle") {
         console.log("je recoit");
         fetchTitleEvent();

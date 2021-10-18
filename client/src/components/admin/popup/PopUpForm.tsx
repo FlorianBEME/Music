@@ -10,11 +10,12 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
-function PopUpForm(props) {
-  const [imagePreview, setImagePreview] = useState({
-    file: null,
-    imagePreviewUrl: null,
-  });
+type PopUpFormProps = {
+  submit: Function;
+};
+
+function PopUpForm({ submit }: PopUpFormProps) {
+  const [imagePreview, setImagePreview] = useState({});
   const [currentFile, setCurrentFile] = useState(null);
   const [newPopup, setNewPopup] = useState({
     title: null,
@@ -25,7 +26,7 @@ function PopUpForm(props) {
   });
 
   // preview image
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: any | null) => {
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
@@ -47,11 +48,11 @@ function PopUpForm(props) {
     }
   };
   // change state
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setNewPopup({ ...newPopup, [e.target.name]: e.target.value });
   };
   // Envoie d'un nouveau pop up
-  const handleSubmitPopup = (e) => {
+  const handleSubmitPopup = (e: any) => {
     e.preventDefault();
     if (newPopup.title && newPopup.time) {
       MySwal.fire({
@@ -66,7 +67,7 @@ function PopUpForm(props) {
             .post(`${FETCH}/pop/`, newPopup)
             .then((res) => {
               emitEvent("update", "pop");
-              props.submit();
+              submit();
               removeInput(["text_content", "time", "title"]);
               MySwal.fire(
                 "Envoyé!",
