@@ -9,10 +9,8 @@ router.use(fileUpload());
 router.post("/bg/:id", verifyJWT, (req, res) => {
   let event = null;
   const file = req.files.file;
-  console.log(file);
   const extension = file.name.split(".").pop();
   file.name = "bg-music." + extension;
-  console.log(file.name);
 
   // On verifie si la requetes contien bien un fichier
   if (req.files === null) {
