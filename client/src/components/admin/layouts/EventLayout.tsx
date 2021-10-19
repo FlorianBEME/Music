@@ -207,6 +207,7 @@ const EventLayout = () => {
       });
     }
   };
+
   // modifier les permissions d'accès
   const handleChangeAcces = () => {
     if (
