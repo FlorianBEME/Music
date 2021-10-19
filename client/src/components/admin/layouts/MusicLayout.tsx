@@ -12,11 +12,15 @@ import compare from "../../common/sortMusic";
 
 const MySwal = withReactContent(Swal);
 
-const MusicLayout = (props) => {
+type MusicLayoutProps = {
+  event: [] | any;
+};
+
+const MusicLayout = ({ event }: MusicLayoutProps) => {
   const token = localStorage.getItem("token");
   const [compareType, setCompareType] = useState("");
-  const [songs, setSongs] = useState([]);
-  const [songsInCurrent, setSongsInCurrent] = useState(null);
+  const [songs, setSongs] = useState<any>([]);
+  const [songsInCurrent, setSongsInCurrent] = useState("");
 
   //Fecth liste de musique
   const fetchData = () => {
@@ -30,7 +34,7 @@ const MusicLayout = (props) => {
       });
   };
   // Suppression de la musique
-  const handleDeleteMusic = (id) => {
+  const handleDeleteMusic = (id: number) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
       showCancelButton: true,
@@ -64,7 +68,7 @@ const MusicLayout = (props) => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        songs.forEach((song) => {
+        songs.forEach((song: any) => {
           axios
             .delete(`${FETCH}/currentsongs/${song.id}`, {
               headers: {
@@ -80,7 +84,7 @@ const MusicLayout = (props) => {
       }
     });
   };
-  const handleUnavailableMusic = (id) => {
+  const handleUnavailableMusic = (id: number) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir mettre cette chanson en indisponible?`,
       showCancelButton: true,
@@ -109,7 +113,7 @@ const MusicLayout = (props) => {
       }
     });
   };
-  const handleValidMusic = (id) => {
+  const handleValidMusic = (id: number) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir mettre cette chanson en validé?`,
       showCancelButton: true,
@@ -178,7 +182,7 @@ const MusicLayout = (props) => {
   }, []);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args: string) => {
       if (args === "musicupdate") {
         fetchData();
       }
@@ -187,12 +191,12 @@ const MusicLayout = (props) => {
 
   return (
     <div className="flex flex-col">
-      {props.event ? (
-        props.event.length <= 0 ? (
+      {event ? (
+        event.length <= 0 ? (
           <div className="w-full flex justify-center items-center">
             <p className="dark:text-gray-100 py-52">Pas d'évenement en cours</p>
           </div>
-        ) : props.event[0].active_music_request ? (
+        ) : event[0].active_music_request ? (
           <div>
             <div className="w-full">
               <div className="flex justify-between mb-5">
@@ -288,8 +292,10 @@ const MusicLayout = (props) => {
                     </thead>
                     <tbody className="bg-white dark:bg-gray-400 dark:divide-white divide-y divide-gray-200">
                       {songs
-                        .sort((a, b) => compare(a, b, compareType))
-                        .map((song) => (
+                        .sort((a: any, b: any) => {
+                          return compare(a, b, compareType);
+                        })
+                        .map((song: any) => (
                           <tr key={song.id}>
                             <td className=" py-4 ">
                               <div className="flex items-center">

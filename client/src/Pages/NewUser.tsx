@@ -66,7 +66,7 @@ const NewUser = () => {
                   pseudonyme
                 </label>
                 <input
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     setPseudo(e.target.value);
                   }}
                   id="pseudo"

@@ -51,7 +51,7 @@ export default function Layout() {
   }, []);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args: string) => {
       if (args === "event") {
         fetchEvent();
       }
@@ -66,7 +66,7 @@ export default function Layout() {
             {/* Replace with your content */}
 
             <Switch>
-              {AdminRoutes.map((prop, key) => {
+              {AdminRoutes.map((prop: any, key) => {
                 if (prop.redirect) {
                   return (
                     <Redirect from={prop.path} to={prop.pathTo} key={key} />
@@ -74,7 +74,6 @@ export default function Layout() {
                 } else {
                   return (
                     <Route
-                      test={event}
                       path={prop.path}
                       component={() => <prop.component event={event} />}
                       key={key}

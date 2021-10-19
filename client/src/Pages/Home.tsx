@@ -17,13 +17,13 @@ import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
-function classNames(...classes) {
+function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
 const Home = () => {
   const history = useHistory();
-  const [event, setEvent] = useState([]);
+  const [event, setEvent] = useState<any>([]);
   const [eventLoad, setEventLoad] = useState(false);
   const [component, setComponent] = useState();
   const [positionTitle, setPositionTitle] = useState("center");
@@ -37,7 +37,7 @@ const Home = () => {
       return <WallPicture />;
     }
   };
-  const changeComponent = (component) => {
+  const changeComponent = (component: any) => {
     setComponent(component);
   };
   const fetchTitleStyle = () => {
@@ -72,10 +72,12 @@ const Home = () => {
 
   useEffect(() => {
     // Verification du visiteur
-    const verifyUser = new Promise((resolve, reject) => {
+    const verifyUser = new Promise<void>((resolve, reject) => {
       // si un visiteur n'est pas nouveau
       if (localStorage.getItem("usInfoMusic")) {
-        const usInfo = JSON.parse(localStorage.getItem("usInfoMusic"));
+        const inStorage: any = localStorage.getItem("usInfoMusic");
+        const usInfo: any = JSON.parse(inStorage);
+
         // on verifie que celui-ci figure bien dans la BDD
         axios
           .post(`${FETCH}/visitor/${usInfo.id}`, { uuid: usInfo.uuid })
@@ -95,7 +97,7 @@ const Home = () => {
       } else {
         reject();
       }
-    }, []);
+    });
 
     const uuidEvent = localStorage.getItem("uuidEvent");
     // on fetch la soirée en cours
@@ -156,7 +158,7 @@ const Home = () => {
   }, [event, eventLoad]);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args: string) => {
       if (args === "event") {
         history.go(0);
       } else if (args === "settitle") {
@@ -168,7 +170,7 @@ const Home = () => {
   }, [history]);
 
   useEffect(() => {
-    let popinLocalStorage = [];
+    let popinLocalStorage: number[] = [];
     let popId = localStorage.getItem("popid");
     if (popId) {
       let arr = popId.split(",");
@@ -178,31 +180,32 @@ const Home = () => {
     }
     async function verifyPopAndDisplay() {
       for (const item of pop) {
+        const popup: any = item;
         // on vérifie que le pop up n'as as deja était vu et traité
-        if (!popinLocalStorage.includes(item.id)) {
-          if (!item.filePath) {
+        if (!popinLocalStorage.includes(popup.id)) {
+          if (!popup.filePath) {
             await Swal.fire({
-              title: item.title,
-              text: item.text_content,
+              title: popup.title,
+              text: popup.text_content,
               confirmButtonText: "Ok! ",
             }).then((result) => {
               if (result.isConfirmed) {
-                popinLocalStorage.push(item.id);
+                popinLocalStorage.push(popup.id);
                 localStorage.setItem("popid", popinLocalStorage.toString());
               }
             });
           } else {
             await Swal.fire({
-              title: item.title,
-              text: item.text_content,
+              title: popup.title,
+              text: popup.text_content,
               confirmButtonText: "Ok!",
-              imageUrl: item.filePath,
+              imageUrl: popup.filePath,
               imageWidth: 400,
               imageHeight: 200,
-              imageAlt: item.title,
+              imageAlt: popup.title,
             }).then((result) => {
               if (result.isConfirmed) {
-                popinLocalStorage.push(item.id);
+                popinLocalStorage.push(popup.id);
                 localStorage.setItem("popid", popinLocalStorage.toString());
               }
             });

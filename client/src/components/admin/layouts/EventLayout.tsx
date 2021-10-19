@@ -7,7 +7,7 @@ import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
 import MusicBandeau from "../../../assets/musicbandeau.jpg";
 import { v4 as uuidv4 } from "uuid";
-import { emitEvent, subscribeToSocket } from "../../common/socket.js";
+import { emitEvent, subscribeToSocket } from "../../common/socket";
 import { HexColorPicker } from "react-colorful";
 import { useHistory } from "react-router-dom";
 
@@ -136,17 +136,12 @@ const EventLayout = () => {
           const formData = new FormData();
           formData.append("file", currentFile);
           axios
-            .post(
-              `${FETCH}/upload/bg/${eventCurrent.id}`,
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  "x-access-token": token,
-                },
-              }
-              // { oldFileName: eventCurrent.bg_music }
-            )
+            .post(`${FETCH}/upload/bg/${eventCurrent.id}`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "x-access-token": token,
+              },
+            })
             .then((res) => {
               axios
                 .put(

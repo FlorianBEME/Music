@@ -15,7 +15,7 @@ export default function Login() {
     });
   };
 
-  const login = async (e) => {
+  const login = async (e: any) => {
     e.preventDefault();
     if (UserName && userPassword) {
       await Axios.post(`${FETCH}/login`, {
@@ -41,10 +41,10 @@ export default function Login() {
     }
   };
 
-  const onChangeName = (e) => {
+  const onChangeName = (e: any) => {
     setUserName(e.target.value);
   };
-  const onChangePassword = (e) => {
+  const onChangePassword = (e: any) => {
     setUserPassword(e.target.value);
   };
 

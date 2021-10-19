@@ -11,7 +11,7 @@ const MySwal = withReactContent(Swal);
 const VisitorLayout = () => {
   const token = localStorage.getItem("token");
 
-  const [visitorList, setVisitorList] = useState([]);
+  const [visitorList, setVisitorList] = useState<any>([]);
 
   // Fetch liste de visitor
   const fetchData = () => {
@@ -29,7 +29,7 @@ const VisitorLayout = () => {
   }, []);
 
   useEffect(() => {
-    subscribeToSocket((args) => {
+    subscribeToSocket((args: string) => {
       if (args === "userupdate" || args === "visitorallowed") {
         fetchData();
       }
@@ -61,7 +61,7 @@ const VisitorLayout = () => {
   //   });
   // };
 
-  const handleAllowed = (id) => {
+  const handleAllowed = (id: number) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir modifier la permission de ce visiteur ?`,
       showCancelButton: true,
@@ -69,7 +69,9 @@ const VisitorLayout = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        const index = visitorList.findIndex((visitor) => id === visitor.id);
+        const index = visitorList.findIndex(
+          (visitor: any) => id === visitor.id
+        );
         const status = visitorList[index].isNotAllowed;
 
         console.log(status);
@@ -130,7 +132,7 @@ const VisitorLayout = () => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-400 dark:divide-white divide-y divide-gray-200">
-                {visitorList.map((visitor) => (
+                {visitorList.map((visitor: any) => (
                   <tr key={visitor.id}>
                     <td className=" py-4 whitespace-nowrap">
                       <div className="flex items-center">
