@@ -6,6 +6,7 @@ import { FETCH } from "../../../FETCH";
 import { emitEvent, subscribeToSocket } from "../../common/socket";
 import { HexColorPicker } from "react-colorful";
 import ItemFooterCard from "../settings/ItemFooterCard";
+import int from "../../../assets/int.png";
 
 export default function Settings() {
   return (
@@ -19,7 +20,7 @@ export default function Settings() {
             <p>Gérer le pied de page</p>
           </div>
           <div className="">
-            <ItemFooterCard />
+            <ItemFooterCard key={1} imagePath={int} nameItem="Instagram" />
           </div>
         </div>
       </div>

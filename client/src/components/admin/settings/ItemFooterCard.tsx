@@ -1,36 +1,54 @@
 import { ReactElement, Fragment, useState } from "react";
+import { Switch } from "@headlessui/react";
+
 import { Menu, Transition } from "@headlessui/react";
 
 import { DotsVerticalIcon } from "@heroicons/react/solid";
 
 interface Props {
   key: number;
+  imagePath: string;
+  nameItem: string;
 }
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ItemFooterCard(): ReactElement {
+export default function ItemFooterCard({
+  imagePath,
+  key,
+  nameItem,
+}: Props): ReactElement {
+  const [activate, setActivate] = useState(false);
   return (
     <div>
-      <div className="w-1/4 p-6 bg-white rounded-xl shadow-xl ">
+      <div className="w-3/5 sm:w-2/5 p-6 bg-white rounded-xl shadow-xl flex flex-col justify-center items-center">
         <img
-          className="w-64 object-cover rounded-t-md"
-          src="https://images.unsplash.com/photo-1509223197845-458d87318791"
+          className="w-24 object-cover rounded-t-md"
+          src={imagePath}
           alt=""
         />
-        <div className="mt-4">
-          <h1 className="text-2xl font-bold text-gray-700">Zebra succulent</h1>
-          <p className="text-sm mt-2 text-gray-700">Two sizes</p>
-          <div className="mt-3 space-x-4 flex p-1"></div>
-          <div className="mt-4 mb-2 flex justify-between pl-4 pr-2">
-            <button className="block text-xl font-semibold text-gray-700 cursor-auto">
-              $12.99
+        <div className="">
+          <p className="text-2xl text-center font-bold text-gray-700">
+            {nameItem}
+          </p>
+          <p className=" text-center font-bold text-gray-400">
+            {activate ? "Activé" : "Désactivé"}
+          </p>
+          <div className="flex justify-between">
+            <button className="text-lg block font-semibold py-2 px-6 text-green-100 hover:text-white bg-green-400 rounded-lg shadow">
+              Supprimé
             </button>
-            <button className="text-lg block font-semibold py-2 px-6 text-green-100 hover:text-white bg-green-400 rounded-lg shadow hover:shadow-md transition duration-300">
-              Buy
-            </button>
+            {activate ? (
+              <button className="text-lg block font-semibold py-2 px-6 text-green-100 hover:text-white bg-green-400 rounded-lg shadow">
+                X
+              </button>
+            ) : (
+              <button className="text-lg block font-semibold py-2 px-6 text-green-100 hover:text-white bg-green-400 rounded-lg shadow">
+                V
+              </button>
+            )}
           </div>
         </div>
       </div>

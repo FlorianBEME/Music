@@ -21,14 +21,10 @@ export default function useDarkMode() {
   const colorTheme = theme === "light" ? "dark" : "light";
 
   useEffect(() => {
-    console.log(theme, "avant");
-    console.log(themeStorage, "aprés");
     const root = window.document.documentElement;
     root.classList.remove(colorTheme);
     root.classList.add(theme);
     localStorage.setItem("MusicRequestThemePreference", theme);
-    console.log(theme, "aprés");
-    console.log(themeStorage, "aprés");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colorTheme, theme]);
 
