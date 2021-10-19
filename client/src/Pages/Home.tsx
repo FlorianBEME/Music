@@ -13,9 +13,6 @@ import SongRequestBloc from "../components/visitor/songRequestBloc/songRequestBl
 import { subscribeToSocket } from "../components/common/socket";
 
 import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-
-const MySwal = withReactContent(Swal);
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -286,7 +283,7 @@ const Home = () => {
                   Veuillez vous connecter afin de creer un évenement!
                 </p>
                 <Link to="/login">
-                  <div className="inline-flex rounded-md shadow">
+                  <div className="inline-flex rounded-md">
                     <div className="mt-4 inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                       Login
                     </div>
