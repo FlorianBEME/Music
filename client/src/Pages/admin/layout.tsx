@@ -48,7 +48,7 @@ export default function Layout() {
       localStorage.removeItem("token");
       history.push("/login");
     }
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     subscribeToSocket((args: string) => {

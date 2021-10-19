@@ -49,20 +49,6 @@ export default function SongRequestBloc() {
     fetchSongIncurrent();
   }, [titleIncurent]);
 
-  const verifyIsAllowed = () => {
-    axios
-      .get(`${FETCH}/visitor/${visitorInfo.id}`)
-      .then((res) => {
-        if (res.data[0].isNotAllowed) {
-          setIsAllowed(false);
-        } else {
-          setIsAllowed(true);
-        }
-      })
-      .catch(function (erreur) {
-        console.log(erreur);
-      });
-  };
   useEffect(() => {
     axios
       .get(`${FETCH}/visitor/${visitorInfo.id}`)
@@ -79,6 +65,20 @@ export default function SongRequestBloc() {
   }, [visitorInfo]);
 
   useEffect(() => {
+    const verifyIsAllowed = () => {
+      axios
+        .get(`${FETCH}/visitor/${visitorInfo.id}`)
+        .then((res) => {
+          if (res.data[0].isNotAllowed) {
+            setIsAllowed(false);
+          } else {
+            setIsAllowed(true);
+          }
+        })
+        .catch(function (erreur) {
+          console.log(erreur);
+        });
+    };
     subscribeToSocket((args: string) => {
       if (args === "visitorallowed") {
         verifyIsAllowed();
@@ -89,7 +89,7 @@ export default function SongRequestBloc() {
         fetchSongIncurrent();
       }
     });
-  }, []);
+  }, [visitorInfo.id]);
 
   return (
     <div className="pb-8 mx-auto px-4 sm:px-6 lg:px-8  lg:rounded-md bg-white dark:bg-gray-900 shadow sm:mb-8">
