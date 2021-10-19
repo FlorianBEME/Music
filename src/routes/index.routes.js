@@ -7,6 +7,7 @@ const commonjson = require("./app.routes");
 const visitor = require("./visitor.routes.js");
 const currentsongs = require("./currentsongs.routes.js");
 const pop = require("./pop.routes.js");
+const footer = require("./footeritem.routes.js");
 
 router.use("/login", login);
 router.use("/users", users);
@@ -16,5 +17,6 @@ router.use("/upload", upload);
 router.use("/app", commonjson);
 router.use("/visitor", visitor);
 router.use("/pop", pop);
+router.use("/footer", footer);
 
 module.exports = router;

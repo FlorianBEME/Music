@@ -11,6 +11,7 @@ const io = require("socket.io")(server, {
   },
 });
 
+// Websocket
 io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 

@@ -45,12 +45,21 @@ const EventLayout = () => {
       }).then((result) => {
         if (result.isConfirmed) {
           axios
-            .post(`${FETCH}/events`, {
-              name: newEvent.name,
-              active_music_request: newEvent.active_music_request,
-              active_wall_picture: newEvent.active_wall_picture,
-              uuid: uuidv4(),
-            })
+            .post(
+              `${FETCH}/events`,
+              {
+                name: newEvent.name,
+                active_music_request: newEvent.active_music_request,
+                active_wall_picture: newEvent.active_wall_picture,
+                uuid: uuidv4(),
+              },
+              {
+                headers: {
+                  "x-access-token": token,
+                },
+              }
+            )
+
             .catch(function (error) {
               console.log(error);
             });

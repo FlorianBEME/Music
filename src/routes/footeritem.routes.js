@@ -3,8 +3,7 @@ const router = require("express").Router();
 const { verifyJWT } = require("../middlewares/isuserauth.js");
 
 router.get("/", (req, res) => {
-  const sql =
-    "SELECT currentsongs.id, title,artist,countVote, unavailable,isValid,isNew,uuid,pseudo FROM currentsongs INNER JOIN visitor ON visitor_id = visitor.id";
+  const sql = "SELECT * FROM footer_item";
   connection.query(sql, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
@@ -15,7 +14,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const sql = "INSERT INTO currentsongs SET ?";
+  const sql = "INSERT INTO footer_item SET ?";
   connection.query(sql, req.body, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
@@ -26,16 +25,16 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", verifyJWT, (req, res) => {
-  let sql = "UPDATE currentsongs SET ? WHERE id=?";
+  let sql = "UPDATE footer_item SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
-      sql = "SELECT * FROM currentsongs WHERE id=?";
+      sql = "SELECT * FROM footer_item WHERE id=?";
       connection.query(sql, req.params.id, (err, result) => {
         if (result.length === 0) {
           res.status(404).send({
-            errorMessage: `Question with id ${req.params.id} not found`,
+            errorMessage: `Item with id ${req.params.id} not found`,
           });
         } else {
           res.status(200).json(result[0]);
@@ -46,7 +45,7 @@ router.put("/:id", verifyJWT, (req, res) => {
 });
 
 router.delete("/:id", verifyJWT, (req, res) => {
-  const sql = "DELETE FROM currentsongs WHERE id=?";
+  const sql = "DELETE FROM footer_item WHERE id=?";
   connection.query(sql, req.params.id, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
