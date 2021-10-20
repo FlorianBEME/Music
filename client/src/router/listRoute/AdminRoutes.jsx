@@ -3,6 +3,7 @@ import EventLayout from "../../components/admin/layouts/EventLayout";
 import PictureLayout from "../../components/admin/layouts/PictureLayout";
 import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
 import PopupLayout from "../../components/admin/layouts/PopupLayout";
+import Settings from "../../components/admin/layouts/Settings";
 
 export var AdminRoutes = [
   {
@@ -44,6 +45,14 @@ export var AdminRoutes = [
     icon: "mdi mdi-pencil-circle",
     redirect: false,
     component: PopupLayout,
+  },
+  {
+    id: 5,
+    path: "/dashboard/settings",
+    name: "Settings",
+    icon: "mdi mdi-pencil-circle",
+    redirect: false,
+    component: Settings,
   },
   {
     id: 6,

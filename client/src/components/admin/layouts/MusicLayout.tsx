@@ -84,6 +84,7 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
       }
     });
   };
+  // Changer status music
   const handleUnavailableMusic = (id: number) => {
     MySwal.fire({
       title: `Êtes-vous sûr de vouloir mettre cette chanson en indisponible?`,
