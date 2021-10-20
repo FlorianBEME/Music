@@ -1,10 +1,11 @@
 const { connection } = require("../db_connection");
 const router = require("express").Router();
 const fileUpload = require("express-fileupload");
-const front = `${__dirname}/../../client/build/uploads`;
+const front = `${__dirname}/../../client/build`;
 const fs = require("fs");
 const { verifyJWT } = require("../middlewares/isuserauth");
 router.use(fileUpload());
+const { v4: uuidv4 } = require("uuid");
 
 router.post("/bg/:id", verifyJWT, (req, res) => {
   let event = null;
@@ -26,7 +27,7 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
       event = results[0];
       if (event.bg_music !== null) {
         // si un bg est deja assigné on supprime le ficheier existant
-        fs.unlink(`${front}/${event.bg_music}`, (err) => {
+        fs.unlink(`${front}/uploads/${event.bg_music}`, (err) => {
           if (err) {
             return res.status(500).send({ errorMessage: err.message });
           } else {
@@ -58,6 +59,31 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
         });
       }
     }
+  });
+});
+
+router.post("/footer", verifyJWT, (req, res) => {
+  console.log(req.files.file);
+  const file = req.files.file;
+  const extension = file.name.split(".").pop();
+  const uuid = uuidv4();
+  file.name = uuid + "." + extension;
+
+  // On verifie si la requetes contien bien un fichier
+  if (req.files === null) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+
+  file.mv(`${front}/footer/${file.name}`, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res
+      .json({
+        fileName: `/footer/${file.name}`,
+        filePath: `/footer/${file.name}`,
+      })
+      .status(200);
   });
 });
 

@@ -61,7 +61,8 @@ CREATE TABLE `footer_item` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `path_to` varchar(100) NULL,
-  `filePath` varchar(100) NULL
+  `filePath` varchar(100) NULL,
+  `isActivate` boolean NOT NULL
 );
 
 ALTER TABLE `currentsongs` ADD FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`id`)  ON DELETE CASCADE;  

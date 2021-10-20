@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, SyntheticEvent } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
@@ -13,9 +13,10 @@ import { AiOutlineDownload } from "react-icons/ai";
 const MySwal = withReactContent(Swal);
 
 export default function Settings() {
+  const token = localStorage.getItem("token");
   const [imagePreview, setImagePreview] = useState<any>({});
   const [currentFile, setCurrentFile] = useState<any>();
-  const [newItem, setNewItem] = useState({ name: "", path_to: "" });
+  const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
   const [itemsInFooter, setItemsInFooter] = useState<any>([]);
 
   useEffect(() => {
@@ -55,11 +56,11 @@ export default function Settings() {
     }
   };
   // changement de l'image d'en-tête
-  const addNewItemInFooter = (e: any) => {
+  const addNewItemInFooter = (e: SyntheticEvent) => {
     e.preventDefault();
     MySwal.fire({
-      title: "Êtes-vous sur de vouloir modifier l'image d'en-tête?",
-      text: "Cela entraînera la suppression de l'ancienne image!",
+      title: "Confirmation",
+      text: "Êtes-vous sur de vouloir ajouter ce nouvel icone au pied de page?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -67,52 +68,50 @@ export default function Settings() {
       confirmButtonText: "Oui, je suis sur !",
     }).then((result) => {
       if (result.isConfirmed) {
-        // new Promise((resolve, reject) => {
-        //   let extension: string | undefined;
-        //   if (currentFile) {
-        //     extension = currentFile.name.split(".").pop();
-        //   }
-        //   const nameFile = "bg-music." + extension;
-        //   const formData = new FormData();
-        //   formData.append("file", currentFile);
-        //   axios
-        //     .post(`${FETCH}/upload/bg/${eventCurrent.id}`, formData, {
-        //       headers: {
-        //         "Content-Type": "multipart/form-data",
-        //         "x-access-token": token,
-        //       },
-        //     })
-        //     .then((res) => {
-        //       axios
-        //         .put(
-        //           `${FETCH}/events/${eventCurrent.id}`,
-        //           { bg_music: nameFile },
-        //           {
-        //             headers: {
-        //               "x-access-token": token,
-        //             },
-        //           }
-        //         )
-        //         .then(() => {
-        //           Swal.fire("Modifié!", "", "success");
-        //           resolve(res);
-        //         })
-        //         .catch(function (error) {
-        //           Swal.fire("Erreur!", "", "error");
-        //           reject(error);
-        //         });
-        //     })
-        //     .catch(function (error) {
-        //       reject(error);
-        //     });
-        // })
-        //   .then(() => {
-        //     Swal.fire("Succés!", "L'image est changé", "success");
-        //     emitEvent("update", "event");
-        //   })
-        //   .catch(() => {
-        //     Swal.fire("Erreur!", "Une erreur est survenue", "error");
-        //   });
+        new Promise((resolve, reject) => {
+          const formData = new FormData();
+          formData.append("file", currentFile);
+          axios
+            .post(`${FETCH}/upload/footer`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "x-access-token": token,
+              },
+            })
+            .then((res) => {
+              const result = res.data;
+              axios
+                .post(
+                  `${FETCH}/footer`,
+                  {
+                    ...newItem,
+                    filePath: result.filePath,
+                  },
+                  {
+                    headers: {
+                      "x-access-token": token,
+                    },
+                  }
+                )
+                .then(() => {
+                  Swal.fire("Modifié!", "", "success");
+                  resolve(res);
+                })
+                .catch(function (error) {
+                  reject(error);
+                });
+            })
+            .catch(function (error) {
+              reject(error);
+            });
+        })
+          .then(() => {
+            Swal.fire("Succés!", "L'image est changé", "success");
+            emitEvent("update", "event");
+          })
+          .catch(() => {
+            Swal.fire("Erreur!", "Une erreur est survenue", "error");
+          });
       }
     });
   };
@@ -142,10 +141,14 @@ export default function Settings() {
               </label>
               <div className="mt-1 flex rounded-full shadow-sm">
                 <input
+                  required
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, [e.target.name]: e.target.value })
+                  }
+                  placeholder="Instagram"
                   type="text"
-                  name="username"
-                  id="username"
-                  autoComplete="username"
+                  name="name"
+                  id="name"
                   className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-lg sm:text-sm border-gray-300"
                 />
               </div>
@@ -159,10 +162,13 @@ export default function Settings() {
               </label>
               <div className="mt-1 flex rounded-full shadow-sm">
                 <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  autoComplete="username"
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, [e.target.name]: e.target.value })
+                  }
+                  placeholder="https://instagram.com"
+                  type="url"
+                  name="path_to"
+                  id="path_to"
                   className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-lg sm:text-sm border-gray-300"
                 />
               </div>
@@ -171,8 +177,8 @@ export default function Settings() {
               <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 * Attention format avec fond transparent (png) de taille ....
               </span>
-              <div className="flex justify-between">
-                <div className=" sm:max-w-xs flex justify-between items-center">
+              <div className="flex flex-col  justify-between sm:flex-row">
+                <div className="w-full sm:max-w-xs flex justify-between sm:justify-start items-center">
                   <label
                     htmlFor="file-upload"
                     className={
@@ -212,6 +218,7 @@ export default function Settings() {
                     id="file-upload"
                     type="file"
                     className="hidden"
+                    required
                   />
                   {imagePreview.imagePreviewUrl ? (
                     <img
@@ -223,7 +230,7 @@ export default function Settings() {
                 </div>
                 <button
                   type="submit"
-                  className=" w-full  inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  sm:w-auto sm:text-sm"
+                  className="mt-4 sm:mt-0 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  sm:w-auto sm:text-sm"
                 >
                   Ajouter
                 </button>

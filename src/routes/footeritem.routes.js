@@ -13,13 +13,14 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", verifyJWT, (req, res) => {
   const sql = "INSERT INTO footer_item SET ?";
-  connection.query(sql, req.body, (err, results) => {
+  const newitem = { ...req.body, isActivate: true };
+  connection.query(sql, newitem, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
-      res.status(201).json({ id: results.insertId, ...req.body });
+      res.status(201).json({ id: results.insertId, ...newitem });
     }
   });
 });
