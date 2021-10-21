@@ -17,26 +17,41 @@ io.on("connection", (socket) => {
 
   socket.on("update", (args, data) => {
     console.log("SOCKET: ", "args: " + args);
-    if (args === "musiclist") {
-      console.log("SOCKET: MAJ music");
-      socket.broadcast.emit("musicupdate", true);
-    } else if (args === "title") {
-      console.log("SOCKET: MAJ titre music");
-      socket.broadcast.emit("titleupdate", true);
-    } else if (args === "user") {
-      console.log("SOCKET: MAJ visiteur");
-      socket.broadcast.emit("userupdate", true);
-    } else if (args === "visitorallowed") {
-      console.log("SOCKET: MAJ visiteur permission");
-      socket.broadcast.emit("visitorallowed", true);
-    } else if (args === "event") {
-      console.log("SOCKET: MAJ event");
-      socket.broadcast.emit("event", true);
-    } else if (args === "settitle") {
-      console.log("SOCKET: MAJ Title");
-      socket.broadcast.emit("settitle", true);
-    } else if (args === "pop") {
-      socket.broadcast.emit("pop", true);
+    switch (args) {
+      case "musiclist":
+        console.log("SOCKET: MAJ music");
+        socket.broadcast.emit("musicupdate", true);
+        break;
+      case "title":
+        console.log("SOCKET: MAJ titre music");
+        socket.broadcast.emit("titleupdate", true);
+        break;
+      case "user":
+        console.log("SOCKET: MAJ visiteur");
+        socket.broadcast.emit("userupdate", true);
+        break;
+      case "visitorallowed":
+        console.log("SOCKET: MAJ visiteur permission");
+        socket.broadcast.emit("visitorallowed", true);
+        break;
+      case "event":
+        console.log("SOCKET: MAJ event");
+        socket.broadcast.emit("event", true);
+        break;
+      case "settitle":
+        console.log("SOCKET: MAJ Title");
+        socket.broadcast.emit("settitle", true);
+        break;
+      case "pop":
+        console.log("SOCKET: MAJ Popup");
+        socket.broadcast.emit("pop", true);
+        break;
+      case "footer":
+        console.log("SOCKET: MAJ Footer");
+        socket.broadcast.emit("footer", true);
+        break;
+      default:
+        break;
     }
   });
 

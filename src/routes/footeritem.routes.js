@@ -25,7 +25,7 @@ router.post("/", verifyJWT, (req, res) => {
   });
 });
 
-router.put("/:id", verifyJWT, (req, res) => {
+router.patch("/:id", verifyJWT, (req, res) => {
   let sql = "UPDATE footer_item SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {

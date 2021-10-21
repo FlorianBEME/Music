@@ -83,7 +83,6 @@ export default function SongRequestBloc() {
       if (args === "visitorallowed") {
         verifyIsAllowed();
       } else if (args === "musicupdate") {
-        console.log();
         fetchData();
       } else if (args === "title") {
         fetchSongIncurrent();
