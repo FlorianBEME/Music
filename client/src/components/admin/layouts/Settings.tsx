@@ -4,9 +4,7 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 import { emitEvent, subscribeToSocket } from "../../common/socket";
-import { HexColorPicker } from "react-colorful";
 import ItemFooterCard from "../settings/ItemFooterCard";
-import int from "../../../assets/int.png";
 import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
 
@@ -19,20 +17,18 @@ export default function Settings() {
   const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
   const [itemsInFooter, setItemsInFooter] = useState<any>([]);
 
-  useEffect(() => {
+  //fetch
+  const fetchFooterItem = () => {
+    console.log("refetch en cours");
     axios
       .get(`${FETCH}/footer`)
       .then((res) => {
         setItemsInFooter(res.data);
-        console.log(res.data);
       })
       .catch((err) => {
         console.error(err);
       });
-    return () => {
-      setItemsInFooter([]);
-    };
-  }, []);
+  };
   // preview image
   const handleImageChange = (e: any) => {
     if (e.target.files[0] !== undefined) {
@@ -57,64 +53,86 @@ export default function Settings() {
   };
   // changement de l'image d'en-tête
   const addNewItemInFooter = (e: SyntheticEvent) => {
+    console.log(currentFile);
     e.preventDefault();
-    MySwal.fire({
-      title: "Confirmation",
-      text: "Êtes-vous sur de vouloir ajouter ce nouvel icone au pied de page?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Oui, je suis sur !",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        new Promise((resolve, reject) => {
-          const formData = new FormData();
-          formData.append("file", currentFile);
-          axios
-            .post(`${FETCH}/upload/footer`, formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                "x-access-token": token,
-              },
-            })
-            .then((res) => {
-              const result = res.data;
-              axios
-                .post(
-                  `${FETCH}/footer`,
-                  {
-                    ...newItem,
-                    filePath: result.filePath,
-                  },
-                  {
-                    headers: {
-                      "x-access-token": token,
+    if (currentFile && newItem.name.length > 0 && newItem.path_to.length > 0) {
+      MySwal.fire({
+        title: "Confirmation",
+        text: "Êtes-vous sur de vouloir ajouter ce nouvel icone au pied de page?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Oui, je suis sur !",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append("file", currentFile);
+            axios
+              .post(`${FETCH}/upload/footer`, formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  "x-access-token": token,
+                },
+              })
+              .then((res) => {
+                const result = res.data;
+                axios
+                  .post(
+                    `${FETCH}/footer`,
+                    {
+                      ...newItem,
+                      filePath: result.filePath,
                     },
-                  }
-                )
-                .then(() => {
-                  Swal.fire("Modifié!", "", "success");
-                  resolve(res);
-                })
-                .catch(function (error) {
-                  reject(error);
-                });
-            })
-            .catch(function (error) {
-              reject(error);
-            });
-        })
-          .then(() => {
-            Swal.fire("Succés!", "L'image est changé", "success");
-            emitEvent("update", "event");
+                    {
+                      headers: {
+                        "x-access-token": token,
+                      },
+                    }
+                  )
+                  .then(() => {
+                    Swal.fire("Modifié!", "", "success");
+                    resolve(res);
+                  })
+                  .catch(function (error) {
+                    reject(error);
+                  });
+              })
+              .catch(function (error) {
+                reject(error);
+              });
           })
-          .catch(() => {
-            Swal.fire("Erreur!", "Une erreur est survenue", "error");
-          });
+            .then(() => {
+              Swal.fire("Succés!", "L'item est ajouté", "success");
+              fetchFooterItem();
+              emitEvent("update", "footer");
+            })
+            .catch(() => {
+              Swal.fire("Erreur!", "Une erreur est survenue", "error");
+            });
+        }
+      });
+    } else {
+      Swal.fire("Erreur!", "Veuillez remplir tout les champs", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchFooterItem();
+    return () => {
+      setItemsInFooter([]);
+    };
+  }, []);
+
+  useEffect(() => {
+    subscribeToSocket((args: string) => {
+      console.log("test");
+      if (args === "footer") {
+        fetchFooterItem();
       }
     });
-  };
+  }, []);
 
   return (
     <div>
@@ -218,7 +236,7 @@ export default function Settings() {
                     id="file-upload"
                     type="file"
                     className="hidden"
-                    required
+                    name="file"
                   />
                   {imagePreview.imagePreviewUrl ? (
                     <img
@@ -250,10 +268,16 @@ export default function Settings() {
               {itemsInFooter.map((item: any) => {
                 return (
                   <ItemFooterCard
+                    emitEvent={() => emitEvent("update", "footer")}
                     key={item.id}
+                    refetch={fetchFooterItem}
+                    apiPath={`${FETCH}/footer`}
+                    token={token}
+                    id={item.id}
                     imagePath={item.filePath}
                     nameItem={item.name}
                     filePath={item.filePath}
+                    isActivate={item.isActivate}
                   />
                 );
               })}
