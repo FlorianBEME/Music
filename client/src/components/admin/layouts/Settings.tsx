@@ -19,7 +19,6 @@ export default function Settings() {
 
   //fetch
   const fetchFooterItem = () => {
-    console.log("refetch en cours");
     axios
       .get(`${FETCH}/footer`)
       .then((res) => {
@@ -53,7 +52,6 @@ export default function Settings() {
   };
   // changement de l'image d'en-tête
   const addNewItemInFooter = (e: SyntheticEvent) => {
-    console.log(currentFile);
     e.preventDefault();
     if (currentFile && newItem.name.length > 0 && newItem.path_to.length > 0) {
       MySwal.fire({
