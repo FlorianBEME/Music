@@ -44,6 +44,11 @@ const subscribeToSocket = (data: any) => {
     console.log("Pop: j'ai bien recu et je met a jour");
     return data("pop");
   });
+  // footer
+  socket.on("footer", () => {
+    console.log("Footer: j'ai bien recu et je met a jour");
+    return data("footer");
+  });
 };
 
 const emitEvent = (eventemit: string, args: string) => {
