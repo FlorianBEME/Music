@@ -26,6 +26,7 @@ const Home = () => {
   const [positionTitle, setPositionTitle] = useState("center");
   const [color, setColor] = useState("#ffffff");
   const [pop, setPop] = useState([]);
+  const [footerItem, setFooterItem] = useState<any>([]);
 
   const componentRender = () => {
     if (component === "music") {
@@ -59,12 +60,29 @@ const Home = () => {
         console.log(err);
       });
   };
+  const fetchFooter = () => {
+    axios
+      .get(`${FETCH}/footer`)
+      .then((res) => {
+        const itemFiltering = res.data.filter(
+          (item: { isActivate: boolean; [key: string]: any }) => item.isActivate
+        );
+        setFooterItem(itemFiltering);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   useEffect(() => {
     fetchPopUp();
   }, []);
 
   useEffect(() => {
     fetchTitleStyle();
+  }, []);
+
+  useEffect(() => {
+    fetchFooter();
   }, []);
 
   useEffect(() => {
@@ -268,7 +286,7 @@ const Home = () => {
               </div>
             </div>
 
-            <Footer />
+            <Footer footerItem={footerItem} />
           </div>
         ) : (
           <div className="bg-white min-h-screen">

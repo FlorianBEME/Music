@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { emitEvent, subscribeToSocket } from "../../common/socket";
 import { HexColorPicker } from "react-colorful";
 import { useHistory } from "react-router-dom";
+import FooterSettings from "../FooterSettings";
 
 const MySwal = withReactContent(Swal);
 
@@ -555,6 +556,96 @@ const EventLayout = () => {
         )
       ) : null}
 
+      {dataLoad ? <FooterSettings /> : null}
+
+      {dataLoad ? (
+        eventCurrent === null || eventCurrent === undefined ? null : (
+          <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                Image d'en-tete
+              </h3>
+              <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
+                <p>Modifier l'image d'en-tête</p>
+              </div>
+              <div className="flex justify-between flex-col sm:flex-row">
+                <form
+                  className="mt-5 flex items-center space-x-4"
+                  onSubmit={(e) => changeImageTop(e)}
+                >
+                  <div className=" sm:max-w-xs">
+                    <label
+                      htmlFor="file-upload"
+                      className={
+                        imagePreview.file !== null
+                          ? "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-green-600 rounded-md w-28 "
+                          : "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-gray-300 rounded-md w-28 "
+                      }
+                    >
+                      <i className="">
+                        {imagePreview.file !== null ? (
+                          <FaRegCheckSquare
+                            size={20}
+                            className="text-green-600"
+                          />
+                        ) : (
+                          <AiOutlineDownload
+                            size={20}
+                            className="text-gray-600 dark:text-white"
+                          />
+                        )}
+                      </i>
+                      <span
+                        className={
+                          imagePreview.file !== null
+                            ? "text-green-600"
+                            : "text-gray-600 dark:text-white"
+                        }
+                      >
+                        Upload
+                      </span>
+                    </label>
+                    <input
+                      accept=".png,.jpeg,.gif,.jpg"
+                      onChange={(e) => {
+                        handleImageChange(e);
+                      }}
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                    />
+                  </div>
+                  <button
+                    disabled={imagePreview.file === null}
+                    type="submit"
+                    className={
+                      imagePreview.file !== null
+                        ? "text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md sm:ml-3 sm:w-auto sm:text-sm"
+                        : " cursor-not-allowed text-white bg-gray-400 inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md sm:ml-3 sm:w-auto sm:text-sm"
+                    }
+                  >
+                    Modifier
+                  </button>
+                </form>
+                {currentFile !== null || currentFile !== undefined ? (
+                  <img
+                    alt="banniere"
+                    className="w-52 rounded-sm mt-2 sm:mt-0 self-center"
+                    src={
+                      imagePreview.imagePreviewUrl
+                        ? imagePreview.imagePreviewUrl
+                        : eventCurrent.bg_music !== null
+                        ? `/uploads/${eventCurrent.bg_music}`
+                        : MusicBandeau
+                    }
+                  />
+                ) : null}
+              </div>
+            </div>
+          </div>
+        )
+      ) : null}
+
       {dataLoad ? (
         eventCurrent === null || eventCurrent === undefined ? (
           <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
@@ -662,7 +753,11 @@ const EventLayout = () => {
               </form>
             </div>
           </div>
-        ) : (
+        ) : null
+      ) : null}
+
+      {dataLoad ? (
+        eventCurrent === null || eventCurrent === undefined ? null : (
           <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
@@ -682,94 +777,6 @@ const EventLayout = () => {
                 >
                   Supprimer l'évenement
                 </button>
-              </div>
-            </div>
-          </div>
-        )
-      ) : null}
-
-      {dataLoad ? (
-        eventCurrent === null || eventCurrent === undefined ? null : (
-          <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                Image d'en-tete
-              </h3>
-              <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
-                <p>Modifier l'image d'en-tête</p>
-              </div>
-              <div className="flex justify-between flex-col sm:flex-row">
-                <form
-                  className="mt-5 flex items-center space-x-4"
-                  onSubmit={(e) => changeImageTop(e)}
-                >
-                  <div className=" sm:max-w-xs">
-                    <label
-                      htmlFor="file-upload"
-                      className={
-                        imagePreview.file !== null
-                          ? "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-green-600 rounded-md w-28 "
-                          : "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-gray-300 rounded-md w-28 "
-                      }
-                    >
-                      <i className="">
-                        {imagePreview.file !== null ? (
-                          <FaRegCheckSquare
-                            size={20}
-                            className="text-green-600"
-                          />
-                        ) : (
-                          <AiOutlineDownload
-                            size={20}
-                            className="text-gray-600 dark:text-white"
-                          />
-                        )}
-                      </i>
-                      <span
-                        className={
-                          imagePreview.file !== null
-                            ? "text-green-600"
-                            : "text-gray-600 dark:text-white"
-                        }
-                      >
-                        Upload
-                      </span>
-                    </label>
-                    <input
-                      accept=".png,.jpeg,.gif,.jpg"
-                      onChange={(e) => {
-                        handleImageChange(e);
-                      }}
-                      id="file-upload"
-                      type="file"
-                      className="hidden"
-                    />
-                  </div>
-                  <button
-                    disabled={imagePreview.file === null}
-                    type="submit"
-                    className={
-                      imagePreview.file !== null
-                        ? "text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md sm:ml-3 sm:w-auto sm:text-sm"
-                        : " cursor-not-allowed text-white bg-gray-400 inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md sm:ml-3 sm:w-auto sm:text-sm"
-                    }
-                  >
-                    Modifier
-                  </button>
-                </form>
-                {currentFile !== null || currentFile !== undefined ? (
-                  <img
-                    alt="banniere"
-                    className="w-52 rounded-sm mt-2 sm:mt-0 self-center"
-                    src={
-                      imagePreview.imagePreviewUrl
-                        ? imagePreview.imagePreviewUrl
-                        : eventCurrent.bg_music !== null
-                        ? `/uploads/${eventCurrent.bg_music}`
-                        : MusicBandeau
-                    }
-                  />
-                ) : null}
               </div>
             </div>
           </div>

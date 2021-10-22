@@ -5,8 +5,6 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 import withReactContent from "sweetalert2-react-content";
-import { emitEvent } from "../../common/socket";
-
 const MySwal = withReactContent(Swal);
 
 interface Props {
@@ -74,6 +72,7 @@ export default function ItemFooterCard({
             headers: {
               "x-access-token": token,
             },
+            data: { path: filePath },
           })
           .catch((err) => {
             console.error(err);
@@ -90,10 +89,10 @@ export default function ItemFooterCard({
   };
 
   return (
-    <div className="m-2">
-      <div className="space-y-2  sm:w-1/5 p-6 bg-white dark:bg-gray-500 rounded-xl shadow-xl flex flex-col justify-center items-center">
+    <div className="m-2 w-full sm:w-auto h-full">
+      <div className="space-y-2 w-full h-auto p-6 bg-white dark:bg-gray-500 rounded-xl shadow-xl flex flex-col justify-center items-center">
         <img
-          className="w-24 object-cover rounded-t-md"
+          className="w-24 h-24 object-cover rounded-t-md"
           src={imagePath}
           alt=""
         />
