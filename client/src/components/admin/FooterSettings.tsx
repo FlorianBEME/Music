@@ -190,7 +190,8 @@ export default function FooterSettings() {
           </div>
           <div className="sm:col-span-4">
             <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              * Attention format avec fond transparent (png) de taille ....
+              * Attention: un format avec fond transparent (png) de forme carré
+              est préférable
             </span>
             <div className="flex flex-col  justify-between sm:flex-row">
               <div className="w-full sm:max-w-xs flex justify-between sm:justify-start items-center sm:justify-">
