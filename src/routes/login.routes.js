@@ -12,11 +12,26 @@ router.get("/", (req, res) => {
   }
 });
 
+/**
+ * @api {get} /login/isuserauth User is authenticated?
+ * @apiName IsloginUser
+ * @apiGroup Login
+ * @apiSuccess {Object} Auth Boolean if user authenticated
+ */
 router.get("/isuserauth", verifyJWT, (req, res) => {
   req.authenticated = true;
   res.json({ auth: req.authenticated });
 });
 
+/**
+ * @api {get} /login User login
+ * @apiName UserWantLogin
+ * @apiGroup Login
+ * @apiBody {Object} UserInformation Object contain all Information
+ * @apiBody {String} user_name String contain username or email
+ * @apiBody {Object} user_password String contain password
+ * @apiSuccess {Object} Auth-Information ({ auth: true, token: token, result: result });
+ */
 router.post("/", (req, res) => {
   const user_name = req.body.user_name;
   const user_password = req.body.user_password;
@@ -51,7 +66,7 @@ router.post("/", (req, res) => {
 
                 req.session.user = result;
 
-                res.json({ auth: true, token: token, result: result });
+                res.json({ auth: true, token: token, result: user });
               } else {
                 res.status(403).json({ errorMessage: "Invalid password" });
               }
