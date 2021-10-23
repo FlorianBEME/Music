@@ -1,0 +1,8 @@
+{
+  "apidoc": {
+    "name": "Documentation Api",
+    "version": "0.1.0",
+    "description": "Documentation of MusicRequest API APi",
+    "title": "Music Api App"
+  }
+}
