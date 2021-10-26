@@ -3,6 +3,12 @@ const router = require("express").Router();
 const { verifyJWT } = require("../middlewares/isuserauth");
 var moment = require("moment");
 
+/**
+ * @api {get} /pop Get All Pop
+ * @apiName GetPopup
+ * @apiGroup Popup
+ * @apiSuccess {Array} List List of Popup
+ */
 router.get("/", (req, res) => {
   const sql = "SELECT * FROM popup";
   connection.query(sql, (err, results) => {
@@ -14,6 +20,12 @@ router.get("/", (req, res) => {
   });
 });
 
+/**
+ * @api {get} /pop/available Get Pop available
+ * @apiName GetPopupAvailable
+ * @apiGroup Popup
+ * @apiSuccess {Array} List List of Popup
+ */
 router.get("/available", (req, res) => {
   const sql = "SELECT * FROM popup WHERE expire_at > current_timestamp;";
   connection.query(sql, (err, results) => {
@@ -25,6 +37,13 @@ router.get("/available", (req, res) => {
   });
 });
 
+/**
+ * @api {get} /pop/{id} Get Spécific pop
+ * @apiName GetOnePop
+ * @apiParam {Number} id Users unique ID.
+ * @apiGroup Popup
+ * @apiSuccess {Array} List Object Array contain a Pop.
+ */
 router.get("/:id", (req, res) => {
   const sql = "SELECT * FROM popup WHERE id=?";
   connection.query(sql, [req.params.id], (err, results) => {

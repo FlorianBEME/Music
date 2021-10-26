@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", verifyJWT, (req, res) => {
   const sql = "INSERT INTO events SET ?";
   connection.query(sql, req.body, (err, results) => {
     if (err) {

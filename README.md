@@ -6,17 +6,19 @@ A list of technologies used within the project:
 * [React](https://en.reactjs.org/): Version ^17.0.2
 * [MySQL](https://www.mysql.com/): Version ^2.18.1
 * [TailwindCSS](https://tailwindcss.com/):  Version ^2.18.1
+* [Typescript](https://www.typescriptlang.org/):  Version ^4.4.4 => Front-end Only
 
 ## Instruction
 
-npm install
-cd client 
-npm install
-cd .. 
+* npm install
+* cd client 
+* npm install
+* cd .. 
+* Start the project on local:
+* npm run dev 
 
-Start the project on local
-npm run dev 
-
+## Documentation
+* Documentation for api is available with apiDoc in apiDoc folder.
 
 ## Contributor
 Bême Florian

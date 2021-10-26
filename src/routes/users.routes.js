@@ -2,6 +2,13 @@ const { connection } = require("../db_connection");
 const router = require("express").Router();
 const { verifyJWT } = require("../middlewares/isuserauth.js");
 
+/**
+ * @api {get} /user Request User information
+ * @apiName GetUser
+ * @apiGroup User
+ * @apiSuccess {Array} List List of users.
+ */
+
 router.get("/", (req, res) => {
   const sql = "SELECT * FROM users";
   connection.query(sql, (err, results) => {
@@ -12,7 +19,14 @@ router.get("/", (req, res) => {
     }
   });
 });
-
+/**
+ * @api {post} /user Add new User
+ * @apiName AddUser
+ * @apiBody {Object} UserInformation Object contain all Information
+ * @apiHeader {String} acces-token
+ * @apiGroup User
+ * @apiSuccess {Object} User Contain user information
+ */
 router.post("/", verifyJWT, (req, res) => {
   const sql = "INSERT INTO users SET ?";
   connection.query(sql, req.body, (err, results) => {
@@ -24,6 +38,14 @@ router.post("/", verifyJWT, (req, res) => {
   });
 });
 
+/**
+ * @api {put} /user/{param} Modify User
+ * @apiName ModyifyUser
+ * @apiGroup User
+ * @apiHeader {String} acces-token
+ * @apiParam {Number} id Users unique ID.
+ * @apiSuccess {Object} User Contain user information
+ */
 router.put("/:id", verifyJWT, (req, res) => {
   let sql = "UPDATE users SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
@@ -43,7 +65,14 @@ router.put("/:id", verifyJWT, (req, res) => {
     }
   });
 });
-
+/**
+ * @api {delete} /user/{param} Delete User
+ * @apiName DeleteUser
+ * @apiGroup User
+ * @apiHeader {String} acces-token
+ * @apiParam {Number} id Users unique ID.
+ * @apiSuccess {Object} User Contain user information
+ */
 router.delete("/:id", verifyJWT, (req, res) => {
   const sql = "DELETE FROM users WHERE id=?";
   connection.query(sql, req.params.id, (err, results) => {
