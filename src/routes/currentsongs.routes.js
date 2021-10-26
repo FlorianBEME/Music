@@ -25,7 +25,7 @@ router.post("/", (req, res) => {
   });
 });
 
-router.put("/:id", verifyJWT, (req, res) => {
+router.put("/:id", (req, res) => {
   let sql = "UPDATE currentsongs SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {
