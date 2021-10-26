@@ -18,7 +18,7 @@ A list of technologies used within the project:
 * npm run dev 
 
 ## Documentation
-* Documentation for api is available with apiDoc in apiDoc folder.
+* Documentation for api is available with apidocjs[https://apidocjs.com/] in apidoc folder.
 
 ## Contributor
 Bême Florian
