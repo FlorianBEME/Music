@@ -4,7 +4,7 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 import { emitEvent, subscribeToSocket } from "../../common/socket";
-import ItemFooterCard from "./settings/ItemFooterCard";
+import ItemFooterCard from "./footerSettingsComponents/ItemFooterCard";
 import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
 
@@ -270,7 +270,7 @@ export default function FooterSettings() {
                 <ItemFooterCard
                   emitEvent={() => emitEvent("update", "footer")}
                   key={item.id}
-                  refetch={fetchFooterItem}
+                  refetch={()=>fetchFooterItem()}
                   apiPath={`${FETCH}/footer`}
                   token={token}
                   id={item.id}
