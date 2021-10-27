@@ -1,4 +1,4 @@
-import { ReactElement, useState, useEffect, SyntheticEvent } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { BsFillTrashFill } from "react-icons/bs";
 import Switch from "@mui/material/Switch";
 import Swal from "sweetalert2";
