@@ -2,8 +2,8 @@ import { useEffect, useState, SyntheticEvent } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
-import { emitEvent, subscribeToSocket } from "../common/socket";
+import { FETCH } from "../../../FETCH";
+import { emitEvent, subscribeToSocket } from "../../common/socket";
 import ItemFooterCard from "./settings/ItemFooterCard";
 import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
@@ -12,7 +12,7 @@ const MySwal = withReactContent(Swal);
 
 export default function FooterSettings() {
   const token = localStorage.getItem("token");
-  const [imagePreview, setImagePreview] = useState<any>({});
+  const [imagePreviewFooter, setImagePreviewFooter] = useState<any>({});
   const [currentFile, setCurrentFile] = useState<any>();
   const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
   const [itemsInFooter, setItemsInFooter] = useState<any>([]);
@@ -29,13 +29,14 @@ export default function FooterSettings() {
       });
   };
   // preview image
-  const handleImageChange = (e: any) => {
+  const handleImageChangeFooter = (e: any) => {
+    console.log("test footer");
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
 
       reader.onloadend = () => {
-        setImagePreview({
+        setImagePreviewFooter({
           file: file,
           imagePreviewUrl: reader.result,
         });
@@ -44,7 +45,7 @@ export default function FooterSettings() {
       setCurrentFile(file);
       reader.readAsDataURL(file);
     } else {
-      setImagePreview({
+      setImagePreviewFooter({
         file: null,
         imagePreviewUrl: null,
       });
@@ -196,15 +197,15 @@ export default function FooterSettings() {
             <div className="flex flex-col  justify-between sm:flex-row">
               <div className="w-full sm:max-w-xs flex justify-between sm:justify-start items-center sm:justify-">
                 <label
-                  htmlFor="file-upload"
+                  htmlFor="file-upload-footer"
                   className={
-                    imagePreview.file !== null
+                    imagePreviewFooter.file !== null
                       ? "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-green-600 rounded-md w-28 "
                       : "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-gray-300 rounded-md w-28 "
                   }
                 >
                   <i className="">
-                    {imagePreview.file !== null ? (
+                    {imagePreviewFooter.file !== null ? (
                       <FaRegCheckSquare size={20} className="text-green-600" />
                     ) : (
                       <AiOutlineDownload
@@ -215,7 +216,7 @@ export default function FooterSettings() {
                   </i>
                   <span
                     className={
-                      imagePreview.file !== null
+                      imagePreviewFooter.file !== null
                         ? "text-green-600"
                         : "text-gray-600 dark:text-white"
                     }
@@ -226,18 +227,18 @@ export default function FooterSettings() {
                 <input
                   accept=".png,.jpeg,.gif,.jpg"
                   onChange={(e) => {
-                    handleImageChange(e);
+                    handleImageChangeFooter(e);
                   }}
-                  id="file-upload"
+                  id="file-upload-footer"
                   type="file"
                   className="hidden"
                   name="file"
                 />
-                {imagePreview.imagePreviewUrl ? (
+                {imagePreviewFooter.imagePreviewUrl ? (
                   <img
                     alt="banniere"
                     className="w-20 rounded-sm self-center mx-5"
-                    src={imagePreview.imagePreviewUrl}
+                    src={imagePreviewFooter.imagePreviewUrl}
                   />
                 ) : null}
               </div>
