@@ -30,7 +30,9 @@ export default function PopupLayout() {
           fetchPopUp();
         }}
       />
-      <PopUpList pops={pops} popIsLoading={popIsLoading} />
+      {pops.length > 0 ? (
+        <PopUpList pops={pops} popIsLoading={popIsLoading} />
+      ) : null}
     </div>
   );
 }
