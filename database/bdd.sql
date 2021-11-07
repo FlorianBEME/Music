@@ -65,6 +65,11 @@ CREATE TABLE `footer_item` (
   `isActivate` boolean NOT NULL
 );
 
+CREATE TABLE `footer_text_copyright` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `text` varchar(250) NULL
+);
+
 ALTER TABLE `currentsongs` ADD FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`id`)  ON DELETE CASCADE;  
 
 

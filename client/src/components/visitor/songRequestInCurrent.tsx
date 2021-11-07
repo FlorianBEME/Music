@@ -93,6 +93,7 @@ export default function SongRequestInCurrent({
               }}
             >
               <option disabled></option>
+              <option value="default">Default</option>
               <option value="indispo">Indisponible</option>
               <option value="validé">Validé</option>
               <option value="voteup">Top vote</option>
@@ -121,12 +122,11 @@ export default function SongRequestInCurrent({
                       <p className=" text-sm font-medium break-all text-center md:text-left">
                         {song.artist}
                       </p>
-                      <p className=" text-sm font-light break-all text-center md:text-left">
+                      <p className="hidden md:block text-sm font-light break-all text-center md:text-left">
                         Proposé par{" "}
                         <span className="capitalize">{song.pseudo}</span>
                       </p>
                     </div>
-
                     <div
                       className={
                         song.countVote >= 0
@@ -171,6 +171,10 @@ export default function SongRequestInCurrent({
                         </div>
                       </div>
                     </div>
+                    <p className="text-gray-800 dark:text-gray-100 mt-2 md:hidden text-sm font-light break-all text-center md:text-left">
+                      Proposé par{" "}
+                      <span className="capitalize">{song.pseudo}</span>
+                    </p>
                   </li>
                 ))
             : null}

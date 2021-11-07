@@ -19,6 +19,12 @@ const compare = (a: any, b: any, compareType: string) => {
     } else {
       return 1;
     }
+  } else if (compareType === "default") {
+    if (a.id > b.id) {
+      return -1;
+    } else {
+      return 1;
+    }
   }
 };
 export default compare;
