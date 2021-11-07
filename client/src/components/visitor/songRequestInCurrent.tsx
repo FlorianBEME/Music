@@ -93,6 +93,7 @@ export default function SongRequestInCurrent({
               }}
             >
               <option disabled></option>
+              <option value="default">Default</option>
               <option value="indispo">Indisponible</option>
               <option value="validé">Validé</option>
               <option value="voteup">Top vote</option>
