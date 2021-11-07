@@ -16,6 +16,7 @@ export default function FooterSettings() {
   const [currentFile, setCurrentFile] = useState<any>();
   const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
   const [itemsInFooter, setItemsInFooter] = useState<any>([]);
+  const [copyright, setCopyright] = useState({});
 
   //fetch
   const fetchFooterItem = () => {
@@ -115,6 +116,20 @@ export default function FooterSettings() {
     } else {
       Swal.fire("Erreur!", "Veuillez remplir tout les champs", "error");
     }
+  };
+  // modification du copyright
+  const modifyCopyright = (e: SyntheticEvent) => {
+    e.preventDefault();
+    axios
+      .put(`${FETCH}/copyright/1`, copyright,{
+        headers: {
+          "x-access-token": token,
+        },
+      })
+      .then(() => {})
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   useEffect(() => {
@@ -270,7 +285,7 @@ export default function FooterSettings() {
                 <ItemFooterCard
                   emitEvent={() => emitEvent("update", "footer")}
                   key={item.id}
-                  refetch={()=>fetchFooterItem()}
+                  refetch={() => fetchFooterItem()}
                   apiPath={`${FETCH}/footer`}
                   token={token}
                   id={item.id}
@@ -283,6 +298,51 @@ export default function FooterSettings() {
             })
           )}
         </div>
+      </div>
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+          Modifier le text "copyright"
+        </h3>{" "}
+        <form
+          className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6"
+          // {/* className="mt-5 flex items-center space-x-4 flex-col" */}
+          onSubmit={(e) => modifyCopyright(e)}
+        >
+          <div className="sm:col-span-4">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 dark:text-white"
+            >
+              Texte
+            </label>
+            <div className="mt-1 flex rounded-full shadow-sm">
+              <input
+                required
+                onChange={(e) =>
+                  setCopyright({
+                    ...copyright,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+                placeholder="©Copyright 2016L. Durand."
+                type="text"
+                name="text"
+                id="text"
+                className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-lg sm:text-sm border-gray-300"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-4">
+            <div className="flex flex-col  justify-between sm:flex-row">
+              <button
+                type="submit"
+                className="mt-4 sm:mt-0 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500  sm:w-auto sm:text-sm"
+              >
+                Ajouter
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );
