@@ -2,14 +2,21 @@ import { useState } from "react";
 import { Transition } from "@tailwindui/react";
 import { AiOutlineArrowDown } from "react-icons/ai";
 import { AiOutlineArrowUp } from "react-icons/ai";
+import { BsFillTrashFill } from "react-icons/bs";
 
 type AccordionProps = {
   title: string;
   text_content: string;
   status: string | null;
+  deleteItem: Function;
 };
 
-function Accordion({ title, text_content, status }: AccordionProps) {
+function Accordion({
+  title,
+  text_content,
+  status,
+  deleteItem,
+}: AccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -17,17 +24,27 @@ function Accordion({ title, text_content, status }: AccordionProps) {
       <section className="">
         <article className="border-b dark:bg-gray-700">
           <div className="">
-            <header
-              className="flex justify-between items-center p-5 pl-8 pr-8 cursor-pointer select-none"
-              onClick={() => setIsOpen(!isOpen)}
-            >
+            <header className="flex justify-between items-center p-5 pl-8 pr-8 select-none">
               <span className="dark:text-white font-thin text-xl">
                 {title} ({status})
               </span>
-
-              <div className="text-black dark:text-white rounded-full border border-grey w-7 h-7 flex items-center justify-center">
-                {/* <!-- icon by feathericons.com --> */}
-                {isOpen ? <AiOutlineArrowDown /> : <AiOutlineArrowUp />}
+              <div className="flex space-x-2">
+                <div
+                  onClick={() => {
+                    deleteItem();
+                  }}
+                  className="text-black dark:text-white w-7 h-7 flex items-center justify-center cursor-pointer"
+                >
+                  {/* <!-- icon by feathericons.com --> */}
+                  <BsFillTrashFill size={20} />
+                </div>
+                <div
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="text-black dark:text-white rounded-full border border-grey w-7 h-7 flex items-center justify-center cursor-pointer "
+                >
+                  {/* <!-- icon by feathericons.com --> */}
+                  {isOpen ? <AiOutlineArrowDown /> : <AiOutlineArrowUp />}
+                </div>
               </div>
             </header>
           </div>
