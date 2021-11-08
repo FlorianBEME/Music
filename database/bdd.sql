@@ -49,7 +49,7 @@ CREATE TABLE `visitor` (
 CREATE TABLE `popup` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `title` varchar(50) NOT NULL,
-  `text_content` varchar(255) NULL,
+  `text_content` varchar(1000) NULL,
   `filePath` varchar(255) NULL,
   `uuid` varchar(255) NOT NULL,
   `time` int NOT NULL,
