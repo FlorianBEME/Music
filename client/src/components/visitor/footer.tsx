@@ -2,8 +2,9 @@ const copyright = "Copyright";
 
 type PropsFooter = {
   footerItem: [{}];
+  footerCopyright: any;
 };
-export default function Footer({ footerItem }: PropsFooter) {
+export default function Footer({ footerItem, footerCopyright }: PropsFooter) {
   return (
     <footer className="bg-white dark:bg-gray-700">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
@@ -23,7 +24,11 @@ export default function Footer({ footerItem }: PropsFooter) {
           ))}
         </div>
         <div className="mt-8 md:mt-0 md:order-1">
-          <p className="text-center text-base text-gray-400">{copyright}</p>
+          <p className="text-center text-base text-gray-400">
+            {footerCopyright.hasOwnProperty("text")
+              ? footerCopyright.text
+              : "Copyright"}
+          </p>
         </div>
       </div>
     </footer>

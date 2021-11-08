@@ -27,6 +27,7 @@ const Home = () => {
   const [color, setColor] = useState("#ffffff");
   const [pop, setPop] = useState([]);
   const [footerItem, setFooterItem] = useState<any>([]);
+  const [footerCopyright, setFooterCopyright] = useState({});
 
   const componentRender = () => {
     if (component === "music") {
@@ -73,6 +74,19 @@ const Home = () => {
         console.log(err);
       });
   };
+
+  const fetchFooterCopyright = () => {
+    axios.get(`${FETCH}/copyright`).then((res) => {
+      if (res.data.length > 0) {
+        setFooterCopyright(res.data[0]);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchFooterCopyright();
+  }, []);
+
   useEffect(() => {
     fetchPopUp();
   }, []);
@@ -286,7 +300,7 @@ const Home = () => {
               </div>
             </div>
 
-            <Footer footerItem={footerItem} />
+            <Footer footerItem={footerItem} footerCopyright={footerCopyright} />
           </div>
         ) : (
           <div className="bg-white min-h-screen">
