@@ -5,6 +5,8 @@ import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 
+import { emitEvent } from "../../common/socket";
+
 const MySwal = withReactContent(Swal);
 
 function useInterval(callback: Function, delay: number) {
@@ -61,7 +63,6 @@ function PopUpList({ popIsLoading, pops, refetch }: PopUpProps) {
   }, 5000);
 
   const deleteItem = (id: number) => {
-    console.log(id);
     MySwal.fire({
       title: "Confirmation",
       text: "Êtes-vous sur de vouloir supprimer l'annonce?",
@@ -81,6 +82,7 @@ function PopUpList({ popIsLoading, pops, refetch }: PopUpProps) {
           .then((res) => {
             if (res.status === 200) {
               refetch();
+              emitEvent("update", "pop");
             }
           })
           .catch((err) => {
@@ -96,6 +98,7 @@ function PopUpList({ popIsLoading, pops, refetch }: PopUpProps) {
         ? pops.map((pop: popType) => {
             return (
               <Accordion
+                date={null}
                 deleteItem={() => {
                   deleteItem(pop.id);
                 }}

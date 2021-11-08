@@ -1,5 +1,3 @@
-const copyright = "Copyright";
-
 type PropsFooter = {
   footerItem: [{}];
   footerCopyright: any;
