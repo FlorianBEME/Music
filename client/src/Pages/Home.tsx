@@ -35,7 +35,7 @@ const Home = () => {
       return <SongRequestBloc />;
     } else if (component === "picture") {
       return <WallPicture />;
-    } else if (component === "annonce") {
+    } else if (component === "announcement") {
       return <Announcement />;
     }
   };
