@@ -32,7 +32,6 @@ export default function FooterSettings() {
   };
   // preview image
   const handleImageChangeFooter = (e: any) => {
-    console.log("test footer");
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
@@ -123,7 +122,7 @@ export default function FooterSettings() {
     e.preventDefault();
     MySwal.fire({
       title: "Confirmation",
-      text: "Êtes-vous sur de vouloir ajouter ce nouvel icone au pied de page?",
+      text: "Êtes-vous sur de vouloir modifier le texte du copyright?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

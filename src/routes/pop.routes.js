@@ -81,7 +81,7 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", verifyJWT, (req, res) => {
-  let sql = "UPDATE popup SET ? WHERE id=?";
+  const sql = "UPDATE popup SET ? WHERE id=?";
   connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
@@ -96,6 +96,23 @@ router.put("/:id", verifyJWT, (req, res) => {
           res.status(200).json(result[0]);
         }
       });
+    }
+  });
+});
+
+/**
+ * @api {delete} /pop/{id} delete Spécific pop
+ * @apiName deletePop
+ * @apiParam {Number} id Users unique ID.
+ * @apiGroup Popup
+ */
+router.delete("/:id", verifyJWT, (req, res) => {
+  const sql = "DELETE FROM popup WHERE id=?";
+  connection.query(sql, req.params.id, (err) => {
+    if (err) {
+      res.status(500).send({ errorMessage: err.message });
+    } else {
+      res.sendStatus(200);
     }
   });
 });
