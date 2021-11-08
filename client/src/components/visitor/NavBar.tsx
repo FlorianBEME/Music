@@ -46,6 +46,14 @@ export default function NavBar({
                 Wall Picture
               </div>
             ) : null}
+            <div
+              onClick={() => {
+                changeComponent("announcement");
+              }}
+              className="text-base font-medium text-gray-500 hover:text-gray-900 cursor-pointer"
+            >
+              Annonces
+            </div>
           </Popover.Group>
           <div className="flex items-center md:ml-12 cursor-pointer">
             <ThemeSelect />
@@ -107,6 +115,14 @@ export default function NavBar({
                     <Popover.Button> Wall Picture</Popover.Button>
                   </div>
                 ) : null}
+                <div
+                  className="text-base  text-gray-900 hover:text-gray-700 dark:text-white cursor-pointer"
+                  onClick={() => {
+                    changeComponent("announcement");
+                  }}
+                >
+                  <Popover.Button> Annonces</Popover.Button>
+                </div>
               </div>
             </div>
           </div>

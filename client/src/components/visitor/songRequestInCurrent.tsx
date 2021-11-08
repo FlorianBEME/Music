@@ -70,7 +70,7 @@ export default function SongRequestInCurrent({
       });
     }
   };
-  const [compareType, setCompareType] = useState("");
+  const [compareType, setCompareType] = useState("default");
 
   return (
     <div>
@@ -92,8 +92,7 @@ export default function SongRequestInCurrent({
                 setCompareType(e.target.value);
               }}
             >
-              <option disabled></option>
-              <option value="default">Default</option>
+              <option value="default">Récent</option>
               <option value="indispo">Indisponible</option>
               <option value="validé">Validé</option>
               <option value="voteup">Top vote</option>

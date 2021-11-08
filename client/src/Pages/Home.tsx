@@ -9,6 +9,7 @@ import NavBar from "../components/visitor/NavBar";
 import MusicBandeau from "../assets/musicbandeau.jpg";
 import WallPicture from "../components/visitor/WallPicture";
 import SongRequestBloc from "../components/visitor/songRequestBloc/songRequestBloc";
+import { Announcement } from "../components/visitor/Announcement";
 
 import { subscribeToSocket } from "../components/common/socket";
 
@@ -34,6 +35,8 @@ const Home = () => {
       return <SongRequestBloc />;
     } else if (component === "picture") {
       return <WallPicture />;
+    } else if (component === "announcement") {
+      return <Announcement />;
     }
   };
   const changeComponent = (component: any) => {
@@ -295,7 +298,7 @@ const Home = () => {
                 active_music_request={event[0].active_music_request}
                 changeComponent={changeComponent}
               />
-              <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+              <div className="max-w-7xl w-full mx-auto sm:px-6 lg:px-8 ">
                 {componentRender()}
               </div>
             </div>
