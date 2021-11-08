@@ -2,7 +2,6 @@ const { connection } = require("../db_connection");
 const router = require("express").Router();
 const { verifyJWT } = require("../middlewares/isuserauth.js");
 const front = `${__dirname}/../../client/build`;
-const fs = require("fs");
 
 router.get("/", (req, res) => {
   const sql = "SELECT * FROM footer_text_copyright";
@@ -52,14 +51,7 @@ router.delete("/:id", verifyJWT, (req, res) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
-      // Suppression de l'image
-      fs.unlink(`${front}${req.body.path}`, (err) => {
-        if (err) {
-          return res.status(500).send({ errorMessage: err.message });
-        } else {
-          res.sendStatus(200);
-        }
-      });
+      res.sendStatus(200);
     }
   });
 });
