@@ -108,6 +108,7 @@ export default function SongRequestBloc() {
           />
         </div>
         <SongRequestInCurrent
+          visitorId={visitorInfo.id}
           refetch={fetchData}
           isLoading={isLoading}
           songs={songs}

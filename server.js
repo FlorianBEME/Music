@@ -50,6 +50,10 @@ io.on("connection", (socket) => {
         console.log("SOCKET: MAJ Footer");
         socket.broadcast.emit("footer", true);
         break;
+      case "userupdate":
+        console.log("SOCKET: MAJ user");
+        socket.broadcast.emit("userupdate", true);
+        break;
       default:
         break;
     }

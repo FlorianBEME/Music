@@ -11,6 +11,7 @@ type SongRequestInCurrentProps = {
   refetch: Function;
   songs: any;
   isLoading: boolean;
+  visitorId: Number | null;
 };
 
 export default function SongRequestInCurrent({
@@ -18,6 +19,7 @@ export default function SongRequestInCurrent({
   refetch,
   songs,
   isLoading,
+  visitorId,
 }: SongRequestInCurrentProps) {
   // Hook pour le rendu du composant
   function useForceUpdate() {
@@ -41,27 +43,49 @@ export default function SongRequestInCurrent({
   const handleVote = (id: number, count: number) => {
     if (isAllowed) {
       let newCount: number = count + 1;
+      // je modifie le compteur de vote de la musique
       axios
         .put(`${FETCH}/currentSongs/${id}`, {
           countVote: newCount,
         })
         .then((result: object) => {
-          if (
-            localStorage.getItem("idMusicVoting") === null &&
-            localStorage.getItem("date") === null
-          ) {
-            localStorage.setItem("idMusicVoting", JSON.stringify(id));
-          } else {
-            let oldId = localStorage.getItem("idMusicVoting");
-            if (oldId !== null) {
-              let result: string[] = oldId.split(",");
-              result.push(id.toString());
-              localStorage.removeItem("idMusicVoting");
-              localStorage.setItem("idMusicVoting", JSON.stringify(result));
-            }
-          }
-          emitEvent("update", "musiclist");
-          refetch();
+          // je recupere le nombre de fois que mon user à voté
+          axios
+            .get(`${FETCH}/visitor/${visitorId}`)
+            .then((res) => {
+              const visitor = { ...res.data[0] };
+              const newCount = visitor.countVoting + 1;
+              // je modifie le compteur de mon user
+              axios
+                .patch(`${FETCH}/visitor/newcount/${visitorId}`, {
+                  countvoting: newCount,
+                })
+                .then(() => {
+                  // je modifie le local storage
+                  if (
+                    localStorage.getItem("idMusicVoting") === null &&
+                    localStorage.getItem("date") === null
+                  ) {
+                    localStorage.setItem("idMusicVoting", JSON.stringify(id));
+                  } else {
+                    let oldId = localStorage.getItem("idMusicVoting");
+                    if (oldId !== null) {
+                      let result: string[] = oldId.split(",");
+                      result.push(id.toString());
+                      localStorage.removeItem("idMusicVoting");
+                      localStorage.setItem(
+                        "idMusicVoting",
+                        JSON.stringify(result)
+                      );
+                    }
+                  }
+                  emitEvent("update", "musiclist");
+                  emitEvent("update", "userupdate");
+                  refetch();
+                })
+                .catch((err) => console.error(err));
+            })
+            .catch((err) => console.error(err));
         });
       forceUpdate();
     } else {
