@@ -136,7 +136,6 @@ router.put("/:id", verifyJWT, (req, res) => {
  * @apiSuccess {Object} Visitor Contain user information
  */
 router.patch("/newcount/:id", (req, res) => {
-  console.log("test");
   let sql = "UPDATE visitor SET ? WHERE id=?";
   let newCount = { countvoting: req.body.countvoting };
   connection.query(sql, [newCount, req.params.id], (err, results) => {
