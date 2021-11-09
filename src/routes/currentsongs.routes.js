@@ -14,18 +14,6 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/countsubmit/:id", (req, res) => {
-  const sql =
-    "SELECT currentsongs.id, title,artist,countVote, unavailable,isValid,isNew,uuid,pseudo FROM currentsongs INNER JOIN visitor ON visitor_id = visitor.id where id=?";
-  connection.query(sql, [req.params.id], (err, results) => {
-    if (err) {
-      res.status(500).send({ errorMessage: err.message });
-    } else {
-      res.status(200).json(results);
-    }
-  });
-});
-
 router.post("/", (req, res) => {
   const sql = "INSERT INTO currentsongs SET ?";
   connection.query(sql, req.body, (err, results) => {
