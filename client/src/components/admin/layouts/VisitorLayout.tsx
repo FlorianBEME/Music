@@ -126,6 +126,18 @@ const VisitorLayout = () => {
                   >
                     Uuid
                   </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider"
+                  >
+                    Vote
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider"
+                  >
+                    Submit
+                  </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -148,6 +160,24 @@ const VisitorLayout = () => {
                         <div className="ml-4">
                           <div className="text-sm font-medium dark:text-white text-gray-900">
                             {visitor.uuid}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className=" py-4 whitespace-nowrap">
+                      <div className="flex items-center justify-center">
+                        <div className="">
+                          <div className="text-sm font-medium dark:text-white text-gray-900">
+                            {visitor.countVoting}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className=" py-4 whitespace-nowrap">
+                      <div className="flex items-center justify-center">
+                        <div className="">
+                          <div className="text-sm font-medium dark:text-white text-gray-900">
+                            {visitor.countsubmit}
                           </div>
                         </div>
                       </div>

@@ -14,7 +14,19 @@ router.get("/", (req, res) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
-      res.status(200).json(results);
+      Promise.all(
+        results.map((visitor) => {
+          return new Promise((resolve) => {
+            const sql = `SELECT COUNT(*) FROM currentsongs where visitor_id = ${visitor.id}`;
+            connection.query(sql, (err, count) => {
+              const newData = { ...visitor, countsubmit: count[0]["COUNT(*)"] };
+              resolve(newData);
+            });
+          });
+        })
+      ).then((data) => {
+        res.status(200).json(data);
+      });
     }
   });
 });
@@ -50,7 +62,8 @@ router.get("/:id", (req, res) => {
  */
 router.post("/", (req, res) => {
   const sql = "INSERT INTO visitor SET ? ";
-  connection.query(sql, req.body, (err, results) => {
+  const visitor = { ...req.body, countVoting: 0 };
+  connection.query(sql, visitor, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
@@ -88,7 +101,7 @@ router.post("/:id", (req, res) => {
 });
 
 /**
- * @api {put} /user/{param} Modify Visitor
+ * @api {put} /visitor/{param} Modify Visitor
  * @apiName ModyifyVisitor
  * @apiGroup Visitor
  * @apiHeader {String} acces-token
@@ -108,6 +121,35 @@ router.put("/:id", verifyJWT, (req, res) => {
             errorMessage: `visitor with id ${req.params.id} not found`,
           });
         } else {
+          res.status(200).json(result[0]);
+        }
+      });
+    }
+  });
+});
+
+/**
+ * @api {put} /visitor/newcount/{param} Modify CountVoting
+ * @apiName ModifyCountVoting
+ * @apiGroup Visitor
+ * @apiParam {Number} id Users unique ID.
+ * @apiSuccess {Object} Visitor Contain user information
+ */
+router.patch("/newcount/:id", (req, res) => {
+  let sql = "UPDATE visitor SET ? WHERE id=?";
+  let newCount = { countvoting: req.body.countvoting };
+  connection.query(sql, [newCount, req.params.id], (err, results) => {
+    if (err) {
+      res.status(500).send({ errorMessage: err.message });
+    } else {
+      sql = "SELECT * FROM visitor WHERE id=?";
+      connection.query(sql, req.params.id, (err, result) => {
+        if (result.length === 0) {
+          res.status(404).send({
+            errorMessage: `visitor with id ${req.params.id} not found`,
+          });
+        } else {
+          console.log(result);
           res.status(200).json(result[0]);
         }
       });

@@ -43,7 +43,8 @@ CREATE TABLE `visitor` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
-  `isNotAllowed`BOOLEAN NOT NULL
+  `isNotAllowed`BOOLEAN NOT NULL,
+  `countVoting`  INT NOT NULL
 );
 
 CREATE TABLE `popup` (
