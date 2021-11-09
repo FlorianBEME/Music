@@ -1,15 +1,16 @@
-import SongRequestForm from "../songRequestForm";
-import SongRequestInCurrent from "../songRequestInCurrent";
+import SongRequestForm from "../songRequestBloc/songRequestForm";
+import SongRequestInCurrent from "../songRequestBloc/songRequestInCurrent";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 import { useHistory } from "react-router-dom";
 import { subscribeToSocket } from "../../common/socket";
+import { TitleSongCard } from "../songRequestBloc/titleSongCard";
 export default function SongRequestBloc() {
   // useState
   const [songs, setSongs] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [titleIncurent, setTitleIncurent] = useState("");
+  const [titleIncurent, setTitleIncurent] = useState();
   const [isAllowed, setIsAllowed] = useState(true);
 
   const history = useHistory();
@@ -40,6 +41,7 @@ export default function SongRequestBloc() {
       .get(`${FETCH}/app/app`)
       .then((res) => {
         setTitleIncurent(res.data.app.titleincurent);
+        console.log(res.data.app.titleincurent);
       })
       .catch(function (erreur) {
         console.log(erreur);
@@ -95,9 +97,7 @@ export default function SongRequestBloc() {
       {/* We've used 3xl here, but feel free to try other max-widths based on your needs */}
       <div className="max-w-3xl mx-auto">
         <div className="px-4 py-5 border-b border-gray-200 dark:border-gray-400 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-            {titleIncurent}
-          </h3>
+          <TitleSongCard titleIncurent={titleIncurent} />
         </div>
         <div className="pt-8 px-4 sm:px-6 lg:col-span-3  lg:px-8 xl:pl-12 border-b border-gray-200 dark:border-gray-400 py-5">
           <SongRequestForm
