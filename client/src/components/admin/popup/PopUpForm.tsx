@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { emitEvent } from "../../common/socket";
 import axios from "axios";
 import { removeInput } from "../../common/removeInput";
+import { FaRegCheckSquare } from "react-icons/fa";
+import { AiOutlineDownload } from "react-icons/ai";
+import { MdDeleteForever } from "react-icons/md";
 
 import { FETCH } from "../../../FETCH";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+
 const MySwal = withReactContent(Swal);
 
 type PopUpFormProps = {
@@ -15,7 +19,12 @@ type PopUpFormProps = {
 };
 
 function PopUpForm({ submit }: PopUpFormProps) {
-  const [imagePreview, setImagePreview] = useState({});
+  const imagePreviewRef: any = useRef();
+  const token = localStorage.getItem("token");
+  const [imagePreview, setImagePreview] = useState<any>({
+    file: null,
+    imagePreviewUrl: null,
+  });
   const [currentFile, setCurrentFile] = useState(null);
   const [newPopup, setNewPopup] = useState({
     title: null,
@@ -27,6 +36,7 @@ function PopUpForm({ submit }: PopUpFormProps) {
 
   // preview image
   const handleImageChange = (e: any | null) => {
+    console.log(e.target.files);
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
@@ -63,21 +73,76 @@ function PopUpForm({ submit }: PopUpFormProps) {
         cancelButtonText: "Non",
       }).then((result) => {
         if (result.isConfirmed) {
-          axios
-            .post(`${FETCH}/pop/`, newPopup)
-            .then((res) => {
-              emitEvent("update", "pop");
-              submit();
-              removeInput(["text_content", "time", "title"]);
-              MySwal.fire(
-                "Envoyé!",
-                "L'annonce s'affichera dans quelques secondes",
-                "success"
-              );
-            })
-            .catch((err) => {
-              console.log(err);
+          // Je vérifie si mon popup contien une image
+          if (currentFile) {
+            // j'upload mon fichier sur le serveur
+            new Promise((resolve, reject) => {
+              const formData = new FormData();
+              formData.append("file", currentFile);
+              console.log("ici ?");
+              axios
+                .post(`${FETCH}/upload/popimage`, formData, {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                    "x-access-token": token,
+                  },
+                })
+                .then((res) => {
+                  const result = res.data;
+                  console.log(result);
+                  axios
+                    .post(
+                      `${FETCH}/pop/`,
+                      {
+                        ...newPopup,
+                        filePath: result.filePath,
+                      },
+                      {
+                        headers: {
+                          "x-access-token": token,
+                        },
+                      }
+                    )
+                    .then(() => {
+                      emitEvent("update", "pop");
+                      submit();
+                      removeInput(["text_content", "time", "title"]);
+
+                      MySwal.fire(
+                        "Envoyé!",
+                        "L'annonce s'affichera dans quelques secondes",
+                        "success"
+                      );
+                    })
+                    .catch(function (error) {
+                      reject(error);
+                    });
+                })
+                .catch(function (error) {
+                  reject(error);
+                });
             });
+          } else {
+            axios
+              .post(`${FETCH}/pop/`, newPopup, {
+                headers: {
+                  "x-access-token": token,
+                },
+              })
+              .then(() => {
+                emitEvent("update", "pop");
+                submit();
+                removeInput(["text_content", "time", "title"]);
+                MySwal.fire(
+                  "Envoyé!",
+                  "L'annonce s'affichera dans quelques secondes",
+                  "success"
+                );
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
         }
       });
     }
@@ -107,11 +172,12 @@ function PopUpForm({ submit }: PopUpFormProps) {
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-200 sm:mt-px sm:pt-2"
               >
-                Titre
+                Titre*
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
                   <input
+                    required
                     onChange={(e) => {
                       handleChange(e);
                     }}
@@ -130,11 +196,12 @@ function PopUpForm({ submit }: PopUpFormProps) {
                 htmlFor="time"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-200 sm:mt-px sm:pt-2"
               >
-                Temps d'affichage (Minutes)
+                Temps d'affichage (Minutes)*
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <div className="max-w-lg flex rounded-md shadow-sm">
                   <input
+                    required
                     onChange={(e) => {
                       handleChange(e);
                     }}
@@ -154,10 +221,11 @@ function PopUpForm({ submit }: PopUpFormProps) {
                 htmlFor="about"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-200 sm:mt-px sm:pt-2"
               >
-                Contenu
+                Contenu*
               </label>
               <div className="mt-1 sm:mt-0 sm:col-span-2">
                 <textarea
+                  required
                   onChange={(e) => {
                     handleChange(e);
                   }}
@@ -173,60 +241,82 @@ function PopUpForm({ submit }: PopUpFormProps) {
               </div>
             </div>
             {/* Photo */}
-            {/* <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
-            <label
-              htmlFor="photo"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-            >
-              Photo
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <div className="flex items-center">
-                <div className=" sm:max-w-xs">
-                  <label
-                    htmlFor="file-upload"
-                    className={
-                      imagePreview.file !== null
-                        ? "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-green-600 rounded-md w-28 "
-                        : "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-gray-300 rounded-md w-28 "
-                    }
-                  >
-                    <i className="">
-                      {imagePreview.file !== null ? (
-                        <FaRegCheckSquare
-                          size={20}
-                          className="text-green-600"
-                        />
-                      ) : (
-                        <AiOutlineDownload
-                          size={20}
-                          className="text-gray-600 dark:text-white"
-                        />
-                      )}
-                    </i>
-                    <span
+            <div className="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-center sm:border-t sm:border-gray-200 sm:pt-5">
+              <label
+                htmlFor="photo"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                Photo
+              </label>
+              <div className="mt-1 sm:mt-0 sm:col-span-2">
+                <div className="flex items-center">
+                  <div className=" sm:max-w-xs">
+                    <label
+                      htmlFor="file-upload"
                       className={
                         imagePreview.file !== null
-                          ? "text-green-600"
-                          : "text-gray-600 dark:text-white"
+                          ? "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-green-600 rounded-md w-28 "
+                          : "flex justify-between items-center cursor-pointer px-4 py-2 border-2 border-gray-300 rounded-md w-28 "
                       }
                     >
-                      Upload
-                    </span>
-                  </label>
-                  <input
-                    accept=".png,.jpeg,.gif,.jpg"
-                    onChange={(e) => {
-                      handleImageChange(e);
-                    }}
-                    id="file-upload"
-                    type="file"
-                    className="hidden"
-                  />
+                      <i className="">
+                        {imagePreview.file !== null ? (
+                          <FaRegCheckSquare
+                            size={20}
+                            className="text-green-600"
+                          />
+                        ) : (
+                          <AiOutlineDownload
+                            size={20}
+                            className="text-gray-600 dark:text-white"
+                          />
+                        )}
+                      </i>
+                      <span
+                        className={
+                          imagePreview.file !== null
+                            ? "text-green-600"
+                            : "text-gray-600 dark:text-white"
+                        }
+                      >
+                        Upload
+                      </span>
+                    </label>
+                    <input
+                      ref={imagePreviewRef}
+                      accept=".png,.jpeg,.gif,.jpg"
+                      onChange={(e) => {
+                        handleImageChange(e);
+                      }}
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                    />
+                  </div>
                 </div>
               </div>
+              {imagePreview.imagePreviewUrl ? (
+                <div className="relative">
+                  <div
+                    onClick={() => {
+                      setImagePreview({
+                        file: null,
+                        imagePreviewUrl: null,
+                      });
+                      imagePreviewRef.current.value = "";
+                    }}
+                    className="absolute right-0 bg-red-600 text-xl text-white rounded-full p-1 -mr-3 -mt-3 sm:-mr-2 sm:mt-2 transition duration-250 ease-in-out hover:bg-red-400 cursor-pointer"
+                  >
+                    <MdDeleteForever />
+                  </div>
+                  <img
+                    alt="preview"
+                    className="mt-5"
+                    src={imagePreview.imagePreviewUrl}
+                  />
+                </div>
+              ) : null}
             </div>
-          </div> */}
           </div>
         </div>
         <div className="pt-6 sm:pt-5">

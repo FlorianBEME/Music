@@ -232,8 +232,6 @@ const Home = () => {
               text: popup.text_content,
               confirmButtonText: "Ok!",
               imageUrl: popup.filePath,
-              imageWidth: 400,
-              imageHeight: 200,
               imageAlt: popup.title,
             }).then((result) => {
               if (result.isConfirmed) {
