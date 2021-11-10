@@ -7,9 +7,9 @@ import { FiLoader } from "react-icons/fi";
 import Footer from "../components/visitor/footer";
 import NavBar from "../components/visitor/NavBar";
 import MusicBandeau from "../assets/musicbandeau.jpg";
-import WallPicture from "../components/visitor/WallPicture";
-import SongRequestBloc from "../components/visitor/songRequestBloc/songRequestBloc";
-import { Announcement } from "../components/visitor/Announcement";
+import WallPicture from "../components/visitor/layouts/WallPicture";
+import SongRequestBloc from "../components/visitor/layouts/songRequestBloc";
+import { Announcement } from "../components/visitor/layouts/Announcement";
 
 import { subscribeToSocket } from "../components/common/socket";
 

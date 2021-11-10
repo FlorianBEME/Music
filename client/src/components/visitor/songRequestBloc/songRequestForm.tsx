@@ -1,10 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../FETCH";
+import { FETCH } from "../../../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { removeInput } from "../common/removeInput";
-import { emitEvent } from "../common/socket";
+import { removeInput } from "../../common/removeInput";
+import { emitEvent } from "../../common/socket";
 
 type RequestFormProps = {
   visitorInfo: any;
