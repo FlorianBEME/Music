@@ -57,7 +57,6 @@ const Home = () => {
     axios
       .get(`${FETCH}/pop/available`)
       .then((res) => {
-        console.log(res.data);
         setPop(res.data);
       })
       .catch((err) => {

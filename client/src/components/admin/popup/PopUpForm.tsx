@@ -36,7 +36,6 @@ function PopUpForm({ submit }: PopUpFormProps) {
 
   // preview image
   const handleImageChange = (e: any | null) => {
-    console.log(e.target.files);
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
