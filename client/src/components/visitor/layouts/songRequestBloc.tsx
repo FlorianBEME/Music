@@ -41,7 +41,6 @@ export default function SongRequestBloc() {
       .get(`${FETCH}/app/app`)
       .then((res) => {
         setTitleIncurent(res.data.app.titleincurent);
-        console.log(res.data.app.titleincurent);
       })
       .catch(function (erreur) {
         console.log(erreur);
