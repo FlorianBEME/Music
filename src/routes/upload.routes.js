@@ -88,13 +88,12 @@ router.post("/footer", verifyJWT, (req, res) => {
 });
 
 router.post("/popimage", verifyJWT, (req, res) => {
-  console.log(req.files.file);
   const file = req.files.file;
   const extension = file.name.split(".").pop();
   const uuid = uuidv4();
   file.name = uuid + "." + extension;
 
-  // On verifie si la requetes contien bien un fichier
+  // On verifie si la requetes contient bien un fichier
   if (req.files === null) {
     return res.status(400).json({ msg: "No file uploaded" });
   }

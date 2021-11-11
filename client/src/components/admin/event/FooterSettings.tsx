@@ -13,7 +13,10 @@ const MySwal = withReactContent(Swal);
 
 export default function FooterSettings() {
   const token = localStorage.getItem("token");
-  const [imagePreviewFooter, setImagePreviewFooter] = useState<any>({});
+  const [imagePreviewFooter, setImagePreviewFooter] = useState<any>({
+    file: null,
+    imagePreviewUrl: null,
+  });
   const [currentFile, setCurrentFile] = useState<any>();
   const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
   const [itemsInFooter, setItemsInFooter] = useState<any>([]);
@@ -139,7 +142,7 @@ export default function FooterSettings() {
           .then((res) => {
             if (res.status === 200) {
               Swal.fire("Modifié!", "", "success");
-              removeInput(['text'])
+              removeInput(["text"]);
             }
             console.log(res);
           })

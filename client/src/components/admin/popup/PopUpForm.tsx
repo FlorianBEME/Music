@@ -78,7 +78,6 @@ function PopUpForm({ submit }: PopUpFormProps) {
             new Promise((resolve, reject) => {
               const formData = new FormData();
               formData.append("file", currentFile);
-              console.log("ici ?");
               axios
                 .post(`${FETCH}/upload/popimage`, formData, {
                   headers: {
@@ -87,8 +86,8 @@ function PopUpForm({ submit }: PopUpFormProps) {
                   },
                 })
                 .then((res) => {
+                  // si le fichier est bien upload
                   const result = res.data;
-                  console.log(result);
                   axios
                     .post(
                       `${FETCH}/pop/`,
@@ -114,13 +113,23 @@ function PopUpForm({ submit }: PopUpFormProps) {
                       );
                     })
                     .catch(function (error) {
+                      MySwal.fire(
+                        "Erreur!",
+                        "Une erreur est survenue dans la création de l'annonce.",
+                        "error"
+                      );
                       reject(error);
                     });
                 })
                 .catch(function (error) {
+                  MySwal.fire(
+                    "Erreur!",
+                    "Une erreur est survenue dans l'upload du fichier.",
+                    "error"
+                  );
                   reject(error);
                 });
-            });
+            }).catch((err) => console.error(err));
           } else {
             axios
               .post(`${FETCH}/pop/`, newPopup, {
@@ -139,6 +148,11 @@ function PopUpForm({ submit }: PopUpFormProps) {
                 );
               })
               .catch((err) => {
+                MySwal.fire(
+                  "Erreur!",
+                  "Une erreur est survenue dans la création de l'annonce.",
+                  "error"
+                );
                 console.log(err);
               });
           }
