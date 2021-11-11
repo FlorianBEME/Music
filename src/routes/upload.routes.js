@@ -46,7 +46,7 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
         });
       } else {
         // si pas de BG assigné
-        file.mv(`${front}/${file.name}`, (err) => {
+        file.mv(`${front}/uploads/${file.name}`, (err) => {
           if (err) {
             return res.status(500).send(err);
           }
