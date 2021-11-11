@@ -13,9 +13,7 @@ function useInterval(callback: Function, delay: number) {
   const savedCallback: any = useRef();
   // Remember the latest function.
   useEffect(() => {
-    console.log(savedCallback);
     savedCallback.current = callback;
-    console.log(callback);
   }, [callback]);
 
   // Set up the interval.

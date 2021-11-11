@@ -15,7 +15,10 @@ export interface IAppProps {
 }
 
 export function Backgroundheader(props: IAppProps) {
-  const [imagePreview, setImagePreview] = useState<any>({});
+  const [imagePreview, setImagePreview] = useState<any>({
+    file: null,
+    imagePreviewUrl: null,
+  });
   const [currentFile, setCurrentFile] = useState<any>();
 
   // changement de l'image d'en-tête
@@ -84,7 +87,7 @@ export function Backgroundheader(props: IAppProps) {
   };
   // preview image
   const handleImageChange = (e: any) => {
-      console.log("test header")
+    console.log("test header");
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];

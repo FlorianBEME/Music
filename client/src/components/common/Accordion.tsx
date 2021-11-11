@@ -21,9 +21,6 @@ function Accordion({
   date,
 }: AccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  if (date != null) {
-    console.log(date.getTime);
-  }
 
   return (
     <section className="min-w-7xl">

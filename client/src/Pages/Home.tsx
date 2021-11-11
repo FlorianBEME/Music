@@ -57,7 +57,6 @@ const Home = () => {
     axios
       .get(`${FETCH}/pop/available`)
       .then((res) => {
-        console.log(res.data);
         setPop(res.data);
       })
       .catch((err) => {
@@ -232,8 +231,6 @@ const Home = () => {
               text: popup.text_content,
               confirmButtonText: "Ok!",
               imageUrl: popup.filePath,
-              imageWidth: 400,
-              imageHeight: 200,
               imageAlt: popup.title,
             }).then((result) => {
               if (result.isConfirmed) {

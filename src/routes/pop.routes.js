@@ -55,7 +55,7 @@ router.get("/:id", (req, res) => {
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", verifyJWT,(req, res) => {
   let data = req.body;
   const send_date = moment().format("YYYY-MM-DD HH:mm:ss");
   const timer_before_expire = parseInt(data.time);

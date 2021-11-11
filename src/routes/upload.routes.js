@@ -87,4 +87,29 @@ router.post("/footer", verifyJWT, (req, res) => {
   });
 });
 
+router.post("/popimage", verifyJWT, (req, res) => {
+  const file = req.files.file;
+  const extension = file.name.split(".").pop();
+  const uuid = uuidv4();
+  file.name = uuid + "." + extension;
+
+  // On verifie si la requetes contient bien un fichier
+  if (req.files === null) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+
+  file.mv(`${front}/popimage/${file.name}`, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    console.log("fichier upload");
+    res
+      .json({
+        fileName: `/popimage/${file.name}`,
+        filePath: `/popimage/${file.name}`,
+      })
+      .status(200);
+  });
+});
+
 module.exports = router;
