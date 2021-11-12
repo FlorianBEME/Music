@@ -62,21 +62,20 @@ export default function SongRequestInCurrent({
                 })
                 .then(() => {
                   // je modifie le local storage
+                  // Je vérifie si mon user a jamais voté
                   if (
                     localStorage.getItem("idMusicVoting") === null &&
                     localStorage.getItem("date") === null
                   ) {
-                    localStorage.setItem("idMusicVoting", JSON.stringify(id));
+                    localStorage.setItem("idMusicVoting", id.toString());
                   } else {
+                    // Si il a déja voté je récupere la liste des id, j'ajoute le nouveau et je modifie le localStorage
                     let oldId = localStorage.getItem("idMusicVoting");
                     if (oldId !== null) {
-                      let result: string[] = oldId.split(",");
+                      let result: Array<string> = oldId.split(",");
                       result.push(id.toString());
                       localStorage.removeItem("idMusicVoting");
-                      localStorage.setItem(
-                        "idMusicVoting",
-                        JSON.stringify(result)
-                      );
+                      localStorage.setItem("idMusicVoting", result.toString());
                     }
                   }
                   emitEvent("update", "musiclist");
