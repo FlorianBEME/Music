@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export default function useDarkMode() {
-  const themeStorage = localStorage.getItem("MusicRequestThemePreference");
+  const themeStorage = localStorage.getItem("MusicRequestThemePreference") === null ? 'light' : localStorage.getItem("MusicRequestThemePreference")
   const [theme, setTheme] = useState<any>(themeStorage);
   const colorTheme = theme === "light" ? "dark" : "light";
 

@@ -27,16 +27,13 @@ export default function Login() {
           let infoUser = JSON.stringify(data.result[0]);
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", infoUser);
-          console.log("success");
           document.location.reload();
-          console.log(data);
         })
         .catch((err) => {
-          console.log("error");
+          console.error(err);
           notifyError();
         });
     } else {
-      console.log("champ vides");
       notifyError();
     }
   };

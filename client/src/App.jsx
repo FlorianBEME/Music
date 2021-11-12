@@ -18,7 +18,6 @@ function App() {
   const verifyToken = () => {
     const token = localStorage.getItem("token");
     if (token) {
-      console.log("il y a un token");
       axios
         .get(`${FETCH}/login/isuserauth`, {
           headers: {
@@ -32,11 +31,9 @@ function App() {
             localStorage.removeItem("token");
           }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch(function (err) {
+          console.error(err);
         });
-    } else {
-      console.log("il ny a pas de token");
     }
   };
 

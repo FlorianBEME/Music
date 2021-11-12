@@ -38,7 +38,7 @@ const EventLayout = () => {
         setDataLoad(true);
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -111,7 +111,6 @@ const EventLayout = () => {
               }
             )
             .then((res) => {
-              console.log(res);
               resolve(res);
             })
             .catch((error) => {
@@ -123,7 +122,6 @@ const EventLayout = () => {
               }
             });
         }).then((res: any) => {
-          console.log(res.data);
           Swal.fire("Modifié!", "L'évenement est modifié", "success");
           fetchTitleEvent();
           emitEvent("update", "settitle");
@@ -179,7 +177,6 @@ const EventLayout = () => {
   };
   //fetch style du titre
   const fetchTitleEvent = () => {
-    console.log("test title reftch");
     axios
       .get(`${FETCH}/app/app`)
       .then((res) => {
@@ -187,7 +184,7 @@ const EventLayout = () => {
         setPositionTitle(res.data.titleEventappStyle.position);
       })
       .catch(function (erreur) {
-        console.log(erreur);
+        console.error(erreur);
       });
   };
 

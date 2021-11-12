@@ -21,7 +21,7 @@ const VisitorLayout = () => {
         setVisitorList(res.data);
       })
       .catch(function (erreur) {
-        console.log(erreur);
+        console.error(erreur);
       });
   };
   useEffect(() => {
@@ -74,7 +74,6 @@ const VisitorLayout = () => {
         );
         const status = visitorList[index].isNotAllowed;
 
-        console.log(status);
         axios
           .put(
             `${FETCH}/visitor/${id}`,

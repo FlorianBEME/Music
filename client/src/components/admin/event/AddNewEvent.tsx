@@ -49,7 +49,7 @@ export function AddNewEvent(props: IAppProps) {
               }
             )
             .catch(function (error) {
-              console.log(error);
+              console.error(error);
             });
           Swal.fire("Créer!", "", "success");
           emitEvent("update", "event");

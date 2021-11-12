@@ -17,8 +17,8 @@ export default function Layout() {
       .then((res) => {
         setevent(res.data);
       })
-      .catch(function (erreur) {
-        console.log(erreur);
+      .catch(function (err) {
+        console.error(err);
       });
   };
   useEffect(() => {
@@ -28,7 +28,6 @@ export default function Layout() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      console.log("il y a un token");
       axios
         .get(`${FETCH}/login/isuserauth`, {
           headers: {
@@ -41,8 +40,8 @@ export default function Layout() {
             history.push("login");
           }
         })
-        .catch(function (error) {
-          console.log(error);
+        .catch(function (err) {
+          console.error(err);
         });
     } else {
       localStorage.removeItem("token");

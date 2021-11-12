@@ -153,7 +153,7 @@ function PopUpForm({ submit }: PopUpFormProps) {
                   "Une erreur est survenue dans la création de l'annonce.",
                   "error"
                 );
-                console.log(err);
+                console.error(err);
               });
           }
         }

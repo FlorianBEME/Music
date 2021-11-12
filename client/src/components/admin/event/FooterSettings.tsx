@@ -144,7 +144,6 @@ export default function FooterSettings() {
               Swal.fire("Modifié!", "", "success");
               removeInput(["text"]);
             }
-            console.log(res);
           })
           .catch((err) => {
             console.error(err);
@@ -163,7 +162,6 @@ export default function FooterSettings() {
 
   useEffect(() => {
     subscribeToSocket((args: string) => {
-      console.log("test");
       if (args === "footer") {
         fetchFooterItem();
       }

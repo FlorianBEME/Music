@@ -16,7 +16,7 @@ export default function PopupLayout() {
         setPops(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   useEffect(() => {
