@@ -87,7 +87,6 @@ export function Backgroundheader(props: IAppProps) {
   };
   // preview image
   const handleImageChange = (e: any) => {
-    console.log("test header");
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];

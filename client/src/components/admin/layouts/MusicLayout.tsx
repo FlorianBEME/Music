@@ -30,7 +30,7 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
         setSongs(res.data);
       })
       .catch(function (erreur) {
-        console.log(erreur);
+        console.error(erreur);
       });
   };
   // Suppression de la musique

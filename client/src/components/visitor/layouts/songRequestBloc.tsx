@@ -28,7 +28,7 @@ export default function SongRequestBloc() {
         setLoading(true);
       })
       .catch(function (erreur) {
-        console.log(erreur);
+        console.error(erreur);
       });
   };
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function SongRequestBloc() {
         setTitleIncurent(res.data.app.titleincurent);
       })
       .catch(function (erreur) {
-        console.log(erreur);
+        console.error(erreur);
       });
   };
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function SongRequestBloc() {
         }
       })
       .catch(function (erreur) {
-        console.log(erreur);
+        console.error(erreur);
       });
   }, [visitorInfo]);
 
@@ -77,7 +77,7 @@ export default function SongRequestBloc() {
           }
         })
         .catch(function (erreur) {
-          console.log(erreur);
+          console.error(erreur);
         });
     };
     subscribeToSocket((args: string) => {

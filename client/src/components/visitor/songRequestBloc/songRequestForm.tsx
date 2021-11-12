@@ -39,7 +39,6 @@ const SongRequestForm = ({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(visitorInfo);
     if (isAllowed) {
       // on vérifie si l'artiste est déja dans la liste
       let artistFiltered: object[] = [];
@@ -72,7 +71,7 @@ const SongRequestForm = ({
           })
           .catch(function (error) {
             toast.error("Erreur", { position: toast.POSITION.TOP_RIGHT });
-            console.log(error);
+            console.error(error);
           });
       } else {
         toast.error("Chanson déja dans la liste", {

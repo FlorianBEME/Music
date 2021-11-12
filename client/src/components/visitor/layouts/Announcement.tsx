@@ -35,9 +35,7 @@ export function Announcement(props: IAppProps) {
       }
     });
   }, []);
-
-  console.log(pops);
-
+  
   return (
     <div className="w-full">
       {isLoadingPop ? (

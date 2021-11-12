@@ -50,7 +50,7 @@ const Home = () => {
         setColor(res.data.titleEventappStyle.color);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   const fetchPopUp = () => {
@@ -60,7 +60,7 @@ const Home = () => {
         setPop(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
   const fetchFooter = () => {
@@ -73,7 +73,7 @@ const Home = () => {
         setFooterItem(itemFiltering);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -122,7 +122,7 @@ const Home = () => {
             }
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
             reject();
           });
       } else {
@@ -156,8 +156,8 @@ const Home = () => {
                   setEventLoad(true);
                 }, 2000);
               })
-              .catch(function (erreur) {
-                console.log(erreur);
+              .catch(function (err) {
+                console.error(err);
               });
           })
           .catch((err) => {
