@@ -11,43 +11,33 @@ import FooterSettings from "../event/FooterSettings";
 import { Backgroundheader } from "../event/Backgroundheader";
 import { AddNewEvent } from "../event/AddNewEvent";
 import { DeleteEvent } from "../event/DeleteEvent";
+import { Switch } from "@headlessui/react";
+
+// Switch
+function classNames(...classes: any) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const MySwal = withReactContent(Swal);
 
-const EventLayout = () => {
-  const token = localStorage.getItem("token");
-  const [dataLoad, setDataLoad] = useState(false);
-  // const [newEvent, setNewEvent] = useState({
-  //   name: "",
-  //   active_wall_picture: false,
-  //   active_music_request: false,
-  // });
-  const [eventCurrent, setEventCurrent] = useState<any>({});
+type EventProps = {
+  event: any;
+  refetch: Function;
+  dataLoad: boolean;
+};
 
+const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
+  const token = localStorage.getItem("token");
+  const [eventCurrent, setEventCurrent] = useState<any>({});
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
+  const [displayTitle, setDisplayTitle] = useState(true);
 
   const history = useHistory();
 
-  //fetch event
-  const fetchData = () => {
-    axios
-      .get(`${FETCH}/events`)
-      .then((response) => {
-        setEventCurrent(response.data[0]);
-        setDataLoad(true);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  };
-
   // modifier les permissions d'accès
   const handleChangeAcces = () => {
-    if (
-      !eventCurrent.active_music_request &&
-      !eventCurrent.active_wall_picture
-    ) {
+    if (!event[0].active_music_request && !event[0].active_wall_picture) {
       Swal.fire("Erreur!", "Sélectionner au moins une catégorie", "error");
     } else {
       MySwal.fire({
@@ -62,7 +52,7 @@ const EventLayout = () => {
         if (result.isConfirmed) {
           new Promise((resolve, reject) => {
             axios
-              .put(`${FETCH}/events/${eventCurrent.id}`, eventCurrent, {
+              .put(`${FETCH}/events/${event[0].id}`, eventCurrent, {
                 headers: {
                   "x-access-token": token,
                 },
@@ -77,7 +67,7 @@ const EventLayout = () => {
             .then(() => {
               Swal.fire("Modifié!", "L'évenement est modifié", "success");
               setEventCurrent(null);
-              fetchData();
+              refetch();
               emitEvent("update", "event");
             })
             .catch(() => {
@@ -182,38 +172,73 @@ const EventLayout = () => {
       .then((res) => {
         setColor(res.data.titleEventappStyle.color);
         setPositionTitle(res.data.titleEventappStyle.position);
+        setDisplayTitle(res.data.titleEventappStyle.display);
       })
       .catch(function (erreur) {
         console.error(erreur);
       });
   };
 
-  // fetchData();
   useEffect(() => {
-    fetchData();
+    setEventCurrent(event[0]);
     fetchTitleEvent();
-  }, []);
+  }, [event]);
 
   // socket;
   useEffect(() => {
     subscribeToSocket((args: string) => {
       if (args === "settitle") {
-        console.log("je recoit");
         fetchTitleEvent();
       }
     });
   }, []);
 
+  const setDisplayTitleAndPush = () => {
+        new Promise((resolve, reject) => {
+          axios
+            .put(
+              `${FETCH}/app/titleEventappStyle/display/0"`,
+              { display: !displayTitle },
+              {
+                headers: {
+                  "x-access-token": token,
+                },
+              }
+            )
+            .then((res) => {
+              fetchTitleEvent();
+            emitEvent("update", "settitle");
+              resolve(res);
+            })
+            .catch(function (error) {
+              if (error.response.status === 401) {
+                localStorage.removeItem("token");
+                history.go(0);
+              } else {
+                reject();
+              }
+            });
+        }).catch(() => {
+            Swal.fire("Erreur!", "Une erreur est survenue", "error");
+          });
+      
+  };
+
   return (
     <div>
       {dataLoad ? (
-        eventCurrent === null || eventCurrent === undefined ? (
-          <AddNewEvent token={token} refetch={() => fetchData()} />
+        event[0] === null || event[0] === undefined ? (
+          <AddNewEvent
+            token={token}
+            refetch={() => {
+              refetch();
+            }}
+          />
         ) : null
       ) : null}
 
       {dataLoad ? (
-        eventCurrent === null || eventCurrent === undefined ? null : (
+        event[0] === null || event[0] === undefined ? null : (
           <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
             <div className="px-4 py-5 sm:p-6">
               <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
@@ -240,15 +265,12 @@ const EventLayout = () => {
                           type="checkbox"
                           onChange={(e) => {
                             setEventCurrent({
-                              ...eventCurrent,
-                              [e.target.name]:
-                                !eventCurrent.active_music_request,
+                              ...event[0],
+                              [e.target.name]: !event[0].active_music_request,
                             });
                           }}
                           defaultChecked={
-                            eventCurrent.active_music_request === 1
-                              ? true
-                              : false
+                            event[0].active_music_request === 1 ? true : false
                           }
                           className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                         />
@@ -274,15 +296,12 @@ const EventLayout = () => {
                         <input
                           onChange={(e) => {
                             setEventCurrent({
-                              ...eventCurrent,
-                              [e.target.name]:
-                                !eventCurrent.active_wall_picture,
+                              ...event[0],
+                              [e.target.name]: !event[0].active_wall_picture,
                             });
                           }}
                           defaultChecked={
-                            eventCurrent.active_wall_picture === 1
-                              ? true
-                              : false
+                            event[0].active_wall_picture === 1 ? true : false
                           }
                           id="active_wall_picture"
                           aria-describedby="active_wall_picture"
@@ -321,12 +340,40 @@ const EventLayout = () => {
       ) : null}
 
       {dataLoad ? (
-        eventCurrent === null || eventCurrent === undefined ? null : (
+        event[0] === null || event[0] === undefined ? null : (
           <div className="bg-white dark:bg-gray-700 shadow sm:rounded-lg my-2.5">
             <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                Modifier la position
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                  Modifier Titre
+                </h3>
+                <Switch
+                  checked={displayTitle}
+                  onChange={setDisplayTitleAndPush}
+                  className="flex-shrink-0 group relative rounded-full inline-flex items-center justify-center h-5 w-10 cursor-pointer  dark"
+                >
+                  <span className="sr-only">Use setting</span>
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute  w-full h-full rounded-md"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      displayTitle ? "bg-indigo-600" : "bg-gray-200",
+                      "pointer-events-none absolute h-4 w-9 mx-auto rounded-full transition-colors ease-in-out duration-200"
+                    )}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={classNames(
+                      displayTitle ? "translate-x-5" : "translate-x-0",
+                      "pointer-events-none absolute left-0 inline-block h-5 w-5 border border-gray-200 rounded-full bg-white shadow transform ring-0 transition-transform ease-in-out duration-200"
+                    )}
+                  />
+                </Switch>
+              </div>
+
               <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
                 <p>Modifier pour changer la position du titre</p>
               </div>
@@ -363,9 +410,9 @@ const EventLayout = () => {
               </div>
             </div>
             <div className="px-4 pb-7 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+              {/* <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                 Modifier la couleur
-              </h3>
+              </h3> */}
               <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
                 <p>Modifier pour changer la couleur du titre</p>
               </div>
@@ -396,17 +443,19 @@ const EventLayout = () => {
       {dataLoad ? <FooterSettings /> : null}
 
       {dataLoad ? (
-        eventCurrent === null || eventCurrent === undefined ? null : (
-          <Backgroundheader event={eventCurrent} token={token} />
+        event[0] === null || event[0] === undefined ? null : (
+          <Backgroundheader event={event[0]} token={token} />
         )
       ) : null}
 
       {dataLoad ? (
-        eventCurrent === null || eventCurrent === undefined ? null : (
+        event[0] === null || event[0] === undefined ? null : (
           <DeleteEvent
             token={token}
-            event={eventCurrent}
-            refetch={() => fetchData()}
+            event={event[0]}
+            refetch={() => {
+              refetch();
+            }}
           />
         )
       ) : null}
