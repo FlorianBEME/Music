@@ -27,6 +27,7 @@ const Home = () => {
   const [positionTitle, setPositionTitle] = useState("center");
   const [color, setColor] = useState("#ffffff");
   const [pop, setPop] = useState([]);
+  const [display, setDisplay] = useState(true);
   const [footerItem, setFooterItem] = useState<any>([]);
   const [footerCopyright, setFooterCopyright] = useState({});
 
@@ -48,6 +49,7 @@ const Home = () => {
       .then((res) => {
         setPositionTitle(res.data.titleEventappStyle.position);
         setColor(res.data.titleEventappStyle.color);
+        setDisplay(res.data.titleEventappStyle.display);
       })
       .catch((err) => {
         console.error(err);
@@ -270,25 +272,27 @@ const Home = () => {
                     />
                   ) : null}
                 </div>
-                <div className="relative max-w-7xl mx-auto h-32 sm:px-8 px-2">
-                  <div
-                    className={classNames(
-                      positionTitle === "center"
-                        ? "justify-center"
-                        : positionTitle === "left"
-                        ? "justify-start"
-                        : "justify-end",
-                      "flex items-center h-full"
-                    )}
-                  >
-                    <h1
-                      className="text-4xl font-extrabold tracking-tight sm:text-5xl "
-                      style={{ color: color }}
+                {display ? (
+                  <div className="relative max-w-7xl mx-auto h-32 sm:px-8 px-2">
+                    <div
+                      className={classNames(
+                        positionTitle === "center"
+                          ? "justify-center"
+                          : positionTitle === "left"
+                          ? "justify-start"
+                          : "justify-end",
+                        "flex items-center h-full"
+                      )}
                     >
-                      {event[0].name}
-                    </h1>
+                      <h1
+                        className="text-4xl font-extrabold tracking-tight sm:text-5xl "
+                        style={{ color: color }}
+                      >
+                        {event[0].name}
+                      </h1>
+                    </div>
                   </div>
-                </div>
+                ) : null}
               </div>
               <NavBar
                 active_wall_picture={event[0].active_wall_picture}

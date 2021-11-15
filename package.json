@@ -12,6 +12,9 @@
     "build": "cd client && npm run build",
     "dev": "concurrently \"npm start\" \"npm run client\""
   },
+  "nodemonConfig": {
+    "ignore": ["src/json/*.json"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FlorianBEME/Music.git"

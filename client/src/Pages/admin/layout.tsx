@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 export default function Layout() {
   const history = useHistory();
   const [event, setevent] = useState(null);
+  const [dataLoad, setDataLoad] = useState(true);
 
   //Fecth event et
   const fetchEvent = () => {
@@ -16,6 +17,7 @@ export default function Layout() {
       .get(`${FETCH}/events`)
       .then((res) => {
         setevent(res.data);
+        setDataLoad(true);
       })
       .catch(function (err) {
         console.error(err);
@@ -52,6 +54,7 @@ export default function Layout() {
   useEffect(() => {
     subscribeToSocket((args: string) => {
       if (args === "event") {
+        console.log("je recoit");
         fetchEvent();
       }
     });
@@ -74,7 +77,15 @@ export default function Layout() {
                   return (
                     <Route
                       path={prop.path}
-                      component={() => <prop.component event={event} />}
+                      component={() => (
+                        <prop.component
+                          event={event}
+                          dataLoad={dataLoad}
+                          refetch={() => {
+                            fetchEvent();
+                          }}
+                        />
+                      )}
                       key={key}
                     />
                   );

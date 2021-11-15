@@ -17,8 +17,9 @@ type MusicLayoutProps = {
 };
 
 const MusicLayout = ({ event }: MusicLayoutProps) => {
+  console.log(event);
   const token = localStorage.getItem("token");
-  const [compareType, setCompareType] = useState("");
+  const [compareType, setCompareType] = useState("default");
   const [songs, setSongs] = useState<any>([]);
   const [songsInCurrent, setSongsInCurrent] = useState("");
 
@@ -162,11 +163,13 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
               },
             }
           )
-          .then(() => {
-            Swal.fire("Modifié!", "", "success");
-            removeInput(["title"]);
-            setSongsInCurrent("");
-            emitEvent("update", "title");
+          .then((res) => {
+            if (res.status === 200) {
+              Swal.fire("Modifié!", "", "success");
+              removeInput(["title"]);
+              setSongsInCurrent("");
+              emitEvent("update", "title");
+            }
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -247,7 +250,7 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
                       setCompareType(e.target.value);
                     }}
                   >
-                    <option disabled></option>
+                    <option value="default">Récent</option>
                     <option value="indispo">Indisponible</option>
                     <option value="validé">Validé</option>
                     <option value="voteup">Top vote</option>
