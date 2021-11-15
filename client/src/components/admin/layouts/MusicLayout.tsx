@@ -18,7 +18,7 @@ type MusicLayoutProps = {
 
 const MusicLayout = ({ event }: MusicLayoutProps) => {
   const token = localStorage.getItem("token");
-  const [compareType, setCompareType] = useState("");
+  const [compareType, setCompareType] = useState("default");
   const [songs, setSongs] = useState<any>([]);
   const [songsInCurrent, setSongsInCurrent] = useState("");
 
@@ -247,7 +247,7 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
                       setCompareType(e.target.value);
                     }}
                   >
-                    <option disabled></option>
+                    <option value="default">Récent</option>
                     <option value="indispo">Indisponible</option>
                     <option value="validé">Validé</option>
                     <option value="voteup">Top vote</option>

@@ -198,7 +198,7 @@ function PopUpForm({ submit }: PopUpFormProps) {
                     name="title"
                     id="title"
                     autoComplete="title"
-                    className="flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-none rounded-md sm:text-sm border-gray-300"
+                    className="flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-300"
                   />
                 </div>
               </div>
@@ -223,7 +223,7 @@ function PopUpForm({ submit }: PopUpFormProps) {
                     name="time"
                     id="time"
                     autoComplete="time"
-                    className="flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-none rounded-md sm:text-sm border-gray-300"
+                    className="flex-1 block w-full focus:ring-indigo-500 focus:border-indigo-500 min-w-0 rounded-md sm:text-sm border-gray-300"
                   />
                 </div>
               </div>
