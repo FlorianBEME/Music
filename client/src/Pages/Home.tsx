@@ -10,14 +10,18 @@ import MusicBandeau from "../assets/musicbandeau.jpg";
 import WallPicture from "../components/visitor/layouts/WallPicture";
 import SongRequestBloc from "../components/visitor/layouts/songRequestBloc";
 import { Announcement } from "../components/visitor/layouts/Announcement";
-
+import ThemeSelect from "../components/common/ThemeSelect";
 import { subscribeToSocket } from "../components/common/socket";
 
 import Swal from "sweetalert2";
+import { TextScrollingBanner } from "../components/visitor/textScrollingBanner";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
+
+const textLorem =
+  "Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. ";
 
 const Home = () => {
   const history = useHistory();
@@ -295,10 +299,15 @@ const Home = () => {
                 ) : null}
               </div>
               <NavBar
+                textBanner={textLorem}
                 active_wall_picture={event[0].active_wall_picture}
                 active_music_request={event[0].active_music_request}
                 changeComponent={changeComponent}
               />
+
+              <div className="hidden  md:inline-block -mt-4 pb-4">
+                <TextScrollingBanner text={textLorem} />
+              </div>
               <div className="max-w-7xl w-full mx-auto sm:px-6 lg:px-8 ">
                 {componentRender()}
               </div>
