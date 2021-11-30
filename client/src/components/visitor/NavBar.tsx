@@ -9,7 +9,7 @@ type NavBarProps = {
   active_music_request: boolean;
   active_wall_picture: boolean;
   changeComponent: Function;
-  textBanner: String;
+  textBanner: String | null;
 };
 
 export default function NavBar({
@@ -20,18 +20,27 @@ export default function NavBar({
 }: NavBarProps) {
   return (
     <Popover className=" ">
-      <div className="flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
-        <div className="-mr-2 -my-2 md:hidden flex justify-between items-center w-full">
-          <Popover.Button className="bg-indigo-600 dark:bg-gray-600 rounded-md p-2 inline-flex items-center justify-center text-white dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-            <span className="sr-only">Open menu</span>
-            <MenuIcon className="h-6 w-6" aria-hidden="true" />
-          </Popover.Button>
-          <div className="w-9/12 ">
-            <TextScrollingBanner text={textBanner} />
-          </div>
+      <div className="md:flex px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
 
-          <ThemeSelect />
+        {/* mobile view */}
+        <div className="grid grid-cols-4 gap-2 -my-2 md:hidden  w-full">
+          <div className="flex justify-center">
+            <Popover.Button className="w-8/12  bg-indigo-600 dark:bg-gray-600 rounded-md p-2 inline-flex items-center justify-center text-white dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+              <span className="sr-only">Open menu</span>
+              <MenuIcon className="h-6 w-6" aria-hidden="true" />
+            </Popover.Button>
+          </div>
+          {textBanner ? (
+            <div className="col-span-2 flex justify-center items-center">
+              <TextScrollingBanner text={textBanner} />
+            </div>
+          ) : null}
+          <div className="flex justify-center items-center">
+            <ThemeSelect />
+          </div>
         </div>
+
+        {/* desktop view */}
         <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
           <Popover.Group as="nav" className="flex space-x-10">
             {active_music_request ? (

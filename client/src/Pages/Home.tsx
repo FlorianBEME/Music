@@ -20,8 +20,8 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
-const textLorem =
-  "Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. ";
+// const textBanner =
+//   "Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. ";
 
 const Home = () => {
   const history = useHistory();
@@ -34,6 +34,7 @@ const Home = () => {
   const [display, setDisplay] = useState(true);
   const [footerItem, setFooterItem] = useState<any>([]);
   const [footerCopyright, setFooterCopyright] = useState({});
+  const [textBanner, setTextBanner] = useState<null | string>(null);
 
   const componentRender = () => {
     if (component === "music") {
@@ -54,6 +55,7 @@ const Home = () => {
         setPositionTitle(res.data.titleEventappStyle.position);
         setColor(res.data.titleEventappStyle.color);
         setDisplay(res.data.titleEventappStyle.display);
+        setTextBanner(res.data.app.textBanner);
       })
       .catch((err) => {
         console.error(err);
@@ -299,15 +301,17 @@ const Home = () => {
                 ) : null}
               </div>
               <NavBar
-                textBanner={textLorem}
+                textBanner={textBanner}
                 active_wall_picture={event[0].active_wall_picture}
                 active_music_request={event[0].active_music_request}
                 changeComponent={changeComponent}
               />
+              {textBanner ? (
+                <div className="hidden  md:inline-block -mt-4 pb-4">
+                  <TextScrollingBanner text={textBanner} />
+                </div>
+              ) : null}
 
-              <div className="hidden  md:inline-block -mt-4 pb-4">
-                <TextScrollingBanner text={textLorem} />
-              </div>
               <div className="max-w-7xl w-full mx-auto sm:px-6 lg:px-8 ">
                 {componentRender()}
               </div>

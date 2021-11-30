@@ -1,1 +1,15 @@
-[{"id":0,"app":{"titleincurent":"Titre en cours...","artirstincurrent":"Artiste en cours...","artistincurrent":"Artiste en cours..."},"titleEventappStyle":{"position":"right","color":"#7c1414","display":true}}]
+[
+  {
+    "id": 0,
+    "app": {
+      "titleincurent": "Titre en cours...",
+      "artirstincurrent": "Artiste en cours...",
+      "textBanner": "ceci est un test"
+    },
+    "titleEventappStyle": {
+      "position": "right",
+      "color": "#7c1414",
+      "display": true
+    }
+  }
+]
