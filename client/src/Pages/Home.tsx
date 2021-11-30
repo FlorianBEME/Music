@@ -10,14 +10,17 @@ import MusicBandeau from "../assets/musicbandeau.jpg";
 import WallPicture from "../components/visitor/layouts/WallPicture";
 import SongRequestBloc from "../components/visitor/layouts/songRequestBloc";
 import { Announcement } from "../components/visitor/layouts/Announcement";
-
 import { subscribeToSocket } from "../components/common/socket";
 
 import Swal from "sweetalert2";
+import { TextScrollingBanner } from "../components/visitor/textScrollingBanner";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
+
+// const textBanner =
+//   "Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. ";
 
 const Home = () => {
   const history = useHistory();
@@ -30,6 +33,7 @@ const Home = () => {
   const [display, setDisplay] = useState(true);
   const [footerItem, setFooterItem] = useState<any>([]);
   const [footerCopyright, setFooterCopyright] = useState({});
+  const [textBanner, setTextBanner] = useState<null | string>(null);
 
   const componentRender = () => {
     if (component === "music") {
@@ -43,13 +47,14 @@ const Home = () => {
   const changeComponent = (component: any) => {
     setComponent(component);
   };
-  const fetchTitleStyle = () => {
+  const fetchAppText = () => {
     axios
       .get(`${FETCH}/app/app`)
       .then((res) => {
         setPositionTitle(res.data.titleEventappStyle.position);
         setColor(res.data.titleEventappStyle.color);
         setDisplay(res.data.titleEventappStyle.display);
+        setTextBanner(res.data.app.textbanner);
       })
       .catch((err) => {
         console.error(err);
@@ -96,7 +101,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetchTitleStyle();
+    fetchAppText();
   }, []);
 
   useEffect(() => {
@@ -194,11 +199,11 @@ const Home = () => {
     subscribeToSocket((args: string) => {
       if (args === "event") {
         history.go(0);
-      } else if (args === "settitle") {
-        fetchTitleStyle();
+      } else if (args === "settitle" || args === "setbanner") {
+        fetchAppText();
       } else if (args === "pop") {
         fetchPopUp();
-      }
+      } 
     });
   }, [history]);
 
@@ -295,10 +300,17 @@ const Home = () => {
                 ) : null}
               </div>
               <NavBar
+                textBanner={textBanner}
                 active_wall_picture={event[0].active_wall_picture}
                 active_music_request={event[0].active_music_request}
                 changeComponent={changeComponent}
               />
+              {textBanner ? (
+                <div className="hidden  md:inline-block -mt-4 pb-4">
+                  <TextScrollingBanner text={textBanner} />
+                </div>
+              ) : null}
+
               <div className="max-w-7xl w-full mx-auto sm:px-6 lg:px-8 ">
                 {componentRender()}
               </div>

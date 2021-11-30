@@ -49,6 +49,11 @@ const subscribeToSocket = (data: any) => {
     console.log("Footer: j'ai bien recu et je met a jour");
     return data("footer");
   });
+  //Banner
+  socket.on("setbanner", () => {
+    console.log("Banner: j'ai bien recu et je met a jour");
+    return data("setbanner");
+  });
 };
 
 const emitEvent = (eventemit: string, args: string) => {

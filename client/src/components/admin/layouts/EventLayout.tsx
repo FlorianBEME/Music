@@ -12,6 +12,7 @@ import { Backgroundheader } from "../event/Backgroundheader";
 import { AddNewEvent } from "../event/AddNewEvent";
 import { DeleteEvent } from "../event/DeleteEvent";
 import { Switch } from "@headlessui/react";
+import { TextBannerModify } from "../event/TextBannerModify";
 
 // Switch
 function classNames(...classes: any) {
@@ -194,34 +195,33 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
   }, []);
 
   const setDisplayTitleAndPush = () => {
-        new Promise((resolve, reject) => {
-          axios
-            .put(
-              `${FETCH}/app/titleEventappStyle/display/0"`,
-              { display: !displayTitle },
-              {
-                headers: {
-                  "x-access-token": token,
-                },
-              }
-            )
-            .then((res) => {
-              fetchTitleEvent();
-            emitEvent("update", "settitle");
-              resolve(res);
-            })
-            .catch(function (error) {
-              if (error.response.status === 401) {
-                localStorage.removeItem("token");
-                history.go(0);
-              } else {
-                reject();
-              }
-            });
-        }).catch(() => {
-            Swal.fire("Erreur!", "Une erreur est survenue", "error");
-          });
-      
+    new Promise((resolve, reject) => {
+      axios
+        .put(
+          `${FETCH}/app/titleEventappStyle/display/0"`,
+          { display: !displayTitle },
+          {
+            headers: {
+              "x-access-token": token,
+            },
+          }
+        )
+        .then((res) => {
+          fetchTitleEvent();
+          emitEvent("update", "settitle");
+          resolve(res);
+        })
+        .catch(function (error) {
+          if (error.response.status === 401) {
+            localStorage.removeItem("token");
+            history.go(0);
+          } else {
+            reject();
+          }
+        });
+    }).catch(() => {
+      Swal.fire("Erreur!", "Une erreur est survenue", "error");
+    });
   };
 
   return (
@@ -437,6 +437,12 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
               </div>
             </div>
           </div>
+        )
+      ) : null}
+
+      {dataLoad ? (
+        event[0] === null || event[0] === undefined ? null : (
+          <TextBannerModify token={token} />
         )
       ) : null}
 

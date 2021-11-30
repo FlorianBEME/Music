@@ -3,27 +3,41 @@ import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import ThemeSelect from "../common/ThemeSelect";
+import { TextScrollingBanner } from "./textScrollingBanner";
 
 type NavBarProps = {
   active_music_request: boolean;
   active_wall_picture: boolean;
   changeComponent: Function;
+  textBanner: String | null;
 };
 
 export default function NavBar({
   active_music_request,
   changeComponent,
   active_wall_picture,
+  textBanner,
 }: NavBarProps) {
   return (
     <Popover className=" ">
-      <div className="flex justify-between items-center px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
-        <div className="-mr-2 -my-2 md:hidden flex justify-between w-full">
-          <Popover.Button className="bg-indigo-600 dark:bg-gray-600 rounded-md p-2 inline-flex items-center justify-center text-white dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-            <span className="sr-only">Open menu</span>
-            <MenuIcon className="h-6 w-6" aria-hidden="true" />
-          </Popover.Button>
+      <div className="md:flex px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
+        {/* mobile view */}
+        <div className="grid grid-cols-6 gap-2 -my-2 md:hidden  w-full">
+          <div className="flex justify-center">
+            <Popover.Button className="w-12/12 h-11  bg-indigo-600 dark:bg-gray-600 rounded-md p-2 inline-flex items-center justify-center text-white dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+              <span className="sr-only">Open menu</span>
+              <MenuIcon className="h-6 w-6" aria-hidden="true" />
+            </Popover.Button>
+          </div>
+          <div className="col-span-4 w-12/12  ">
+            {textBanner ? <TextScrollingBanner text={textBanner} /> : null}
+          </div>
+          <div className="flex justify-center items-center">
+            <ThemeSelect />
+          </div>
         </div>
+
+        {/* desktop view */}
         <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
           <Popover.Group as="nav" className="flex space-x-10">
             {active_music_request ? (
@@ -89,7 +103,6 @@ export default function NavBar({
                     <span className="sr-only">Close menu</span>
                     <XIcon className="h-6 w-6" aria-hidden="true" />
                   </Popover.Button>
-                  <ThemeSelect />
                 </div>
               </div>
             </div>
