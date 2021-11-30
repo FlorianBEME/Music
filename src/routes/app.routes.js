@@ -149,12 +149,13 @@ router.put("/textbanner/:id", verifyJWT, (req, res) => {
         }
       }).then(() => {
         new Promise((resolve) => {
-          obj[id].app.textbanner = req.body.textbanner;
+          obj[id].app.textbanner = req.body.data;
           resolve();
         }).then(() => {
           const newData = JSON.stringify(obj);
+
           fs.writeFile(jsonPath, newData, "utf8", function () {
-            res.status(200).json(newData[id]);
+            res.status(200).json(JSON.parse(newData));
           });
         });
       });

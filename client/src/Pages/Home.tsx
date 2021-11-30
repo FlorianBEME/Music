@@ -10,7 +10,6 @@ import MusicBandeau from "../assets/musicbandeau.jpg";
 import WallPicture from "../components/visitor/layouts/WallPicture";
 import SongRequestBloc from "../components/visitor/layouts/songRequestBloc";
 import { Announcement } from "../components/visitor/layouts/Announcement";
-import ThemeSelect from "../components/common/ThemeSelect";
 import { subscribeToSocket } from "../components/common/socket";
 
 import Swal from "sweetalert2";
@@ -48,14 +47,14 @@ const Home = () => {
   const changeComponent = (component: any) => {
     setComponent(component);
   };
-  const fetchTitleStyle = () => {
+  const fetchAppText = () => {
     axios
       .get(`${FETCH}/app/app`)
       .then((res) => {
         setPositionTitle(res.data.titleEventappStyle.position);
         setColor(res.data.titleEventappStyle.color);
         setDisplay(res.data.titleEventappStyle.display);
-        setTextBanner(res.data.app.textBanner);
+        setTextBanner(res.data.app.textbanner);
       })
       .catch((err) => {
         console.error(err);
@@ -102,7 +101,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetchTitleStyle();
+    fetchAppText();
   }, []);
 
   useEffect(() => {
@@ -200,11 +199,11 @@ const Home = () => {
     subscribeToSocket((args: string) => {
       if (args === "event") {
         history.go(0);
-      } else if (args === "settitle") {
-        fetchTitleStyle();
+      } else if (args === "settitle" || args === "setbanner") {
+        fetchAppText();
       } else if (args === "pop") {
         fetchPopUp();
-      }
+      } 
     });
   }, [history]);
 

@@ -21,20 +21,17 @@ export default function NavBar({
   return (
     <Popover className=" ">
       <div className="md:flex px-4 py-6 sm:px-6 md:justify-start md:space-x-10">
-
         {/* mobile view */}
-        <div className="grid grid-cols-4 gap-2 -my-2 md:hidden  w-full">
+        <div className="grid grid-cols-6 gap-2 -my-2 md:hidden  w-full">
           <div className="flex justify-center">
-            <Popover.Button className="w-8/12  bg-indigo-600 dark:bg-gray-600 rounded-md p-2 inline-flex items-center justify-center text-white dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            <Popover.Button className="w-12/12 h-11  bg-indigo-600 dark:bg-gray-600 rounded-md p-2 inline-flex items-center justify-center text-white dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
               <span className="sr-only">Open menu</span>
               <MenuIcon className="h-6 w-6" aria-hidden="true" />
             </Popover.Button>
           </div>
-          {textBanner ? (
-            <div className="col-span-2 flex justify-center items-center">
-              <TextScrollingBanner text={textBanner} />
-            </div>
-          ) : null}
+          <div className="col-span-4 w-12/12  ">
+            {textBanner ? <TextScrollingBanner text={textBanner} /> : null}
+          </div>
           <div className="flex justify-center items-center">
             <ThemeSelect />
           </div>

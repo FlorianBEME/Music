@@ -54,6 +54,10 @@ io.on("connection", (socket) => {
         console.log("SOCKET: MAJ user");
         socket.broadcast.emit("userupdate", true);
         break;
+      case "setbanner":
+        console.log("SOCKET: MAJ banner");
+        socket.broadcast.emit("setbanner", true);
+        break;
       default:
         break;
     }
