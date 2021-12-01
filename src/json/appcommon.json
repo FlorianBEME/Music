@@ -1,1 +1,17 @@
-[{"id":0,"app":{"titleincurent":"Titre en cours...","artirstincurrent":"Artiste en cours...","textbanner":null,"artistincurrent":"Artiste en cours..."},"titleEventappStyle":{"position":"right","color":"#7c1414","display":true}}]
+[
+  {
+    "id": 0,
+    "app": {
+      "titleincurent": "Titre en cours...",
+      "artirstincurrent": "Artiste en cours...",
+      "textbanner": null,
+      "artistincurrent": "Artiste en cours...",
+      "defaultPictureAccept": false
+    },
+    "titleEventappStyle": {
+      "position": "right",
+      "color": "#7c1414",
+      "display": true
+    }
+  }
+]

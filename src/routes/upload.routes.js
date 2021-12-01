@@ -3,6 +3,7 @@ const router = require("express").Router();
 const fileUpload = require("express-fileupload");
 const front = `${__dirname}/../../client/build`;
 const fs = require("fs");
+const jsonPath = `${__dirname}/../json/appcommon.json`;
 const { verifyJWT } = require("../middlewares/isuserauth");
 router.use(fileUpload());
 const { v4: uuidv4 } = require("uuid");
@@ -109,6 +110,61 @@ router.post("/popimage", verifyJWT, (req, res) => {
         filePath: `/popimage/${file.name}`,
       })
       .status(200);
+  });
+});
+
+router.post("/picture", (req, res) => {
+  const file = req.files.file;
+  const extension = file.name.split(".").pop();
+  const uuid = uuidv4();
+  file.name = uuid + "." + extension;
+
+  // On verifie si la requetes contient bien un fichier
+  if (req.files === null) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+
+  file.mv(`${front}/eventpicture/${file.name}`, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    console.log("fichier upload");
+
+    fs.readFile(jsonPath, "utf8", function readFileCallback(err, data) {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else {
+        let response = null;
+        new Promise((resolve) => {
+          response = JSON.parse(data);
+          if (response) {
+            resolve();
+          }
+        })
+          .then(() => {
+            const sql = "INSERT INTO event_picture SET ?;";
+            const data = {
+              is_accept: response[0].app.defaultPictureAccept ? true : false,
+              path: `/eventpicture/${file.name}`,
+            };
+            connection.query(sql, data, (err, results) => {
+              if (err) {
+                return res.status(500).send({ errorMessage: err.message });
+              } else {
+                res
+                  .json({
+                    fileName: `/eventpicture/${file.name}`,
+                    filePath: `/eventpicture/${file.name}`,
+                  })
+                  .status(200);
+              }
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({ error: err });
+          });
+      }
+    });
   });
 });
 
