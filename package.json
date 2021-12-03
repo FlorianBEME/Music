@@ -9,7 +9,7 @@
     "watch": "nodemon server.js",
     "client": "cd client && npm start",
     "install-client": "cd client && npm install",
-    "build": "cd client && npm run build",
+    "build": "cd client && npm run build-ssh",
     "dev": "concurrently \"npm start\" \"npm run client\""
   },
   "nodemonConfig": {
