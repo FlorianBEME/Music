@@ -1,7 +1,7 @@
 const { connection } = require("../db_connection");
 const router = require("express").Router();
 const fileUpload = require("express-fileupload");
-const front = `${__dirname}/../../client/build`;
+const front = process.env.DEV? `${__dirname}/../../client/public` : `${__dirname}/../../client/build`;
 const fs = require("fs");
 const jsonPath = `${__dirname}/../json/appcommon.json`;
 const { verifyJWT } = require("../middlewares/isuserauth");

@@ -13,12 +13,16 @@ export default function GaleryComponent({ photos, openPicture }: IAppProps) {
               openPicture(index);
             }}
           >
-            <img
-              key={photo.uuid}
-              className="h-24 w-24 m-1"
-              src={photo.source}
-              alt={photo.uuid ? photo.uuid : "illustration of gallery"}
-            />
+            <div className="h-24 w-24 m-1 object-cover" key={photo.uuid}>
+              <div className="">
+                <img
+                  key={photo.uuid}
+                  className="h-24 w-24 m-1 object-cover"
+                  src={photo.source}
+                  alt={photo.uuid ? photo.uuid : "illustration of gallery"}
+                />
+              </div>
+            </div>
           </div>
         );
       })}
