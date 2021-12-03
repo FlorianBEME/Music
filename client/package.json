@@ -44,7 +44,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "build-ssh": "craco --openssl-legacy-provider build",
+    "build-ssh": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
   },
