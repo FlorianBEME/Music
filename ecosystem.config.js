@@ -15,7 +15,7 @@ module.exports = {
       path: "/var/www/musicfolder",
       "pre-deploy-local": "",
       "post-deploy":
-        "npm install && cd client && npm install && npm run build& cd ..& pm2 reload ecosystem.config.js --env production",
+        "npm install && cd client && npm install && npm run build && cd .. && pm2 reload ecosystem.config.js --env production",
       "pre-setup": "",
     },
   },
