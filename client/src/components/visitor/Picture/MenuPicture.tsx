@@ -87,7 +87,7 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
                 id="file-upload"
                 name="file-upload"
                 type="file"
-                accept="image/*;capture=camera"
+                accept=".png,.jpeg,.gif,.jpg"
                 className="sr-only"
                 onChange={handleImageChange}
                 ref={hiddenFileInput}
