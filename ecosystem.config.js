@@ -10,9 +10,9 @@ module.exports = {
     production: {
       user: "root",
       host: "195.20.240.170",
-      ref: "origin/main",
+      ref: "origin/deploy-branch",
       repo: "https://github.com/FlorianBEME/Music.git",
-      path: "/home/Project",
+      path: "/var/www/musicfolder",
       "pre-deploy-local": "",
       "post-deploy":
         "npm install && cd client && npm install && npm run build& cd ..& pm2 reload ecosystem.config.js --env production",
