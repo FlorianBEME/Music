@@ -145,7 +145,7 @@ router.post("/picture", (req, res) => {
             const sql = "INSERT INTO event_picture SET ?;";
             const data = {
               is_accept: response[0].app.defaultPictureAccept ? true : false,
-              path: `/eventpicture/${file.name}`,
+              source: `/eventpicture/${file.name}`,
             };
             connection.query(sql, data, (err, results) => {
               if (err) {

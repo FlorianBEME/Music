@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MenuPicture from "../Picture/MenuPicture";
 import Gallery from "../Picture/Gallery";
 
-
 function WallPicture() {
   const [component, setComponent] = useState("menu");
+
+  useEffect(() => {
+    return () => {
+      setComponent("menu");
+    };
+  }, []);
 
   const componentRender = () => {
     if (component === "menu") {

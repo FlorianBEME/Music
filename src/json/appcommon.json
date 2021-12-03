@@ -6,7 +6,7 @@
       "artirstincurrent": "Artiste en cours...",
       "textbanner": null,
       "artistincurrent": "Artiste en cours...",
-      "defaultPictureAccept": false
+      "defaultPictureAccept": true
     },
     "titleEventappStyle": {
       "position": "right",
