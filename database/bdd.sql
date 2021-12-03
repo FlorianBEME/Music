@@ -71,6 +71,12 @@ CREATE TABLE `footer_text_copyright` (
   `text` varchar(250) NULL
 );
 
+CREATE TABLE `event_picture` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `is_accept` BOOLEAN NOT NULL,
+  `source` varchar(255) NOT NULL
+);
+
 ALTER TABLE `currentsongs` ADD FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`id`)  ON DELETE CASCADE;  
 
 INSERT INTO footer_text_copyright ( text  ) VALUES ("Copyright");

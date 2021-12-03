@@ -13,7 +13,9 @@
     "dev": "concurrently \"npm start\" \"npm run client\""
   },
   "nodemonConfig": {
-    "ignore": ["src/json/*.json"]
+    "ignore": [
+      "src/json/*.json"
+    ]
   },
   "repository": {
     "type": "git",

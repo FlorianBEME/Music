@@ -47,7 +47,7 @@ const Home = () => {
   const changeComponent = (component: any) => {
     setComponent(component);
   };
-  const fetchAppText = () => {
+  const fetchApp = () => {
     axios
       .get(`${FETCH}/app/app`)
       .then((res) => {
@@ -101,7 +101,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetchAppText();
+    fetchApp();
   }, []);
 
   useEffect(() => {
@@ -199,11 +199,15 @@ const Home = () => {
     subscribeToSocket((args: string) => {
       if (args === "event") {
         history.go(0);
-      } else if (args === "settitle" || args === "setbanner") {
-        fetchAppText();
+      } else if (
+        args === "settitle" ||
+        args === "setbanner" ||
+        args === "picturestatus"
+      ) {
+        fetchApp();
       } else if (args === "pop") {
         fetchPopUp();
-      } 
+      }
     });
   }, [history]);
 
