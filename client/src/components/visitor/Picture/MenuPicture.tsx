@@ -10,9 +10,7 @@ interface Props {
   changeComponent: Function;
 }
 
-export default function MenuPicture({
-  changeComponent,
-}: Props): ReactElement {
+export default function MenuPicture({ changeComponent }: Props): ReactElement {
   const hiddenFileInput: any = React.useRef(null);
 
   const [imagePreview, setImagePreview] = useState<any>({
@@ -89,6 +87,7 @@ export default function MenuPicture({
                 id="file-upload"
                 name="file-upload"
                 type="file"
+                accept="image/*;capture=camera"
                 className="sr-only"
                 onChange={handleImageChange}
                 ref={hiddenFileInput}
