@@ -17,7 +17,6 @@ type MusicLayoutProps = {
 };
 
 const MusicLayout = ({ event }: MusicLayoutProps) => {
-  console.log(event);
   const token = localStorage.getItem("token");
   const [compareType, setCompareType] = useState("default");
   const [songs, setSongs] = useState<any>([]);

@@ -64,7 +64,6 @@ const SongRequestForm = ({
               position: toast.POSITION.TOP_RIGHT,
             });
             emitEvent("update", "musiclist");
-            emitEvent("update", "userupdate");
 
             refetch();
             removeInput(["title", "artist"]);
