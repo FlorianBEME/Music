@@ -33,6 +33,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
   const [displayTitle, setDisplayTitle] = useState(true);
+  const [textBannerFetch, setTextBannerFetch] = useState<null | string>();
 
   const history = useHistory();
 
@@ -114,7 +115,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
             });
         }).then((res: any) => {
           Swal.fire("Modifié!", "L'évenement est modifié", "success");
-          fetchTitleEvent();
+          fetchDataEvent();
           emitEvent("update", "settitle");
         });
       }
@@ -157,7 +158,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
         })
           .then(() => {
             Swal.fire("Modifié!", "L'évenement est modifié", "success");
-            fetchTitleEvent();
+            fetchDataEvent();
             emitEvent("update", "settitle");
           })
           .catch(() => {
@@ -167,13 +168,14 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
     });
   };
   //fetch style du titre
-  const fetchTitleEvent = () => {
+  const fetchDataEvent = () => {
     axios
       .get(`${FETCH}/app/app`)
       .then((res) => {
         setColor(res.data.titleEventappStyle.color);
         setPositionTitle(res.data.titleEventappStyle.position);
         setDisplayTitle(res.data.titleEventappStyle.display);
+        setTextBannerFetch(res.data.app.textbanner);
       })
       .catch(function (erreur) {
         console.error(erreur);
@@ -182,14 +184,14 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
 
   useEffect(() => {
     setEventCurrent(event[0]);
-    fetchTitleEvent();
+    fetchDataEvent();
   }, [event]);
 
   // socket;
   useEffect(() => {
     subscribeToSocket((args: string) => {
       if (args === "settitle") {
-        fetchTitleEvent();
+        fetchDataEvent();
       }
     });
   }, []);
@@ -207,7 +209,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           }
         )
         .then((res) => {
-          fetchTitleEvent();
+          fetchDataEvent();
           emitEvent("update", "settitle");
           resolve(res);
         })
@@ -410,25 +412,22 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
               </div>
             </div>
             <div className="px-4 pb-7 sm:px-6">
-              {/* <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                Modifier la couleur
-              </h3> */}
               <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
                 <p>Modifier pour changer la couleur du titre</p>
               </div>
               <div className=" flex items-start">
                 <form
-                  className="space-y-5 mt-4"
+                  className="space-y-5 mt-4 w-full"
                   onSubmit={(e) => {
                     e.preventDefault();
                     handleChangeColorTitle();
                   }}
                 >
-                  <div className=" flex items-end space-x-4">
+                  <div className=" flex items-start sm:items-end sm:space-x-4  flex-col sm:flex-row w-full">
                     <HexColorPicker color={color} onChange={setColor} />
                     <button
                       type="submit"
-                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500   sm:w-auto sm:text-sm"
+                      className="mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-5  sm:w-auto sm:text-sm"
                     >
                       Modifier
                     </button>
@@ -442,7 +441,11 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
 
       {dataLoad ? (
         event[0] === null || event[0] === undefined ? null : (
-          <TextBannerModify token={token} />
+          <TextBannerModify
+            textFetch={textBannerFetch}
+            token={token}
+            refetchData={() => fetchDataEvent()}
+          />
         )
       ) : null}
 
