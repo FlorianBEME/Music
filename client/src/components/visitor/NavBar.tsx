@@ -86,7 +86,7 @@ export default function NavBar({
       >
         <Popover.Panel
           focus
-          className="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
+          className="z-50 absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
         >
           <div className="dark:bg-gray-800 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50 dark:divide-gray-600">
             <div className="pt-5 pb-6 px-5">

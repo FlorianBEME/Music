@@ -3,6 +3,7 @@ type IAppProps = {
   openPicture: Function;
 };
 
+
 export default function GaleryComponent({ photos, openPicture }: IAppProps) {
   return (
     <div className="flex flex-wrap justify-center items-center">
