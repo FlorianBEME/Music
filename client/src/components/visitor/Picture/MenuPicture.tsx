@@ -1,5 +1,7 @@
+import logoCamera from "../../../assets/appareil-photo(1).png";
+import logoGalery from "../../../assets/galerie.png";
+
 import React, { ReactElement, useState } from "react";
-import { MdPhotoLibrary, MdAddAPhoto } from "react-icons/md";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 import withReactContent from "sweetalert2-react-content";
@@ -75,13 +77,13 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
     <div className="flex flex-col items-center space-y-7 mb-7">
       <div className="flex justify-center items-center flex-col space-y-3">
         {!imagePreview.file ? (
-          <div className="flex justify-center items-center flex-col">
+          <div className="flex justify-center items-center flex-col space-y-3">
             <div
               onClick={handleClickFileInput}
-              className="py-2 w-28 h-28 cursor-pointer flex justify-center items-center bg-indigo-600 text-white dark:text-gray-200 rounded-2xl"
+              className=" w-40 h-40 p-8 cursor-pointer flex justify-center items-center bg-indigo-600 dark:bg-gray-600 text-white dark:text-gray-200 rounded-full"
             >
               <span>
-                <MdAddAPhoto id="file-upload" size="100px" />
+                <img src={logoCamera} alt="logo of camera" />
               </span>
               <input
                 id="file-upload"
@@ -132,8 +134,8 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
         className="flex justify-center items-center flex-col space-y-3 cursor-pointer"
         onClick={() => changeComponent("gallery")}
       >
-        <div className="py-2 w-28 h-28 flex justify-center items-center bg-indigo-600 text-white dark:text-gray-200 rounded-2xl">
-          <MdPhotoLibrary size="100px" />
+        <div className="py-2 w-40 h-40 p-8 flex justify-center items-center bg-indigo-600 dark:bg-gray-600  text-white dark:text-gray-200 rounded-full">
+          <img src={logoGalery} alt="logo of galery" />
         </div>
         <p className="dark:text-gray-300 text-lg">Acceder à la librairie</p>
       </div>

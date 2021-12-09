@@ -40,14 +40,16 @@ export default function GalleryPhoto({ changeComponent }: props) {
 
   return (
     <div>
-      <div
-        onClick={() => {
-          changeComponent("menu");
-        }}
-        className="bg-white text-gray-900 dark:bg-gray-600 dark:text-white shadow flex justify-center w-20 py-2 rounded-lg fixed bottom-4 right-4"
-      >
-        Retour
-      </div>
+      {pictures.length > 0 ? (
+        <div
+          onClick={() => {
+            changeComponent("menu");
+          }}
+          className="dark:text-red-100 dark:bg-red-700   text-red-700 bg-red-100 hover:bg-red-200  shadow flex justify-center w-20 py-2 rounded-lg fixed bottom-4 right-4"
+        >
+          Retour
+        </div>
+      ) : null}
 
       {picturesIsLoad ? (
         pictures.length > 0 ? (
@@ -58,14 +60,30 @@ export default function GalleryPhoto({ changeComponent }: props) {
             photos={pictures}
           />
         ) : (
-          <div className="h-96 justify-center items-center flex flex-col">
-            <h2 className="animate-pulse">Aucunes photos</h2>
+          <div className="min-h-96 justify-center items-center flex flex-col">
+            <h2 className="dark:text-white">Aucunes photos</h2>
+            <div
+              onClick={() => {
+                changeComponent("menu");
+              }}
+              className="mt-2 dark:text-red-100 dark:bg-red-700   text-red-700 bg-red-100 hover:bg-red-200 shadow flex justify-center w-20 py-2 rounded-lg"
+            >
+              Retour
+            </div>
           </div>
         )
       ) : (
         <div className="h-96 justify-center items-center flex flex-col">
           <FiLoader size={42} className="animate-spin" />
           <h2 className="animate-pulse">Chargement</h2>
+          <div
+            onClick={() => {
+              changeComponent("menu");
+            }}
+            className="bg-white text-gray-900 dark:bg-gray-600 dark:text-white shadow flex justify-center w-20 py-2 rounded-lg fixed bottom-4 right-4"
+          >
+            Retour
+          </div>
         </div>
       )}
 
@@ -73,6 +91,7 @@ export default function GalleryPhoto({ changeComponent }: props) {
         {modalIsOpen ? (
           <Modal onClose={closeLightbox}>
             <Carousel
+              frameProps={{ autoSize: "height" }}
               views={pictures}
               currentIndex={currentImage}
               styles={{
@@ -80,7 +99,6 @@ export default function GalleryPhoto({ changeComponent }: props) {
                   ...base,
                   display: "flex !important",
                   justifyContent: "center",
-                  maxHeight: 800,
                   overflow: "hidden",
                 }),
               }}

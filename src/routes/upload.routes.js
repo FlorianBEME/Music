@@ -1,7 +1,9 @@
 const { connection } = require("../db_connection");
 const router = require("express").Router();
 const fileUpload = require("express-fileupload");
-const front = process.env.DEV? `${__dirname}/../../client/public` : `${__dirname}/../../client/build`;
+const front = process.env.DEV
+  ? `${__dirname}/../../client/public`
+  : `${__dirname}/../../client/build`;
 const fs = require("fs");
 const jsonPath = `${__dirname}/../json/appcommon.json`;
 const { verifyJWT } = require("../middlewares/isuserauth");
@@ -118,30 +120,33 @@ router.post("/picture", (req, res) => {
   const extension = file.name.split(".").pop();
   const uuid = uuidv4();
   file.name = uuid + "." + extension;
+  let response;
 
   // On verifie si la requetes contient bien un fichier
   if (req.files === null) {
     return res.status(400).json({ msg: "No file uploaded" });
   }
-
-  file.mv(`${front}/eventpicture/${file.name}`, (err) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    console.log("fichier upload");
-
-    fs.readFile(jsonPath, "utf8", function readFileCallback(err, data) {
+  new Promise((resolve, reject) => {
+    file.mv(`${front}/eventpicture/${file.name}`, (err) => {
       if (err) {
-        res.status(500).json({ error: err });
+        reject(err);
+        return res.status(500).send(err);
       } else {
-        let response = null;
-        new Promise((resolve) => {
-          response = JSON.parse(data);
-          if (response) {
-            resolve();
-          }
-        })
-          .then(() => {
+        resolve();
+      }
+    });
+  }).then(() => {
+    if (fs.existsSync(`${front}/eventpicture/${file.name}`)) {
+      fs.readFile(jsonPath, "utf8", function readFileCallback(err, data) {
+        if (err) {
+          res.status(500).json({ error: err });
+        } else {
+          new Promise((resolve, reject) => {
+            response = JSON.parse(data);
+            if (response) {
+              resolve();
+            }
+          }).then(() => {
             const sql = "INSERT INTO event_picture SET ?;";
             const data = {
               is_accept: response[0].app.defaultPictureAccept ? true : false,
@@ -159,12 +164,10 @@ router.post("/picture", (req, res) => {
                   .status(200);
               }
             });
-          })
-          .catch((err) => {
-            res.status(500).json({ error: err });
           });
-      }
-    });
+        }
+      });
+    }
   });
 });
 
