@@ -79,16 +79,18 @@ const AdminNavBar = () => {
           >
             <Disclosure.Panel className="sm:hidden">
               <div className="pt-4 pb-3 border-t border-gray-200">
-                <div className="mt-3 space-y-1">
+                <div className="mt-3 space-y-1 flex flex-col items-start">
                   {AdminRoutes.filter((item) => item.redirect === false).map(
                     (item) => (
-                      <NavLink
-                        key={item.name}
-                        to={item.path}
-                        className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                      >
-                        {item.name}
-                      </NavLink>
+                      <Disclosure.Button className="">
+                        <NavLink
+                          key={item.name}
+                          to={item.path}
+                          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                        >
+                          {item.name}
+                        </NavLink>
+                      </Disclosure.Button>
                     )
                   )}
                   <div

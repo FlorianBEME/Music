@@ -3,11 +3,12 @@
   position: relative;
   top: 50%;
   width: 40px;
+  z-index: 0;
 }
 
 .bar {
   /* background: linear-gradient(45deg, white, red); */
-
+  z-index: 0;
   bottom: 1px;
   height: 3px;
   position: absolute;
