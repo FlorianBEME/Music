@@ -1,1 +1,1 @@
-## folder for icone footer
+## folder for image
