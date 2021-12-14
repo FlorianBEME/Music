@@ -48,29 +48,27 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
     }
   };
 
-  const uploadPicture = (e: any) => {
-    e.preventDefault();
-    new Promise((resolve, reject) => {
-      const formData = new FormData();
-      formData.append("file", currentFile);
-
-      axios
-        .post(`${FETCH}/upload/picture`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => {
-          MySwal.fire("Votre photo a été envoyée!", "", "success");
-          setImagePreview({
-            file: null,
-            imagePreviewUrl: null,
-          });
-        })
-        .catch(function (error) {
-          MySwal.fire("Erreur!", "", "error");
+  const uploadPicture = () => {
+    // new Promise((resolve, reject) => {
+    const formData = new FormData();
+    formData.append("file", currentFile);
+    axios
+      .post(`${FETCH}/upload/picture`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        MySwal.fire("Votre photo a été envoyée!", "", "success");
+        setImagePreview({
+          file: null,
+          imagePreviewUrl: null,
         });
-    });
+      })
+      .catch(function (error) {
+        MySwal.fire("Erreur!", "", "error");
+      });
+    // });
   };
 
   return (
@@ -105,7 +103,10 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
               className="max-h-28 rounded-lg mb-2"
             />
             <form
-              onSubmit={(e) => uploadPicture(e)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                uploadPicture();
+              }}
               className="flex justify-around w-screen "
             >
               <button

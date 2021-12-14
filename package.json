@@ -44,6 +44,7 @@
     "nodemon": "^2.0.12",
     "react-colorful": "^5.5.0",
     "react-moment": "^1.1.1",
+    "sharp": "^0.29.3",
     "socket.io": "^4.2.0",
     "uuidv4": "^6.2.12"
   }

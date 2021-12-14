@@ -32,7 +32,7 @@ router.get("/available", (req, res) => {
 });
 
 router.get("/download", (req, res) => {
-  const uploadDir = fs.readdirSync(front + "/eventpicture");
+  const uploadDir = fs.readdirSync(front + "/eventpicture/original");
   const zip = new AdmZip();
 
   for (var i = 0; i < uploadDir.length; i++) {
@@ -84,17 +84,30 @@ router.get("/download", (req, res) => {
 //   });
 // });
 
-router.delete("/cleanall", (req, res) => {
-  const directory = front + "/eventpicture";
+router.delete("/cleanpicture", (req, res) => {
+  const compress = front + "/eventpicture/compress";
+  const original = front + "/eventpicture/original";
 
   new Promise((resolve, reject) => {
-    fs.readdir(directory, (err, files) => {
+    fs.readdir(original, (err, files) => {
       if (err) {
         return res.status(500).send({ err: err.message });
       }
       for (const file of files) {
         if (file != "read.md") {
-          fs.unlink(path.join(directory, file), (err) => {
+          fs.unlink(path.join(original, file), (err) => {
+            reject(file);
+          });
+        }
+      }
+    });
+    fs.readdir(compress, (err, files) => {
+      if (err) {
+        return res.status(500).send({ err: err.message });
+      }
+      for (const file of files) {
+        if (file != "read.md") {
+          fs.unlink(path.join(compress, file), (err) => {
             reject(file);
           });
         }
