@@ -7,7 +7,7 @@ const initiateSocket = () => {
   console.log(`Connecting socket...`);
 };
 
-const subscribeToSocket = (data: any) => {
+const subscribeToSocket = (data: any, args?: any) => {
   if (!socket) return true;
 
   socket.on("musicupdate", () => {
@@ -54,9 +54,14 @@ const subscribeToSocket = (data: any) => {
     console.log("Banner: j'ai bien recu et je met a jour");
     return data("setbanner");
   });
+  //eventpicture
+  socket.on("addnewpicture", (args) => {
+    console.log(args);
+    return data({ data: "addnewpicture", args: args });
+  });
 };
 
-const emitEvent = (eventemit: string, args: string) => {
+const emitEvent = (eventemit: string, args: any) => {
   socket.emit(eventemit, args);
 };
 

@@ -164,12 +164,7 @@ router.post("/picture", (req, res) => {
               if (err) {
                 return res.status(500).send({ errorMessage: err.message });
               } else {
-                res
-                  .json({
-                    fileName: `/eventpicture/${file.name}`,
-                    filePath: `/eventpicture/${file.name}`,
-                  })
-                  .status(200);
+                res.json({ ...data, id: results.insertId }).status(200);
               }
             });
           });

@@ -1,6 +1,7 @@
 import logoCamera from "../../../assets/appareil-photo(1).png";
 import logoGalery from "../../../assets/galerie.png";
 
+import { emitEvent } from "../../common/socket";
 import React, { ReactElement, useState } from "react";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
@@ -58,7 +59,8 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then(() => {
+      .then((res) => {
+        emitEvent("eventpiture", res.data);
         MySwal.fire("Votre photo a été envoyée!", "", "success");
         setImagePreview({
           file: null,
