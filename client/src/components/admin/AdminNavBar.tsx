@@ -82,9 +82,9 @@ const AdminNavBar = () => {
                 <div className="mt-3 space-y-1 flex flex-col items-start">
                   {AdminRoutes.filter((item) => item.redirect === false).map(
                     (item) => (
-                      <Disclosure.Button className="">
+                      <Disclosure.Button className="" key={item.id}>
                         <NavLink
-                          key={item.name}
+                          
                           to={item.path}
                           className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
                         >
