@@ -32,7 +32,7 @@ router.get("/available", (req, res) => {
 });
 
 router.get("/download", (req, res) => {
-  const uploadDir = fs.readdirSync(front + "/eventpicture");
+  const uploadDir = fs.readdirSync(front + "/eventpicture/original");
   const zip = new AdmZip();
 
   for (var i = 0; i < uploadDir.length; i++) {
@@ -53,48 +53,31 @@ router.get("/download", (req, res) => {
   res.status(200).send(data);
 });
 
-// router.post("/", (req, res) => {
-//   const sql = "INSERT INTO currentsongs SET ?";
-//   connection.query(sql, req.body, (err, results) => {
-//     if (err) {
-//       res.status(500).send({ errorMessage: err.message });
-//     } else {
-//       res.status(201).json({ id: results.insertId, ...req.body });
-//     }
-//   });
-// });
 
-// router.put("/:id", (req, res) => {
-//   let sql = "UPDATE currentsongs SET ? WHERE id=?";
-//   connection.query(sql, [req.body, req.params.id], (err, results) => {
-//     if (err) {
-//       res.status(500).send({ errorMessage: err.message });
-//     } else {
-//       sql = "SELECT * FROM currentsongs WHERE id=?";
-//       connection.query(sql, req.params.id, (err, result) => {
-//         if (result.length === 0) {
-//           res.status(404).send({
-//             errorMessage: `Question with id ${req.params.id} not found`,
-//           });
-//         } else {
-//           res.status(200).json(result[0]);
-//         }
-//       });
-//     }
-//   });
-// });
-
-router.delete("/cleanall", (req, res) => {
-  const directory = front + "/eventpicture";
+router.delete("/cleanpicture", (req, res) => {
+  const compress = front + "/eventpicture/compress";
+  const original = front + "/eventpicture/original";
 
   new Promise((resolve, reject) => {
-    fs.readdir(directory, (err, files) => {
+    fs.readdir(original, (err, files) => {
       if (err) {
         return res.status(500).send({ err: err.message });
       }
       for (const file of files) {
         if (file != "read.md") {
-          fs.unlink(path.join(directory, file), (err) => {
+          fs.unlink(path.join(original, file), (err) => {
+            reject(file);
+          });
+        }
+      }
+    });
+    fs.readdir(compress, (err, files) => {
+      if (err) {
+        return res.status(500).send({ err: err.message });
+      }
+      for (const file of files) {
+        if (file != "read.md") {
+          fs.unlink(path.join(compress, file), (err) => {
             reject(file);
           });
         }

@@ -15,7 +15,7 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 
-  socket.on("update", (args, data) => {
+  socket.on("update", (args) => {
     console.log("SOCKET: ", "args: " + args);
     switch (args) {
       case "musiclist":
@@ -62,7 +62,10 @@ io.on("connection", (socket) => {
         break;
     }
   });
-
+  socket.on("eventpiture", (args) => {
+    console.log(args);
+    socket.broadcast.emit("addnewpicture", args);
+  });
   socket.on("disconnect", () => {
     console.log("SOCKET: deconection: " + socket.id);
   });

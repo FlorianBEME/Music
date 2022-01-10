@@ -8,6 +8,7 @@ const fs = require("fs");
 const jsonPath = `${__dirname}/../json/appcommon.json`;
 const { verifyJWT } = require("../middlewares/isuserauth");
 router.use(fileUpload());
+const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 
 router.post("/bg/:id", verifyJWT, (req, res) => {
@@ -66,7 +67,6 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
 });
 
 router.post("/footer", verifyJWT, (req, res) => {
-  console.log(req.files.file);
   const file = req.files.file;
   const extension = file.name.split(".").pop();
   const uuid = uuidv4();
@@ -105,7 +105,6 @@ router.post("/popimage", verifyJWT, (req, res) => {
     if (err) {
       return res.status(500).send(err);
     }
-    console.log("fichier upload");
     res
       .json({
         fileName: `/popimage/${file.name}`,
@@ -126,8 +125,9 @@ router.post("/picture", (req, res) => {
   if (req.files === null) {
     return res.status(400).json({ msg: "No file uploaded" });
   }
+  // on déplace le fichier dans le dossier (original)
   new Promise((resolve, reject) => {
-    file.mv(`${front}/eventpicture/${file.name}`, (err) => {
+    file.mv(`${front}/eventpicture/original/${file.name}`, async (err) => {
       if (err) {
         reject(err);
         return res.status(500).send(err);
@@ -136,32 +136,35 @@ router.post("/picture", (req, res) => {
       }
     });
   }).then(() => {
-    if (fs.existsSync(`${front}/eventpicture/${file.name}`)) {
+    // on vérifie que ma photo existe dans le dossier original
+    if (fs.existsSync(`${front}/eventpicture/original/${file.name}`)) {
+      // On lis le fichier JSON qui contient la status d'acceptation par défault
       fs.readFile(jsonPath, "utf8", function readFileCallback(err, data) {
         if (err) {
           res.status(500).json({ error: err });
         } else {
-          new Promise((resolve, reject) => {
+          // on set le status dans une variable et on compresse et stock le fichier dans un autre dossier
+          new Promise(async (resolve, reject) => {
             response = JSON.parse(data);
             if (response) {
+              await sharp(`${front}/eventpicture/original/${file.name}`)
+                .jpeg({ quality: 20 })
+                .toFile(front + "/eventpicture/compress/" + file.name);
               resolve();
             }
           }).then(() => {
+            //on stock les valeurs dans la BDD
             const sql = "INSERT INTO event_picture SET ?;";
             const data = {
               is_accept: response[0].app.defaultPictureAccept ? true : false,
-              source: `/eventpicture/${file.name}`,
+              original: `/eventpicture/original/${file.name}`,
+              source: `/eventpicture/compress/${file.name}`,
             };
             connection.query(sql, data, (err, results) => {
               if (err) {
                 return res.status(500).send({ errorMessage: err.message });
               } else {
-                res
-                  .json({
-                    fileName: `/eventpicture/${file.name}`,
-                    filePath: `/eventpicture/${file.name}`,
-                  })
-                  .status(200);
+                res.json({ ...data, id: results.insertId }).status(200);
               }
             });
           });
