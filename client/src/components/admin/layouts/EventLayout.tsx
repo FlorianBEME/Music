@@ -29,7 +29,10 @@ type EventProps = {
 
 const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
   const token = localStorage.getItem("token");
-  const [eventCurrent, setEventCurrent] = useState<any>({});
+  const [eventCurrent, setEventCurrent] = useState<any>({
+    active_music_request: false,
+    active_wall_picture: false,
+  });
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
   const [displayTitle, setDisplayTitle] = useState(true);
@@ -39,7 +42,11 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
 
   // modifier les permissions d'accès
   const handleChangeAcces = () => {
-    if (!event[0].active_music_request && !event[0].active_wall_picture) {
+    console.log(eventCurrent);
+    if (
+      !eventCurrent.active_music_request &&
+      !eventCurrent.active_wall_picture
+    ) {
       Swal.fire("Erreur!", "Sélectionner au moins une catégorie", "error");
     } else {
       MySwal.fire({
@@ -60,6 +67,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                 },
               })
               .then((res) => {
+                console.log(res.data);
                 resolve(res);
               })
               .catch(function (error) {
@@ -68,7 +76,6 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           })
             .then(() => {
               Swal.fire("Modifié!", "L'évenement est modifié", "success");
-              setEventCurrent(null);
               refetch();
               emitEvent("update", "event");
             })
@@ -183,9 +190,27 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
   };
 
   useEffect(() => {
-    setEventCurrent(event[0]);
     fetchDataEvent();
   }, [event]);
+
+  useEffect(() => {
+    const activeMusic = event[0].active_music_request === 1 ? true : false;
+    const activePicture = event[0].active_wall_picture === 1 ? true : false;
+    setEventCurrent({
+      ...event[0],
+      active_music_request: activeMusic,
+      active_wall_picture: activePicture,
+    });
+  }, [event]);
+
+  console.log(eventCurrent);
+
+  const changeAccesValue = (e: any) => {
+    setEventCurrent({
+      ...eventCurrent,
+      [e.target.name]: !eventCurrent[e.target.name],
+    });
+  };
 
   // socket;
   useEffect(() => {
@@ -266,14 +291,9 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                           name="active_music_request"
                           type="checkbox"
                           onChange={(e) => {
-                            setEventCurrent({
-                              ...event[0],
-                              [e.target.name]: !event[0].active_music_request,
-                            });
+                            changeAccesValue(e);
                           }}
-                          defaultChecked={
-                            event[0].active_music_request === 1 ? true : false
-                          }
+                          checked={eventCurrent.active_music_request}
                           className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                         />
                       </div>
@@ -297,14 +317,9 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                       <div className="flex items-center h-5">
                         <input
                           onChange={(e) => {
-                            setEventCurrent({
-                              ...event[0],
-                              [e.target.name]: !event[0].active_wall_picture,
-                            });
+                            changeAccesValue(e);
                           }}
-                          defaultChecked={
-                            event[0].active_wall_picture === 1 ? true : false
-                          }
+                          checked={eventCurrent.active_wall_picture}
                           id="active_wall_picture"
                           aria-describedby="active_wall_picture"
                           name="active_wall_picture"
