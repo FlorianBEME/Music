@@ -30,7 +30,7 @@ const PictureLayout = ({ event }: MusicLayoutProps) => {
             </div>
           ) : event[0].active_wall_picture ? (
             <div>
-              <TopPictureLayout />
+              <TopPictureLayout token={token}/>
             </div>
           ) : (
             <div className="w-full flex justify-center items-center">

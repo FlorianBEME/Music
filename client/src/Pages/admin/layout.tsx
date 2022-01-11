@@ -10,8 +10,25 @@ export default function Layout() {
   const history = useHistory();
   const [event, setevent] = useState(null);
   const [dataLoad, setDataLoad] = useState(true);
+  const [eventSetting, setEventSetting] = useState({});
 
-  //Fecth event et
+  //fetch style du titre
+  const fetchEventSetting = () => {
+    axios
+      .get(`${FETCH}/app/app`)
+      .then((res) => {
+        setEventSetting(res.data);
+      })
+      .catch(function (erreur) {
+        console.error(erreur);
+      });
+  };
+
+  useEffect(() => {
+    fetchEventSetting();
+  }, [event]);
+
+  //Fecth event info
   const fetchEvent = () => {
     axios
       .get(`${FETCH}/events`)
@@ -79,9 +96,13 @@ export default function Layout() {
                       path={prop.path}
                       component={() => (
                         <prop.component
+                          eventSetting={eventSetting}
+                          refetchEventSetting={() => {
+                            fetchEventSetting();
+                          }}
                           event={event}
                           dataLoad={dataLoad}
-                          refetch={() => {
+                          refetchEvent={() => {
                             fetchEvent();
                           }}
                         />

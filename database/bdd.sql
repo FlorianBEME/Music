@@ -73,6 +73,7 @@ CREATE TABLE `footer_text_copyright` (
 
 CREATE TABLE `event_picture` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
   `is_accept` BOOLEAN NOT NULL,
   `source` varchar(255) NOT NULL,
   `original` varchar(255) NOT NULL

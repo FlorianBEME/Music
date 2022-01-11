@@ -23,11 +23,19 @@ const MySwal = withReactContent(Swal);
 
 type EventProps = {
   event: any;
-  refetch: Function;
+  refetchEvent: Function;
   dataLoad: boolean;
+  refetchEventSetting: Function;
+  eventSetting: any;
 };
 
-const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
+const EventLayout = ({
+  refetchEvent,
+  event,
+  dataLoad,
+  refetchEventSetting,
+  eventSetting,
+}: EventProps) => {
   const token = localStorage.getItem("token");
   const [eventCurrent, setEventCurrent] = useState<any>({
     active_music_request: false,
@@ -76,7 +84,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           })
             .then(() => {
               Swal.fire("Modifié!", "L'évenement est modifié", "success");
-              refetch();
+              refetchEvent();
               emitEvent("update", "event");
             })
             .catch(() => {
@@ -122,7 +130,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
             });
         }).then((res: any) => {
           Swal.fire("Modifié!", "L'évenement est modifié", "success");
-          fetchDataEvent();
+          refetchEventSetting();
           emitEvent("update", "settitle");
         });
       }
@@ -165,7 +173,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
         })
           .then(() => {
             Swal.fire("Modifié!", "L'évenement est modifié", "success");
-            fetchDataEvent();
+            refetchEventSetting();
             emitEvent("update", "settitle");
           })
           .catch(() => {
@@ -174,24 +182,13 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
       }
     });
   };
-  //fetch style du titre
-  const fetchDataEvent = () => {
-    axios
-      .get(`${FETCH}/app/app`)
-      .then((res) => {
-        setColor(res.data.titleEventappStyle.color);
-        setPositionTitle(res.data.titleEventappStyle.position);
-        setDisplayTitle(res.data.titleEventappStyle.display);
-        setTextBannerFetch(res.data.app.textbanner);
-      })
-      .catch(function (erreur) {
-        console.error(erreur);
-      });
-  };
 
   useEffect(() => {
-    fetchDataEvent();
-  }, [event]);
+    setColor(eventSetting.titleEventappStyle.color);
+    setPositionTitle(eventSetting.titleEventappStyle.position);
+    setDisplayTitle(eventSetting.titleEventappStyle.display);
+    setTextBannerFetch(eventSetting.app.textbanner);
+  }, [eventSetting]);
 
   useEffect(() => {
     const activeMusic = event[0].active_music_request === 1 ? true : false;
@@ -216,7 +213,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
   useEffect(() => {
     subscribeToSocket((args: string) => {
       if (args === "settitle") {
-        fetchDataEvent();
+        refetchEventSetting();
       }
     });
   }, []);
@@ -234,7 +231,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           }
         )
         .then((res) => {
-          fetchDataEvent();
+          refetchEventSetting();
           emitEvent("update", "settitle");
           resolve(res);
         })
@@ -258,7 +255,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           <AddNewEvent
             token={token}
             refetch={() => {
-              refetch();
+              refetchEvent();
             }}
           />
         ) : null
@@ -459,7 +456,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           <TextBannerModify
             textFetch={textBannerFetch}
             token={token}
-            refetchData={() => fetchDataEvent()}
+            refetchData={() => refetchEventSetting()}
           />
         )
       ) : null}
@@ -478,7 +475,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
             token={token}
             event={event[0]}
             refetch={() => {
-              refetch();
+              refetchEvent();
             }}
           />
         )
