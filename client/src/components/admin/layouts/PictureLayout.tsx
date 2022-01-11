@@ -8,6 +8,7 @@ import { emitEvent, subscribeToSocket } from "../../common/socket";
 import Swal from "sweetalert2";
 
 import withReactContent from "sweetalert2-react-content";
+import TopPictureLayout from "../picture/TopPictureLayout";
 const MySwal = withReactContent(Swal);
 
 type MusicLayoutProps = {
@@ -28,7 +29,9 @@ const PictureLayout = ({ event }: MusicLayoutProps) => {
               </p>
             </div>
           ) : event[0].active_wall_picture ? (
-            <div></div>
+            <div>
+              <TopPictureLayout />
+            </div>
           ) : (
             <div className="w-full flex justify-center items-center">
               <p className="dark:text-gray-100 py-52">
