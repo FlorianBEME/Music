@@ -94,6 +94,7 @@ const EventLayout = ({
       });
     }
   };
+
   //modifier position du titre
   const handleChangePositionTitle = () => {
     MySwal.fire({
@@ -401,7 +402,7 @@ const EventLayout = ({
                 >
                   <div className=" flex items-center space-x-4">
                     <select
-                      defaultValue={positionTitle}
+                      value={positionTitle}
                       id="location"
                       name="location"
                       className=" block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
@@ -409,9 +410,21 @@ const EventLayout = ({
                         setPositionTitle(e.target.value);
                       }}
                     >
-                      <option value="left">Gauche</option>
-                      <option value="center">Centré</option>
-                      <option value="right">Droite</option>
+                      <option
+                        value="left"
+                      >
+                        Gauche
+                      </option>
+                      <option
+                        value="center"
+                      >
+                        Centré
+                      </option>
+                      <option
+                        value="right"
+                      >
+                        Droite
+                      </option>
                     </select>
                     <button
                       type="submit"
