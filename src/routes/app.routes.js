@@ -154,7 +154,8 @@ router.put("/app/defaultpictureaccept/:id", verifyJWT, (req, res) => {
         }).then(() => {
           const newData = JSON.stringify(obj);
           fs.writeFile(jsonPath, newData, "utf8", function () {
-            res.status(200).json(newData[id]);
+            const result = JSON.parse(newData);
+            res.status(200).json(result[id]);
           });
         });
       });
