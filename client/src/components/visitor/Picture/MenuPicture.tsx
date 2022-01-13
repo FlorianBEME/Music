@@ -50,7 +50,6 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
   };
 
   const uploadPicture = () => {
-    // new Promise((resolve, reject) => {
     const formData = new FormData();
     formData.append("file", currentFile);
     axios
@@ -70,7 +69,6 @@ export default function MenuPicture({ changeComponent }: Props): ReactElement {
       .catch(function (error) {
         MySwal.fire("Erreur!", "", "error");
       });
-    // });
   };
 
   return (

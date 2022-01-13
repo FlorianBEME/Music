@@ -11,6 +11,7 @@ const subscribeToSocket = (data: any, args?: any) => {
   if (!socket) return true;
 
   socket.on("musicupdate", () => {
+    console.log("ici");
     console.log("musicupdate: j'ai bien recu et je met a jour");
     return data("musicupdate");
   });

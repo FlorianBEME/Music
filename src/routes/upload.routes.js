@@ -156,6 +156,7 @@ router.post("/picture", (req, res) => {
             //on stock les valeurs dans la BDD
             const sql = "INSERT INTO event_picture SET ?;";
             const data = {
+              name: file.name,
               is_accept: response[0].app.defaultPictureAccept ? true : false,
               original: `/eventpicture/original/${file.name}`,
               source: `/eventpicture/compress/${file.name}`,

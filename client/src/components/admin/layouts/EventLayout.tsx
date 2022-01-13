@@ -23,13 +23,24 @@ const MySwal = withReactContent(Swal);
 
 type EventProps = {
   event: any;
-  refetch: Function;
+  refetchEvent: Function;
   dataLoad: boolean;
+  refetchEventSetting: Function;
+  eventSetting: any;
 };
 
-const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
+const EventLayout = ({
+  refetchEvent,
+  event,
+  dataLoad,
+  refetchEventSetting,
+  eventSetting,
+}: EventProps) => {
   const token = localStorage.getItem("token");
-  const [eventCurrent, setEventCurrent] = useState<any>({});
+  const [eventCurrent, setEventCurrent] = useState<any>({
+    active_music_request: false,
+    active_wall_picture: false,
+  });
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
   const [displayTitle, setDisplayTitle] = useState(true);
@@ -39,7 +50,11 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
 
   // modifier les permissions d'accès
   const handleChangeAcces = () => {
-    if (!event[0].active_music_request && !event[0].active_wall_picture) {
+    console.log(eventCurrent);
+    if (
+      !eventCurrent.active_music_request &&
+      !eventCurrent.active_wall_picture
+    ) {
       Swal.fire("Erreur!", "Sélectionner au moins une catégorie", "error");
     } else {
       MySwal.fire({
@@ -60,6 +75,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                 },
               })
               .then((res) => {
+                console.log(res.data);
                 resolve(res);
               })
               .catch(function (error) {
@@ -68,8 +84,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           })
             .then(() => {
               Swal.fire("Modifié!", "L'évenement est modifié", "success");
-              setEventCurrent(null);
-              refetch();
+              refetchEvent();
               emitEvent("update", "event");
             })
             .catch(() => {
@@ -79,6 +94,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
       });
     }
   };
+
   //modifier position du titre
   const handleChangePositionTitle = () => {
     MySwal.fire({
@@ -115,7 +131,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
             });
         }).then((res: any) => {
           Swal.fire("Modifié!", "L'évenement est modifié", "success");
-          fetchDataEvent();
+          refetchEventSetting();
           emitEvent("update", "settitle");
         });
       }
@@ -158,7 +174,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
         })
           .then(() => {
             Swal.fire("Modifié!", "L'évenement est modifié", "success");
-            fetchDataEvent();
+            refetchEventSetting();
             emitEvent("update", "settitle");
           })
           .catch(() => {
@@ -167,31 +183,38 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
       }
     });
   };
-  //fetch style du titre
-  const fetchDataEvent = () => {
-    axios
-      .get(`${FETCH}/app/app`)
-      .then((res) => {
-        setColor(res.data.titleEventappStyle.color);
-        setPositionTitle(res.data.titleEventappStyle.position);
-        setDisplayTitle(res.data.titleEventappStyle.display);
-        setTextBannerFetch(res.data.app.textbanner);
-      })
-      .catch(function (erreur) {
-        console.error(erreur);
-      });
-  };
 
   useEffect(() => {
-    setEventCurrent(event[0]);
-    fetchDataEvent();
+    setColor(eventSetting.titleEventappStyle.color);
+    setPositionTitle(eventSetting.titleEventappStyle.position);
+    setDisplayTitle(eventSetting.titleEventappStyle.display);
+    setTextBannerFetch(eventSetting.app.textbanner);
+  }, [eventSetting]);
+
+  useEffect(() => {
+    const activeMusic = event[0].active_music_request === 1 ? true : false;
+    const activePicture = event[0].active_wall_picture === 1 ? true : false;
+    setEventCurrent({
+      ...event[0],
+      active_music_request: activeMusic,
+      active_wall_picture: activePicture,
+    });
   }, [event]);
+
+  console.log(eventCurrent);
+
+  const changeAccesValue = (e: any) => {
+    setEventCurrent({
+      ...eventCurrent,
+      [e.target.name]: !eventCurrent[e.target.name],
+    });
+  };
 
   // socket;
   useEffect(() => {
     subscribeToSocket((args: string) => {
       if (args === "settitle") {
-        fetchDataEvent();
+        refetchEventSetting();
       }
     });
   }, []);
@@ -209,7 +232,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           }
         )
         .then((res) => {
-          fetchDataEvent();
+          refetchEventSetting();
           emitEvent("update", "settitle");
           resolve(res);
         })
@@ -233,7 +256,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           <AddNewEvent
             token={token}
             refetch={() => {
-              refetch();
+              refetchEvent();
             }}
           />
         ) : null
@@ -266,14 +289,9 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                           name="active_music_request"
                           type="checkbox"
                           onChange={(e) => {
-                            setEventCurrent({
-                              ...event[0],
-                              [e.target.name]: !event[0].active_music_request,
-                            });
+                            changeAccesValue(e);
                           }}
-                          defaultChecked={
-                            event[0].active_music_request === 1 ? true : false
-                          }
+                          checked={eventCurrent.active_music_request}
                           className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                         />
                       </div>
@@ -297,14 +315,9 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                       <div className="flex items-center h-5">
                         <input
                           onChange={(e) => {
-                            setEventCurrent({
-                              ...event[0],
-                              [e.target.name]: !event[0].active_wall_picture,
-                            });
+                            changeAccesValue(e);
                           }}
-                          defaultChecked={
-                            event[0].active_wall_picture === 1 ? true : false
-                          }
+                          checked={eventCurrent.active_wall_picture}
                           id="active_wall_picture"
                           aria-describedby="active_wall_picture"
                           name="active_wall_picture"
@@ -389,7 +402,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                 >
                   <div className=" flex items-center space-x-4">
                     <select
-                      defaultValue={positionTitle}
+                      value={positionTitle}
                       id="location"
                       name="location"
                       className=" block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
@@ -397,9 +410,21 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
                         setPositionTitle(e.target.value);
                       }}
                     >
-                      <option value="left">Gauche</option>
-                      <option value="center">Centré</option>
-                      <option value="right">Droite</option>
+                      <option
+                        value="left"
+                      >
+                        Gauche
+                      </option>
+                      <option
+                        value="center"
+                      >
+                        Centré
+                      </option>
+                      <option
+                        value="right"
+                      >
+                        Droite
+                      </option>
                     </select>
                     <button
                       type="submit"
@@ -444,7 +469,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
           <TextBannerModify
             textFetch={textBannerFetch}
             token={token}
-            refetchData={() => fetchDataEvent()}
+            refetchData={() => refetchEventSetting()}
           />
         )
       ) : null}
@@ -463,7 +488,7 @@ const EventLayout = ({ refetch, event, dataLoad }: EventProps) => {
             token={token}
             event={event[0]}
             refetch={() => {
-              refetch();
+              refetchEvent();
             }}
           />
         )

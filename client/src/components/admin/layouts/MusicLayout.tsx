@@ -9,6 +9,8 @@ import { emitEvent, subscribeToSocket } from "../../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import compare from "../../common/sortMusic";
+import React, { ReactElement } from "react";
+import AllDeleteButton from "../../common/button/AllDeleteButton";
 
 const MySwal = withReactContent(Swal);
 
@@ -16,7 +18,8 @@ type MusicLayoutProps = {
   event: [] | any;
 };
 
-const MusicLayout = ({ event }: MusicLayoutProps) => {
+export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
+  // const MusicLayout = ({ event }: MusicLayoutProps) => {
   const token = localStorage.getItem("token");
   const [compareType, setCompareType] = useState("default");
   const [songs, setSongs] = useState<any>([]);
@@ -370,7 +373,8 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
                     </table>
                   </div>
                   <div className="flex justify-end mt-5">
-                    <button
+                    <AllDeleteButton action={handleAllDelete} />
+                    {/* <button
                       onClick={() => {
                         handleAllDelete();
                       }}
@@ -378,7 +382,7 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
                       className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md dark:text-red-100 dark:bg-red-700   text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
                       Tout supprimer
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -399,6 +403,6 @@ const MusicLayout = ({ event }: MusicLayoutProps) => {
       </div>
     </div>
   );
-};
+}
 
-export default MusicLayout;
+// export default MusicLayout;

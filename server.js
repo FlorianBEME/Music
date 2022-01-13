@@ -64,6 +64,7 @@ io.on("connection", (socket) => {
   });
   socket.on("eventpiture", (args) => {
     console.log(args);
+    console.log("test");
     socket.broadcast.emit("addnewpicture", args);
   });
   socket.on("disconnect", () => {

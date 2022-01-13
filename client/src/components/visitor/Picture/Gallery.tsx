@@ -11,12 +11,13 @@ type props = {
 };
 
 export default function GalleryPhoto({ changeComponent }: props) {
+  const [loadImg, setLoadImg] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [pictures, setPictures] = useState<never | any>([]);
   const [picturesIsLoad, setPicturesIsload] = useState(false);
 
-  useEffect(() => {
+  const fetchPicture = () => {
     axios
       .get(`${FETCH}/eventpicture/available`)
       .then((res) => {
@@ -26,16 +27,20 @@ export default function GalleryPhoto({ changeComponent }: props) {
       .catch((err) => {
         console.error(err);
       });
+  };
+
+  useEffect(() => {
+    fetchPicture();
+    setTimeout(() => {
+      setLoadImg(true);
+    }, 5000);
     return () => {};
   }, []);
 
   // socket;
   useEffect(() => {
     subscribeToSocket((args: any) => {
-      const newPicture: any = args.data;
-      if (args.data === "addnewpicture") {
-        setPictures((pictures: any) => [...pictures, newPicture]);
-      }
+      fetchPicture();
     });
   }, []);
 

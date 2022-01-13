@@ -35,24 +35,42 @@ router.get("/download", (req, res) => {
   const uploadDir = fs.readdirSync(front + "/eventpicture/original");
   const zip = new AdmZip();
 
-  for (var i = 0; i < uploadDir.length; i++) {
-    zip.addLocalFile(front + "/eventpicture/" + uploadDir[i]);
-  }
+  const sql = "SELECT * FROM event_picture WHERE is_accept = 1";
 
-  // Define zip file name
-  const downloadName = `${Date.now()}.zip`;
-  const data = zip.toBuffer();
+  connection.query(sql, (err, results) => {
+    if (err) {
+      res.status(500).send({ errorMessage: err.message });
+    } else {
+      let photosAccept = JSON.parse(JSON.stringify(results));
 
-  // save file zip in root directory
-  zip.writeZip(front + "/zipfolders/" + downloadName);
+      for (let i = 0; i < uploadDir.length; i++) {
+        console.log(typeof uploadDir[i]);
+        if (photosAccept.includes((photo) => photo.original === uploadDir[i])) {
+          console.log(uploadDir[i]);
+          console.log(photo.original);
+        }
+        // zip.addLocalFile(front + "/eventpicture/original/" + uploadDir[i]);
+      }
+    }
+  });
 
-  // code to download zip file
-  res.set("Content-Type", "application/octet-stream");
-  res.set("Content-Disposition", `attachment; filename=${downloadName}`);
-  res.set("Content-Length", data.length);
-  res.status(200).send(data);
+  // for (let i = 0; i < uploadDir.length; i++) {
+  //   console.log(uploadDir[i]);
+  //   zip.addLocalFile(front + "/eventpicture/original/" + uploadDir[i]);
+  // }
+  // // Define zip file name
+  // const downloadName = `${Date.now()}.zip`;
+  // const data = zip.toBuffer();
+
+  // // // save file zip in root directory
+  // zip.writeZip(front + "/zipfolders/" + downloadName);
+
+  // // // code to download zip file
+  // res.set("Content-Type", "application/octet-stream");
+  // res.set("Content-Disposition", `attachment; filename=${downloadName}`);
+  // res.set("Content-Length", data.length);
+  // res.status(200).send(data);
 });
-
 
 router.delete("/cleanpicture", (req, res) => {
   const compress = front + "/eventpicture/compress";
