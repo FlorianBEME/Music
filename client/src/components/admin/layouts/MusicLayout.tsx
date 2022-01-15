@@ -3,7 +3,7 @@ import axios from "axios";
 import { BsFillTrashFill } from "react-icons/bs";
 import { CgUnavailable } from "react-icons/cg";
 import { AiOutlineCheck } from "react-icons/ai";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 

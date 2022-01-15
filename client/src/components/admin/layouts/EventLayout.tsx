@@ -7,6 +7,10 @@ import { HexColorPicker } from "react-colorful";
 import { useHistory } from "react-router-dom";
 import { Switch } from "@headlessui/react";
 
+import { useSelector } from "react-redux";
+import { eventStore } from "../../../slicer/eventSlice";
+import { appParam } from "../../../slicer/appSlice";
+
 import { FETCH } from "../../../FETCH";
 import FooterSettings from "../event/FooterSettings";
 import { Backgroundheader } from "../event/Backgroundheader";
@@ -24,18 +28,10 @@ function classNames(...classes: any) {
 
 const MySwal = withReactContent(Swal);
 
-type EventProps = {
-  event: any;
-
-  dataLoad: boolean;
-  eventSetting: any;
-};
-
-const EventLayout = ({
-  event,
-  eventSetting,
-}: EventProps) => {
+const EventLayout = () => {
   const dispatch = useDispatch();
+  const event = useSelector(eventStore);
+  const eventSetting = useSelector(appParam);
   const token = localStorage.getItem("token");
 
   const [eventCurrent, setEventCurrent] = useState<any>({
@@ -46,7 +42,6 @@ const EventLayout = ({
   const [color, setColor] = useState("#aabbcc");
   const [positionTitle, setPositionTitle] = useState("");
   const [displayTitle, setDisplayTitle] = useState(true);
-  const [textBannerFetch, setTextBannerFetch] = useState<null | string>();
 
   const history = useHistory();
 
@@ -204,10 +199,8 @@ const EventLayout = ({
   };
 
   useEffect(() => {
-    setColor(eventSetting.titleEventappStyle.color);
     setPositionTitle(eventSetting.titleEventappStyle.position);
     setDisplayTitle(eventSetting.titleEventappStyle.display);
-    setTextBannerFetch(eventSetting.app.textbanner);
   }, [eventSetting]);
 
   useEffect(() => {
@@ -398,7 +391,10 @@ const EventLayout = ({
                 }}
               >
                 <div className=" flex items-start sm:items-end sm:space-x-4  flex-col sm:flex-row w-full">
-                  <HexColorPicker color={color} onChange={setColor} />
+                  <HexColorPicker
+                    color={eventSetting.titleEventappStyle.color}
+                    onChange={setColor}
+                  />
                   <button
                     type="submit"
                     className="mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-5  sm:w-auto sm:text-sm"
@@ -412,20 +408,13 @@ const EventLayout = ({
         </div>
       )}
 
-      {!event.isLoad ? null : (
-        <TextBannerModify
-          textFetch={textBannerFetch}
-          token={token}
-        />
-      )}
+      {!event.isLoad ? null : <TextBannerModify />}
 
       <FooterSettings />
 
       {!event.isLoad ? null : <Backgroundheader event={event} token={token} />}
 
-      {!event.isLoad ? null : (
-        <DeleteEvent token={token} event={event} refetch={() => {}} />
-      )}
+      {!event.isLoad ? null : <DeleteEvent />}
     </div>
   );
 };

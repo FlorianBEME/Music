@@ -16,6 +16,7 @@ io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 
   socket.on("update", (args, data) => {
+    console.log(args);
     switch (args) {
       case "musiclist":
         console.log("SOCKET: MAJ music");
@@ -42,42 +43,60 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.broadcast.emit("banner", data);
         break;
+      case "footer-item-add":
+        console.log("SOCKET: ADD footer-item");
+        console.log(data);
+        socket.broadcast.emit("footer-item-add", data);
+        break;
+      case "footer-item-delete":
+        console.log("SOCKET: Delete footer-item");
+        console.log(data);
+        socket.broadcast.emit("footer-item-delete", data);
+        break;
+      case "footer-item-modify":
+        console.log("SOCKET: MAJ footer-item");
+        console.log(data);
+        socket.broadcast.emit("footer-item-modify", data);
+        break;
+      case "footer-copyright-modify":
+          console.log("SOCKET: MAJ footer-copyright");
+          console.log(data);
+          socket.broadcast.emit("footer-copyright-modify", data);
+          break;
+        
 
-      case "title":
-        console.log("SOCKET: MAJ titre music");
-        socket.broadcast.emit("titleupdate", true);
-        break;
-      case "user":
-        console.log("SOCKET: MAJ visiteur");
-        socket.broadcast.emit("userupdate", true); // Reception en admin
-        break;
-      case "visitorallowed":
-        console.log("SOCKET: MAJ visiteur permission");
-        socket.broadcast.emit("visitorallowed", true);
-        break;
+      //////////////////////////////////////////////////////////////
+      // case "title":
+      //   console.log("SOCKET: MAJ titre music");
+      //   socket.broadcast.emit("titleupdate", true);
+      //   break;
+      // case "user":
+      //   console.log("SOCKET: MAJ visiteur");
+      //   socket.broadcast.emit("userupdate", true); // Reception en admin
+      //   break;
+      // case "visitorallowed":
+      //   console.log("SOCKET: MAJ visiteur permission");
+      //   socket.broadcast.emit("visitorallowed", true);
+      //   break;
 
-      case "settitle":
-        console.log("SOCKET: MAJ Title");
-        socket.broadcast.emit("settitle", true);
-        break;
-      case "pop":
-        console.log("SOCKET: MAJ Popup");
-        socket.broadcast.emit("pop", true);
-        break;
-      case "footer":
-        console.log("SOCKET: MAJ Footer");
-        socket.broadcast.emit("footer", true);
-        break;
-      case "userupdate":
-        console.log("SOCKET: MAJ user");
-        socket.broadcast.emit("userupdate", true); // Reception en admin
-        break;
-      case "setbanner":
-        console.log("SOCKET: MAJ banner");
-        socket.broadcast.emit("setbanner", true);
-        break;
-      default:
-        break;
+      // case "settitle":
+      //   console.log("SOCKET: MAJ Title");
+      //   socket.broadcast.emit("settitle", true);
+      //   break;
+      // case "pop":
+      //   console.log("SOCKET: MAJ Popup");
+      //   socket.broadcast.emit("pop", true);
+      //   break;
+      // case "userupdate":
+      //   console.log("SOCKET: MAJ user");
+      //   socket.broadcast.emit("userupdate", true); // Reception en admin
+      //   break;
+      // case "setbanner":
+      //   console.log("SOCKET: MAJ banner");
+      //   socket.broadcast.emit("setbanner", true);
+      //   break;
+      // default:
+      //   break;
     }
   });
 

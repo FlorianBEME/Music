@@ -1,13 +1,15 @@
-import { AiOutlineDownload } from "react-icons/ai";
-import { FaRegCheckSquare } from "react-icons/fa";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
+import { AiOutlineDownload } from "react-icons/ai";
+import { FaRegCheckSquare } from "react-icons/fa";
 
 import MusicBandeau from "../../../assets/musicbandeau.jpg";
 import { FETCH } from "../../../FETCH";
 import { emitEvent } from "../../common/SocketPublicComponent";
-import { useState } from "react";
+import { updateEventBgInStore } from "../../../slicer/eventSlice";
 
 const MySwal = withReactContent(Swal);
 
@@ -17,6 +19,7 @@ export interface IAppProps {
 }
 
 export function Backgroundheader(props: IAppProps) {
+  const dispatch = useDispatch();
   const [imagePreview, setImagePreview] = useState<any>({
     file: null,
     imagePreviewUrl: null,
@@ -64,9 +67,9 @@ export function Backgroundheader(props: IAppProps) {
                     },
                   }
                 )
-                .then(() => {
+                .then((el) => {
                   Swal.fire("Modifié!", "", "success");
-                  resolve(res);
+                  resolve({ img: res.data, event: el.data });
                 })
                 .catch(function (error) {
                   Swal.fire("Erreur!", "", "error");
@@ -77,9 +80,10 @@ export function Backgroundheader(props: IAppProps) {
               reject(error);
             });
         })
-          .then(() => {
+          .then((res: any) => {
+            dispatch(updateEventBgInStore(res.img.filePath));
+            emitEvent("update", "event", res.event);
             Swal.fire("Succés!", "L'image est changé", "success");
-            emitEvent("update", "event");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");

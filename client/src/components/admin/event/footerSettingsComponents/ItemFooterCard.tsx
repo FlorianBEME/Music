@@ -1,10 +1,18 @@
 import { ReactElement, useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { BsFillTrashFill } from "react-icons/bs";
 import Switch from "@mui/material/Switch";
 import Swal from "sweetalert2";
 import axios from "axios";
-
 import withReactContent from "sweetalert2-react-content";
+
+import { emitEvent } from "../../../common/SocketPublicComponent";
+
+import {
+  deleteItemFooterInStore,
+  updateItemFooter,
+} from "../../../../slicer/appSlice";
+
 const MySwal = withReactContent(Swal);
 
 interface Props {
@@ -15,8 +23,6 @@ interface Props {
   isActivate: boolean;
   token: string | null;
   apiPath: string;
-  refetch: Function;
-  emitEvent: Function;
 }
 
 export default function ItemFooterCard({
@@ -25,11 +31,11 @@ export default function ItemFooterCard({
   imagePath,
   id,
   nameItem,
-  emitEvent,
   filePath,
   isActivate,
-  refetch,
 }: Props): ReactElement {
+  const dispatch = useDispatch();
+
   const [activate, setActivate] = useState(false);
 
   useEffect(() => {
@@ -49,11 +55,10 @@ export default function ItemFooterCard({
         }
       )
       .then((res) => {
-        console.log(res.data);
-        // emitEvent();
+        dispatch(updateItemFooter(res.data));
+        emitEvent("update", "footer-item-modify",res.data);
       })
       .catch((err) => console.error(err));
-    setActivate(status);
   };
 
   const deleteItem = (e: any) => {
@@ -65,8 +70,8 @@ export default function ItemFooterCard({
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Oui, je suis sur !",
-    })
-      .then((result) => {
+    }).then((result) => {
+      if (result.isConfirmed) {
         axios
           .delete(`${apiPath}/${id}`, {
             headers: {
@@ -74,18 +79,17 @@ export default function ItemFooterCard({
             },
             data: { path: filePath },
           })
+          .then((res) => {
+            if (res.status === 200) {
+              dispatch(deleteItemFooterInStore(id));
+              emitEvent("update", "footer-item-delete", id);
+            }
+          })
           .catch((err) => {
             console.error(err);
           });
-      })
-      .then(() => {
-        Swal.fire("Succés!", "L'item s'est supprimé", "success");
-        refetch();
-        emitEvent();
-      })
-      .catch(() => {
-        Swal.fire("Erreur!", "Une erreur est survenue", "error");
-      });
+      }
+    });
   };
 
   return (
@@ -112,7 +116,7 @@ export default function ItemFooterCard({
             <BsFillTrashFill size={24} />
           </button>
           <Switch
-            checked={isActivate ? true : false}
+            checked={activate ? true : false}
             onChange={(e) => {
               changeStatue(e);
             }}

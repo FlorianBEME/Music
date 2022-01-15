@@ -72,7 +72,6 @@ export default function Layout() {
     }
   }, [history]);
 
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-800">
       <div className="py-5">
@@ -92,15 +91,9 @@ export default function Layout() {
                       path={prop.path}
                       component={() => (
                         <prop.component
-                          eventSetting={eventSetting}
-                          refetchEventSetting={() => {
-                            
-                          }}
                           event={event}
                           dataLoad={dataLoad}
-                          refetchEvent={() => {
-                            
-                          }}
+                          refetchEvent={() => {}}
                         />
                       )}
                       key={key}

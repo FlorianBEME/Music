@@ -1,20 +1,19 @@
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import io from "socket.io-client";
-import {
-  updateSong,
-  addNewSong,
-  initMusicStore,
-} from "../../slicer/musicSlice";
-import { updateEventInStore, deleteEvent } from "../../slicer/eventSlice";
 
 import { ENDPOINT } from "../../FETCH";
+import { addNewSong } from "../../slicer/musicSlice";
+import { updateEventInStore, deleteEvent } from "../../slicer/eventSlice";
 import {
   updateAppTextBanner,
   updateAppTitleStyle,
   deleteAppTextBanner,
+  addNewItemFooterInStore,
+  deleteItemFooterInStore,
+  updateItemFooter,
+  updateCopyrightTextInStore,
 } from "../../slicer/appSlice";
 
 const socket = io(ENDPOINT);
@@ -61,7 +60,33 @@ const SocketPublicComponent = () => {
           dispatch(deleteAppTextBanner());
         }
       });
+
+      socket.on("footer-item-add", (data) => {
+        if (data) {
+          console.log("EVENT: Ajout d'un item-footer");
+          dispatch(addNewItemFooterInStore(data));
+        }
+      });
+      socket.on("footer-item-delete", (id) => {
+        if (id) {
+          console.log("EVENT: Suppression d'un item footer");
+          dispatch(deleteItemFooterInStore(id));
+        }
+      });
+      socket.on("footer-item-modify", (data) => {
+        if (data) {
+          console.log("EVENT: MAJ d'un item footer");
+          dispatch(updateItemFooter(data));
+        }
+      });
+      socket.on("footer-copyright-modify", (data) => {
+        if (data) {
+          console.log("EVENT: MAJ du text copyright footer");
+          dispatch(updateCopyrightTextInStore(data));
+        }
+      });
     };
+
     publicSocket();
     return () => {};
   }, [dispatch]);
@@ -69,7 +94,7 @@ const SocketPublicComponent = () => {
   return null;
 };
 
-const emitEvent = (eventemit: string, args: any, data?: undefined) => {
+const emitEvent = (eventemit: string, args: any, data?: any) => {
   console.log("Emit Event");
   socket.emit(eventemit, args, data);
 };

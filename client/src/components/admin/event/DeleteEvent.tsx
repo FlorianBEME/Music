@@ -1,7 +1,10 @@
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
+import { eventStore } from "../../../slicer/eventSlice";
+import { appParam } from "../../../slicer/appSlice";
 
 import { FETCH } from "../../../FETCH";
 import { emitEvent } from "../../common/SocketPublicComponent";
@@ -9,14 +12,9 @@ import { deleteEvent } from "../../../slicer/eventSlice";
 
 const MySwal = withReactContent(Swal);
 
-export interface IAppProps {
-  token: string | null;
-  event: any;
-  refetch: Function;
-}
-
-export function DeleteEvent(props: IAppProps) {
+export function DeleteEvent() {
   const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
 
   // suprimer un event et la donnée
   const handleRemove = () => {
@@ -34,7 +32,7 @@ export function DeleteEvent(props: IAppProps) {
           axios
             .delete(`${FETCH}/events/remove/all`, {
               headers: {
-                "x-access-token": props.token,
+                "x-access-token": token,
               },
             })
             .then((res) => {

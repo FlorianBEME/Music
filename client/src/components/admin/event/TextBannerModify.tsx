@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import Swal from "sweetalert2";
@@ -13,15 +13,14 @@ import {
   deleteAppTextBanner,
   updateAppTextBanner,
 } from "../../../slicer/appSlice";
+import { appParam } from "../../../slicer/appSlice";
 
 const MySwal = withReactContent(Swal);
 
-export interface IAppProps {
-  token: String | null;
-  textFetch: any;
-}
+export const TextBannerModify = () => {
+  const token = localStorage.getItem("token");
+  const eventSetting = useSelector(appParam);
 
-export function TextBannerModify({ token, textFetch }: IAppProps) {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -29,12 +28,12 @@ export function TextBannerModify({ token, textFetch }: IAppProps) {
   const [oldText, setoldText] = useState("Saisir votre Texte");
 
   useEffect(() => {
-    if (textFetch != null) {
-      setoldText(textFetch);
+    if (eventSetting.app.textbanner != null) {
+      setoldText(eventSetting.app.textbanner);
     } else {
       setoldText("Saisir votre Texte");
     }
-  }, [textFetch]);
+  }, [eventSetting]);
 
   const modifyTextBanner = () => {
     MySwal.fire({
@@ -132,6 +131,7 @@ export function TextBannerModify({ token, textFetch }: IAppProps) {
               <div className="relative flex items-start">
                 <div className="flex items-center w-full">
                   <textarea
+                    required
                     onChange={(e) => {
                       setTextBanner(e.target.value);
                     }}
@@ -149,7 +149,7 @@ export function TextBannerModify({ token, textFetch }: IAppProps) {
               >
                 Modifier
               </button>
-              {textFetch === null ? null : (
+              {eventSetting.app.textbanner === null ? null : (
                 <button
                   onClick={() => {
                     deleteTextBanner();
@@ -166,4 +166,4 @@ export function TextBannerModify({ token, textFetch }: IAppProps) {
       </div>
     </div>
   );
-}
+};

@@ -19,11 +19,18 @@ export const eventSlice = createSlice({
     deleteEvent: (state) => {
       state.eventData = { isLoad: false };
     },
+    updateEventBgInStore: (state: { eventData: any }, action) => {
+      state.eventData.bg_music = action.payload;
+    },
   },
 });
 
-export const { initEventState, updateEventInStore, deleteEvent } =
-  eventSlice.actions;
+export const {
+  initEventState,
+  updateEventInStore,
+  deleteEvent,
+  updateEventBgInStore,
+} = eventSlice.actions;
 
 export const eventStore = (state: any) => state.eventStore.eventData;
 

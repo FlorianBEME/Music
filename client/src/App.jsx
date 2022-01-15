@@ -95,7 +95,6 @@ function App() {
       axios
         .get(`${FETCH}/footer`)
         .then((res) => {
-          console.log(res.data);
           dispatch(initAppState({ itemFooter: res.data }));
         })
         .catch((err) => {

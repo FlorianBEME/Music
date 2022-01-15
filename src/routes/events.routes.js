@@ -36,7 +36,7 @@ router.put("/:id", verifyJWT, (req, res) => {
       connection.query(sql, req.params.id, (err, result) => {
         if (result.length === 0) {
           res.status(404).send({
-            errorMessage: `Question with id ${req.params.id} not found`,
+            errorMessage: `Event with id ${req.params.id} not found`,
           });
         } else {
           res.status(200).json(result[0]);
