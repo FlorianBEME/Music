@@ -1,24 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { FETCH } from "../../../FETCH";
 import { removeInput } from "../../common/removeInput";
-import { emitEvent } from "../../common/socket";
+import { addNewSong } from "../../../slicer/musicSlice";
+import { emitEvent } from "../../common/SocketPublicComponent";
 
 type RequestFormProps = {
   visitorInfo: any;
   isAllowed: Boolean;
-  songs: never[];
-  refetch: Function;
+  musicList: any[];
 };
 
 const SongRequestForm = ({
   visitorInfo,
   isAllowed,
-  songs,
-  refetch,
+  musicList,
 }: RequestFormProps) => {
+  const dispatch = useDispatch();
+
   const [data, setData] = useState({
     title: "",
     artist: "",
@@ -42,12 +45,11 @@ const SongRequestForm = ({
     if (isAllowed) {
       // on vérifie si l'artiste est déja dans la liste
       let artistFiltered: object[] = [];
-      songs.forEach((song: any) => {
+      musicList.forEach((song: any) => {
         if (song.artist.toLowerCase() === data.artist.toLowerCase()) {
           artistFiltered.push(song);
         }
       });
-      // on vérifie si le titre est dans la liste
       if (
         artistFiltered.filter(
           (item: any) => item.title.toLowerCase() === data.title.toLowerCase()
@@ -59,13 +61,12 @@ const SongRequestForm = ({
             visitor_id: visitorInfo,
             countVote: 0,
           })
-          .then(() => {
+          .then((res) => {
             toast.success("Musique envoyé!", {
               position: toast.POSITION.TOP_RIGHT,
             });
-            emitEvent("update", "musiclist");
-
-            refetch();
+            dispatch(addNewSong(res.data));
+            emitEvent("update", "musiclist", res.data);
             removeInput(["title", "artist"]);
           })
           .catch(function (error) {
@@ -77,6 +78,7 @@ const SongRequestForm = ({
           position: toast.POSITION.TOP_RIGHT,
         });
       }
+      artistFiltered = [];
     } else {
       toast.error("Vous n'êtes pas autorisé!", {
         position: toast.POSITION.TOP_RIGHT,

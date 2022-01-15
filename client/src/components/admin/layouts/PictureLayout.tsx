@@ -1,18 +1,18 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
-
-import { removeInput } from "../../common/removeInput";
-import { emitEvent, subscribeToSocket } from "../../common/socket";
-import Swal from "sweetalert2";
-
 import withReactContent from "sweetalert2-react-content";
 import TopPictureLayout from "../picture/TopPictureLayout";
+import Swal from "sweetalert2";
+
+import { FETCH } from "../../../FETCH";
+import { removeInput } from "../../common/removeInput";
+// import { emitEvent, subscribeToSocket } from "../../common/socket";
+
 const MySwal = withReactContent(Swal);
 
 type MusicLayoutProps = {
-  event: [] | any;
+  event: any;
 };
 
 const PictureLayout = ({ event }: MusicLayoutProps) => {
@@ -22,15 +22,15 @@ const PictureLayout = ({ event }: MusicLayoutProps) => {
     <div>
       <div className="hidden  sm:flex flex-col ">
         {event ? (
-          event.length <= 0 ? (
+          !event.isLoad? (
             <div className="w-full flex justify-center items-center">
               <p className="dark:text-gray-100 py-52">
                 Pas d'évenement en cours
               </p>
             </div>
-          ) : event[0].active_wall_picture ? (
+          ) : event.active_wall_picture ? (
             <div>
-              <TopPictureLayout token={token}/>
+              <TopPictureLayout token={token} />
             </div>
           ) : (
             <div className="w-full flex justify-center items-center">

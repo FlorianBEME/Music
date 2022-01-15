@@ -1,35 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { emitEvent } from "../../common/socket";
+import { useDispatch } from "react-redux";
+
+import { FETCH } from "../../../FETCH";
 import compare from "../../common/sortMusic";
+import { incrementVote } from "../../../slicer/musicSlice";
+import { emitEvent } from "../../common/SocketPublicComponent";
 
 type SongRequestInCurrentProps = {
   isAllowed: boolean;
-  refetch: Function;
-  songs: any;
   isLoading: boolean;
   visitorId: Number | null;
+  musicList: any[];
 };
 
 export default function SongRequestInCurrent({
+  musicList,
   isAllowed,
-  refetch,
-  songs,
   isLoading,
   visitorId,
 }: SongRequestInCurrentProps) {
+  //Store
+  const dispatch = useDispatch();
   // Hook pour le rendu du composant
   function useForceUpdate() {
     //eslint-disable-next-line
     const [value, setValue] = useState(0); // integer state
     return () => setValue((value) => value + 1); // update the state to force render
   }
-
   const forceUpdate = useForceUpdate();
 
+  const [songs, setSongs]: any = useState([]);
   // Fonction pour désactivé le vote
   const votingDisable = (id: number) => {
     let idVoting: any = localStorage.getItem("idMusicVoting");
@@ -48,7 +51,7 @@ export default function SongRequestInCurrent({
         .put(`${FETCH}/currentSongs/${id}`, {
           countVote: newCount,
         })
-        .then((result: object) => {
+        .then((result) => {
           // je recupere le nombre de fois que mon user à voté
           axios
             .get(`${FETCH}/visitor/${visitorId}`)
@@ -60,7 +63,7 @@ export default function SongRequestInCurrent({
                 .patch(`${FETCH}/visitor/newcount/${visitorId}`, {
                   countvoting: newCount,
                 })
-                .then(() => {
+                .then((res) => {
                   // je modifie le local storage
                   // Je vérifie si mon user a jamais voté
                   if (
@@ -78,9 +81,13 @@ export default function SongRequestInCurrent({
                       localStorage.setItem("idMusicVoting", result.toString());
                     }
                   }
-                  emitEvent("update", "musiclist");
+                  // Je met à jour le store
+                  console.log(result.data);
+                  dispatch(incrementVote(result.data));
+                  // j'emit la maj
+                  // emitEvent("update", "musiclist");
                   emitEvent("update", "userupdate");
-                  refetch();
+                  // refetch();
                 })
                 .catch((err) => console.error(err));
             })
@@ -94,6 +101,13 @@ export default function SongRequestInCurrent({
     }
   };
   const [compareType, setCompareType] = useState("default");
+
+  // let songs: any[] = [];
+  useEffect(() => {
+    if (isLoading) {
+      setSongs([...musicList]);
+    }
+  }, [isLoading, musicList]);
 
   return (
     <div>

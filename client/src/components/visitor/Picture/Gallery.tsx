@@ -38,11 +38,11 @@ export default function GalleryPhoto({ changeComponent }: props) {
   }, []);
 
   // socket;
-  useEffect(() => {
-    subscribeToSocket((args: any) => {
-      fetchPicture();
-    });
-  }, []);
+  // useEffect(() => {
+  //   subscribeToSocket((args: any) => {
+  //     fetchPicture();
+  //   });
+  // }, []);
 
   const openLightbox = (index: number) => {
     setCurrentImage(index);

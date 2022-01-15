@@ -1,12 +1,14 @@
 import { AiOutlineDownload } from "react-icons/ai";
 import { FaRegCheckSquare } from "react-icons/fa";
-import MusicBandeau from "../../../assets/musicbandeau.jpg";
-import { useState } from "react";
-import { emitEvent } from "../../common/socket";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
+
+import MusicBandeau from "../../../assets/musicbandeau.jpg";
 import { FETCH } from "../../../FETCH";
+import { emitEvent } from "../../common/SocketPublicComponent";
+import { useState } from "react";
+
 const MySwal = withReactContent(Swal);
 
 export interface IAppProps {

@@ -1,11 +1,13 @@
-import Accordion from "../../common/Accordion";
+
 import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
 
-import { emitEvent } from "../../common/socket";
+import Accordion from "../../common/Accordion";
+import { FETCH } from "../../../FETCH";
+import { emitEvent } from "../../common/SocketPublicComponent";
+
 
 const MySwal = withReactContent(Swal);
 

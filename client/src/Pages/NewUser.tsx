@@ -1,9 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory } from "react-router-dom";
-import { emitEvent } from "../components/common/socket";
+
+
+import { FETCH } from "../FETCH";
+import { emitEvent } from "../components/common/SocketPublicComponent";
+
 
 const NewUser = () => {
   let history = useHistory();

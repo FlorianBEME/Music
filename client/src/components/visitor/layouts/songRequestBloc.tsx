@@ -1,15 +1,28 @@
 import SongRequestForm from "../songRequestBloc/songRequestForm";
 import SongRequestInCurrent from "../songRequestBloc/songRequestInCurrent";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { FETCH } from "../../../FETCH";
-import { useHistory } from "react-router-dom";
 import { subscribeToSocket } from "../../common/socket";
 import { TitleSongCard } from "../songRequestBloc/titleSongCard";
+import { FETCH } from "../../../FETCH";
+
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  initMusicStore,
+  musicIsLoading,
+  musicList,
+} from "../../../slicer/musicSlice";
+
 export default function SongRequestBloc() {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(musicIsLoading);
+  const musics = useSelector(musicList);
+
   // useState
-  const [songs, setSongs] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+  // const [songs, setSongs] = useState([]);
+  // const [isLoading, setLoading] = useState(false);
   const [titleIncurent, setTitleIncurent] = useState();
   const [isAllowed, setIsAllowed] = useState(true);
 
@@ -24,8 +37,9 @@ export default function SongRequestBloc() {
     axios
       .get(`${FETCH}/currentSongs`)
       .then((res) => {
-        setSongs(res.data);
-        setLoading(true);
+        // setSongs(res.data);
+        // setLoading(true);
+        dispatch(initMusicStore(res.data));
       })
       .catch(function (erreur) {
         console.error(erreur);
@@ -80,16 +94,15 @@ export default function SongRequestBloc() {
           console.error(erreur);
         });
     };
-    subscribeToSocket((args: string) => {
-      if (args === "visitorallowed") {
-        verifyIsAllowed();
-      } else if (args === "musicupdate") {
-        console.log("ici ????");
-        fetchData();
-      } else if (args === "title") {
-        fetchSongIncurrent();
-      }
-    });
+    // subscribeToSocket((args: string) => {
+    //   if (args === "visitorallowed") {
+    //     verifyIsAllowed();
+    //   } else if (args === "musicupdate") {
+    //     console.log("ici ????");
+    //   } else if (args === "title") {
+    //     fetchSongIncurrent();
+    //   }
+    // });
   }, [visitorInfo.id]);
 
   return (
@@ -101,17 +114,15 @@ export default function SongRequestBloc() {
         </div>
         <div className="pt-8 px-4 sm:px-6 lg:col-span-3  lg:px-8 xl:pl-12 border-b border-gray-200 dark:border-gray-400 py-5">
           <SongRequestForm
-            songs={songs}
+            musicList={musics}
             isAllowed={isAllowed}
-            refetch={fetchData}
             visitorInfo={visitorInfo ? visitorInfo.id : null}
           />
         </div>
         <SongRequestInCurrent
+          musicList={musics}
           visitorId={visitorInfo.id}
-          refetch={fetchData}
           isLoading={isLoading}
-          songs={songs}
           isAllowed={isAllowed}
         />
       </div>

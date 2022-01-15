@@ -1,38 +1,46 @@
 import { useEffect, useState, SyntheticEvent } from "react";
+import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
-import { emitEvent, subscribeToSocket } from "../../common/socket";
-import ItemFooterCard from "./footerSettingsComponents/ItemFooterCard";
 import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
+
 import { removeInput } from "../../common/removeInput";
+import { emitEvent } from "../../common/SocketPublicComponent";
+import { FETCH } from "../../../FETCH";
+import { subscribeToSocket } from "../../common/socket";
+import ItemFooterCard from "./footerSettingsComponents/ItemFooterCard";
+import { appParam } from "../../../slicer/appSlice";
 
 const MySwal = withReactContent(Swal);
 
 export default function FooterSettings() {
+  const eventSetting = useSelector(appParam);
+
   const token = localStorage.getItem("token");
+
+  const [itemsInFooter, setItemsInFooter] = useState<any>([]);
+  const [copyright, setCopyright] = useState<any>();
+
+  useEffect(() => {
+    setItemsInFooter(eventSetting.itemFooter);
+    setCopyright(eventSetting.footerCopyright);
+    return () => {
+      setItemsInFooter([]);
+      setCopyright(null);
+    };
+  }, [eventSetting]);
+
+
+  /////////////////////////////////////
   const [imagePreviewFooter, setImagePreviewFooter] = useState<any>({
     file: null,
     imagePreviewUrl: null,
   });
   const [currentFile, setCurrentFile] = useState<any>();
   const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
-  const [itemsInFooter, setItemsInFooter] = useState<any>([]);
-  const [copyright, setCopyright] = useState({});
 
-  //fetch
-  const fetchFooterItem = () => {
-    axios
-      .get(`${FETCH}/footer`)
-      .then((res) => {
-        setItemsInFooter(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
   // preview image
   const handleImageChangeFooter = (e: any) => {
     if (e.target.files[0] !== undefined) {
@@ -108,7 +116,7 @@ export default function FooterSettings() {
           })
             .then(() => {
               Swal.fire("Succés!", "L'item est ajouté", "success");
-              fetchFooterItem();
+
               emitEvent("update", "footer");
             })
             .catch(() => {
@@ -152,21 +160,6 @@ export default function FooterSettings() {
       }
     });
   };
-
-  useEffect(() => {
-    fetchFooterItem();
-    return () => {
-      setItemsInFooter([]);
-    };
-  }, []);
-
-  useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "footer") {
-        fetchFooterItem();
-      }
-    });
-  }, []);
 
   return (
     <div className="bg-white my-2.5 dark:bg-gray-700 shadow sm:rounded-lg">
@@ -305,7 +298,7 @@ export default function FooterSettings() {
                 <ItemFooterCard
                   emitEvent={() => emitEvent("update", "footer")}
                   key={item.id}
-                  refetch={() => fetchFooterItem()}
+                  refetch={() => {}}
                   apiPath={`${FETCH}/footer`}
                   token={token}
                   id={item.id}

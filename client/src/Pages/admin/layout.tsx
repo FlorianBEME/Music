@@ -1,48 +1,52 @@
-import { Route, Switch, Redirect } from "react-router-dom";
-import AdminRoutes from "../../router/listRoute/AdminRoutes";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
+import AdminRoutes from "../../router/listRoute/AdminRoutes";
 import { FETCH } from "../../FETCH";
-import { subscribeToSocket } from "../../components/common/socket";
-import { useHistory } from "react-router-dom";
+import { eventStore } from "../../slicer/eventSlice";
+import { appParam } from "../../slicer/appSlice";
 
 export default function Layout() {
   const history = useHistory();
-  const [event, setevent] = useState(null);
+  const event = useSelector(eventStore);
+  const eventSetting = useSelector(appParam);
+
   const [dataLoad, setDataLoad] = useState(true);
-  const [eventSetting, setEventSetting] = useState({});
+  // const [eventSetting, setEventSetting] = useState({});
 
   //fetch style du titre
-  const fetchEventSetting = () => {
-    axios
-      .get(`${FETCH}/app/app`)
-      .then((res) => {
-        setEventSetting(res.data);
-      })
-      .catch(function (erreur) {
-        console.error(erreur);
-      });
-  };
+  // const fetchEventSetting = () => {
+  //   axios
+  //     .get(`${FETCH}/app/app`)
+  //     .then((res) => {
+  //       setEventSetting(res.data);
+  //     })
+  //     .catch(function (erreur) {
+  //       console.error(erreur);
+  //     });
+  // };
 
-  useEffect(() => {
-    fetchEventSetting();
-  }, [event]);
+  // useEffect(() => {
+  //   fetchEventSetting();
+  // }, [event]);
 
-  //Fecth event info
-  const fetchEvent = () => {
-    axios
-      .get(`${FETCH}/events`)
-      .then((res) => {
-        setevent(res.data);
-        setDataLoad(true);
-      })
-      .catch(function (err) {
-        console.error(err);
-      });
-  };
-  useEffect(() => {
-    fetchEvent();
-  }, []);
+  // //Fecth event info
+  // const fetchEvent = () => {
+  //   axios
+  //     .get(`${FETCH}/events`)
+  //     .then((res) => {
+  //       // setevent(res.data);
+  //       setDataLoad(true);
+  //     })
+  //     .catch(function (err) {
+  //       console.error(err);
+  //     });
+  // };
+  // useEffect(() => {
+  //   fetchEvent();
+  // }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -68,14 +72,6 @@ export default function Layout() {
     }
   }, [history]);
 
-  useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "event") {
-        console.log("je recoit");
-        fetchEvent();
-      }
-    });
-  }, []);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-800">
@@ -98,12 +94,12 @@ export default function Layout() {
                         <prop.component
                           eventSetting={eventSetting}
                           refetchEventSetting={() => {
-                            fetchEventSetting();
+                            
                           }}
                           event={event}
                           dataLoad={dataLoad}
                           refetchEvent={() => {
-                            fetchEvent();
+                            
                           }}
                         />
                       )}

@@ -27,14 +27,14 @@ export function Announcement(props: IAppProps) {
   }, []);
 
   // socket;
-  useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "pop") {
-        console.log("je recoit");
-        fetchPop();
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   subscribeToSocket((args: string) => {
+  //     if (args === "pop") {
+  //       console.log("je recoit");
+  //       fetchPop();
+  //     }
+  //   });
+  // }, []);
   
   return (
     <div className="w-full">

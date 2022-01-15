@@ -15,29 +15,47 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 
-  socket.on("update", (args) => {
-    console.log("SOCKET: ", "args: " + args);
+  socket.on("update", (args, data) => {
     switch (args) {
       case "musiclist":
         console.log("SOCKET: MAJ music");
-        socket.broadcast.emit("musicupdate", true);
+        console.log(data);
+        socket.broadcast.emit("musicupdate", data);
         break;
+      case "event-delete":
+        console.log("SOCKET: MAJ event-delete");
+        console.log(data);
+        socket.broadcast.emit("event-delete");
+        break;
+      case "event":
+        console.log("SOCKET: MAJ event-update");
+        console.log(data);
+        socket.broadcast.emit("event-update", data);
+        break;
+      case "title-style":
+        console.log("SOCKET: MAJ title-style");
+        console.log(data);
+        socket.broadcast.emit("title-style", data);
+        break;
+      case "banner":
+        console.log("SOCKET: MAJ banner");
+        console.log(data);
+        socket.broadcast.emit("banner", data);
+        break;
+
       case "title":
         console.log("SOCKET: MAJ titre music");
         socket.broadcast.emit("titleupdate", true);
         break;
       case "user":
         console.log("SOCKET: MAJ visiteur");
-        socket.broadcast.emit("userupdate", true);
+        socket.broadcast.emit("userupdate", true); // Reception en admin
         break;
       case "visitorallowed":
         console.log("SOCKET: MAJ visiteur permission");
         socket.broadcast.emit("visitorallowed", true);
         break;
-      case "event":
-        console.log("SOCKET: MAJ event");
-        socket.broadcast.emit("event", true);
-        break;
+
       case "settitle":
         console.log("SOCKET: MAJ Title");
         socket.broadcast.emit("settitle", true);
@@ -52,7 +70,7 @@ io.on("connection", (socket) => {
         break;
       case "userupdate":
         console.log("SOCKET: MAJ user");
-        socket.broadcast.emit("userupdate", true);
+        socket.broadcast.emit("userupdate", true); // Reception en admin
         break;
       case "setbanner":
         console.log("SOCKET: MAJ banner");
@@ -62,9 +80,8 @@ io.on("connection", (socket) => {
         break;
     }
   });
+
   socket.on("eventpiture", (args) => {
-    console.log(args);
-    console.log("test");
     socket.broadcast.emit("addnewpicture", args);
   });
   socket.on("disconnect", () => {

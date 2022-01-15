@@ -1,22 +1,31 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
+
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/socket";
 import { removeInput } from "../../common/removeInput";
+import { emitEvent } from "../../common/SocketPublicComponent";
+import {
+  deleteAppTextBanner,
+  updateAppTextBanner,
+} from "../../../slicer/appSlice";
 
 const MySwal = withReactContent(Swal);
 
 export interface IAppProps {
   token: String | null;
   textFetch: any;
-  refetchData: Function;
 }
 
-export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
-  const [textBanner, setTextBanner] = useState("");
+export function TextBannerModify({ token, textFetch }: IAppProps) {
+  const dispatch = useDispatch();
+  const history = useHistory();
 
+  const [textBanner, setTextBanner] = useState("");
   const [oldText, setoldText] = useState("Saisir votre Texte");
 
   useEffect(() => {
@@ -48,13 +57,18 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
               },
             }
           )
-          .then(() => {
-            emitEvent("update", "setbanner");
+          .then((res) => {
+            dispatch(updateAppTextBanner(res.data));
             removeInput(["inputTextbanner"]);
-            refetchData();
+            emitEvent("update", "banner", res.data);
           })
-          .catch((err) => {
-            console.error(err);
+          .catch((error) => {
+            if (error.response.status === 401) {
+              localStorage.removeItem("token");
+              history.go(0);
+            } else {
+              Swal.fire("Erreur!", "Une erreur est survenue", "error");
+            }
           });
       }
     });
@@ -82,12 +96,17 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
             }
           )
           .then(() => {
-            emitEvent("update", "setbanner");
+            dispatch(deleteAppTextBanner());
+            emitEvent("update", "banner");
             removeInput(["inputTextbanner"]);
-            refetchData();
           })
           .catch((err) => {
-            console.error(err);
+            if (err.response.status === 401) {
+              localStorage.removeItem("token");
+              history.go(0);
+            } else {
+              Swal.fire("Erreur!", "Une erreur est survenue", "error");
+            }
           });
       }
     });

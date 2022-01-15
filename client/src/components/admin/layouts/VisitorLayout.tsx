@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
 import Switch from "@material-ui/core/Switch";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { emitEvent, subscribeToSocket } from "../../common/socket";
+
+import { FETCH } from "../../../FETCH";
+import { subscribeToSocket } from "../../common/socket";
+import { emitEvent } from "../../common/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 
+
 const VisitorLayout = () => {
+
   const token = localStorage.getItem("token");
 
   const [visitorList, setVisitorList] = useState<any>([]);

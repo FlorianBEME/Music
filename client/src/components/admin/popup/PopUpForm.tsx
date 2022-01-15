@@ -1,16 +1,15 @@
 import { useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { emitEvent } from "../../common/socket";
 import axios from "axios";
-import { removeInput } from "../../common/removeInput";
-import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
 import { MdDeleteForever } from "react-icons/md";
-
-import { FETCH } from "../../../FETCH";
-
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { FaRegCheckSquare } from "react-icons/fa";
+
+import { removeInput } from "../../common/removeInput";
+import { FETCH } from "../../../FETCH";
+import { emitEvent } from "../../common/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 
@@ -19,6 +18,7 @@ type PopUpFormProps = {
 };
 
 function PopUpForm({ submit }: PopUpFormProps) {
+
   const imagePreviewRef: any = useRef();
   const token = localStorage.getItem("token");
   const [imagePreview, setImagePreview] = useState<any>({

@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { FETCH } from "../FETCH";
+import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 import { FiLoader } from "react-icons/fi";
+
 import Footer from "../components/visitor/footer";
 import NavBar from "../components/visitor/NavBar";
-import MusicBandeau from "../assets/musicbandeau.jpg";
 import WallPicture from "../components/visitor/layouts/WallPicture";
 import SongRequestBloc from "../components/visitor/layouts/songRequestBloc";
 import { Announcement } from "../components/visitor/layouts/Announcement";
-import { subscribeToSocket } from "../components/common/socket";
+import MusicBandeau from "../assets/musicbandeau.jpg";
+import { FETCH } from "../FETCH";
+import { appParam } from "../slicer/appSlice";
 
-import Swal from "sweetalert2";
 import { TextScrollingBanner } from "../components/visitor/textScrollingBanner";
+import { eventStore } from "../slicer/eventSlice";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -23,17 +26,13 @@ function classNames(...classes: any) {
 //   "Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. ";
 
 const Home = () => {
+  const appData = useSelector(appParam);
+  const eventData = useSelector(eventStore);
   const history = useHistory();
-  const [event, setEvent] = useState<any>([]);
+
   const [eventLoad, setEventLoad] = useState(false);
   const [component, setComponent] = useState();
-  const [positionTitle, setPositionTitle] = useState("center");
-  const [color, setColor] = useState("#ffffff");
   const [pop, setPop] = useState([]);
-  const [display, setDisplay] = useState(true);
-  const [footerItem, setFooterItem] = useState<any>([]);
-  const [footerCopyright, setFooterCopyright] = useState({});
-  const [textBanner, setTextBanner] = useState<null | string>(null);
 
   const componentRender = () => {
     if (component === "music") {
@@ -47,19 +46,7 @@ const Home = () => {
   const changeComponent = (component: any) => {
     setComponent(component);
   };
-  const fetchApp = () => {
-    axios
-      .get(`${FETCH}/app/app`)
-      .then((res) => {
-        setPositionTitle(res.data.titleEventappStyle.position);
-        setColor(res.data.titleEventappStyle.color);
-        setDisplay(res.data.titleEventappStyle.display);
-        setTextBanner(res.data.app.textbanner);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+
   const fetchPopUp = () => {
     axios
       .get(`${FETCH}/pop/available`)
@@ -70,42 +57,9 @@ const Home = () => {
         console.error(err);
       });
   };
-  const fetchFooter = () => {
-    axios
-      .get(`${FETCH}/footer`)
-      .then((res) => {
-        const itemFiltering = res.data.filter(
-          (item: { isActivate: boolean; [key: string]: any }) => item.isActivate
-        );
-        setFooterItem(itemFiltering);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const fetchFooterCopyright = () => {
-    axios.get(`${FETCH}/copyright`).then((res) => {
-      if (res.data.length > 0) {
-        setFooterCopyright(res.data[0]);
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchFooterCopyright();
-  }, []);
 
   useEffect(() => {
     fetchPopUp();
-  }, []);
-
-  useEffect(() => {
-    fetchApp();
-  }, []);
-
-  useEffect(() => {
-    fetchFooter();
   }, []);
 
   useEffect(() => {
@@ -139,77 +93,73 @@ const Home = () => {
 
     const uuidEvent = localStorage.getItem("uuidEvent");
     // on fetch la soirée en cours
-    axios.get(`${FETCH}/events`).then((res) => {
-      // si une soirée est en cours
-      if (res.data.length > 0) {
-        const currentEvent = res.data;
-        setEvent(currentEvent);
-        // on verifie le local storage
-        if (currentEvent[0].uuid !== uuidEvent || !uuidEvent) {
-          localStorage.removeItem("idMusicVoting");
-          localStorage.removeItem("usInfoMusic");
-          localStorage.removeItem("popid");
-          localStorage.setItem("uuidEvent", currentEvent[0].uuid);
-        }
-        // on verifie l'uuid du visiteur
-        verifyUser
-          .then((res) => {
-            axios
-              .get(`${FETCH}/events`)
-              .then((res) => {
-                setEvent(res.data);
-                // fonction pour le loader
-                setTimeout(function () {
-                  setEventLoad(true);
-                }, 2000);
-              })
-              .catch(function (err) {
-                console.error(err);
-              });
-          })
-          .catch((err) => {
-            // si erreur on renvoie vers la page nouvel utilisateur
-            history.push("/new");
-          });
-      } else {
-        // si pas de soirée en cours on vide le local storage
+    // si une soirée est en cours
+    if (eventData.isLoad) {
+      // on verifie le local storage
+      if (eventData.uuid !== uuidEvent || !uuidEvent) {
         localStorage.removeItem("idMusicVoting");
         localStorage.removeItem("usInfoMusic");
-        localStorage.removeItem("uuidEvent");
         localStorage.removeItem("popid");
-        setEventLoad(true);
+        localStorage.setItem("uuidEvent", eventData.uuid);
       }
-    });
-  }, [history]);
+      // on verifie l'uuid du visiteur
+      verifyUser
+        .then((res) => {
+          // setTimeout(function () {
+          //   setEventLoad(true);
+          // }, 2000);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      // si pas de soirée en cours on vide le local storage
+      localStorage.removeItem("idMusicVoting");
+      localStorage.removeItem("usInfoMusic");
+      localStorage.removeItem("uuidEvent");
+      localStorage.removeItem("popid");
+      // setEventLoad(true);
+    }
+    return () => {};
+  }, [eventData.isLoad, eventData.uuid, history]);
 
   useEffect(() => {
-    if (eventLoad && event.length > 0) {
-      if (event[0].active_music_request) {
+    if (eventLoad && eventData.isLoad) {
+      if (eventData.active_music_request) {
         changeComponent("music");
       } else if (
-        !event[0].active_music_request &&
-        event[0].active_wall_picture
+        !eventData.active_music_request &&
+        eventData.active_wall_picture
       ) {
         changeComponent("picture");
       }
     }
-  }, [event, eventLoad]);
+  }, [eventData, eventLoad]);
 
   useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "event") {
-        history.go(0);
-      } else if (
-        args === "settitle" ||
-        args === "setbanner" ||
-        args === "picturestatus"
-      ) {
-        fetchApp();
-      } else if (args === "pop") {
-        fetchPopUp();
-      }
-    });
-  }, [history]);
+    console.log(eventData.hasOwnProperty("isLoad"));
+    if (eventData.hasOwnProperty("isLoad")) {
+      setEventLoad(true);
+    }
+    return () => {
+      setEventLoad(false);
+    };
+  }, [eventData]);
+
+  console.log(eventData);
+  // useEffect(() => {
+  //   // if (args === "event") {
+  //   //   history.go(0);
+  //   // } else if (
+  //   //   args === "settitle" ||
+  //   //   args === "setbanner" ||
+  //   //   args === "picturestatus"
+  //   // ) {
+  //   //   fetchApp();
+  //   // } else if (args === "pop") {
+  //   //   fetchPopUp();
+  //   // }
+  // }, [history]);
 
   useEffect(() => {
     let popinLocalStorage: number[] = [];
@@ -264,30 +214,28 @@ const Home = () => {
   return (
     <div>
       {eventLoad ? (
-        event.length > 0 ? (
+        eventData.isLoad ? (
           <div className="bg-gray-50 dark:bg-gray-800 min-h-screen flex flex-col justify-between">
             <div className="flex flex-col">
               <div className="relative h-32">
                 <div className="absolute inset-0">
-                  {eventLoad ? (
-                    <img
-                      className="w-full h-full object-cover"
-                      src={
-                        event.length > 0 && event[0].bg_music !== null
-                          ? `/uploads/${event[0].bg_music}`
-                          : MusicBandeau
-                      }
-                      alt="banniere"
-                    />
-                  ) : null}
+                  <img
+                    className="w-full h-full object-cover"
+                    src={
+                      eventData.isLoad && eventData.bg_music !== null
+                        ? `/uploads/${eventData.bg_music}`
+                        : MusicBandeau
+                    }
+                    alt="banniere"
+                  />
                 </div>
-                {display ? (
+                {appData.titleEventappStyle.display ? (
                   <div className="relative max-w-7xl mx-auto h-32 sm:px-8 px-2">
                     <div
                       className={classNames(
-                        positionTitle === "center"
+                        appData.titleEventappStyle.position === "center"
                           ? "justify-center"
-                          : positionTitle === "left"
+                          : appData.titleEventappStyle.position === "left"
                           ? "justify-start"
                           : "justify-end",
                         "flex items-center h-full"
@@ -295,23 +243,23 @@ const Home = () => {
                     >
                       <h1
                         className="text-4xl font-extrabold tracking-tight sm:text-5xl "
-                        style={{ color: color }}
+                        style={{ color: appData.titleEventappStyle.color }}
                       >
-                        {event[0].name}
+                        {eventData.name}
                       </h1>
                     </div>
                   </div>
                 ) : null}
               </div>
               <NavBar
-                textBanner={textBanner}
-                active_wall_picture={event[0].active_wall_picture}
-                active_music_request={event[0].active_music_request}
+                textBanner={appData.app.textbanner}
+                active_wall_picture={eventData.active_wall_picture}
+                active_music_request={eventData.active_music_request}
                 changeComponent={changeComponent}
               />
-              {textBanner ? (
+              {appData.app.textbanner ? (
                 <div className="hidden  md:inline-block -mt-4 pb-4">
-                  <TextScrollingBanner text={textBanner} />
+                  <TextScrollingBanner text={appData.app.textbanner} />
                 </div>
               ) : null}
 
@@ -320,7 +268,10 @@ const Home = () => {
               </div>
             </div>
 
-            <Footer footerItem={footerItem} footerCopyright={footerCopyright} />
+            <Footer
+              footerItem={appData.itemFooter}
+              footerCopyright={appData.footerCopyright}
+            />
           </div>
         ) : (
           <div className="bg-white min-h-screen">

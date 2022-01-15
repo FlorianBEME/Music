@@ -72,7 +72,7 @@ router.put("/titleEventappStyle/position/:id", verifyJWT, (req, res) => {
         }).then(() => {
           const newData = JSON.stringify(obj);
           fs.writeFile(jsonPath, newData, "utf8", function () {
-            res.status(200).json(newData[id]);
+            res.status(200).json(JSON.parse(newData)[0]);
           });
         });
       });
@@ -99,7 +99,7 @@ router.put("/titleEventappStyle/color/:id", verifyJWT, (req, res) => {
         }).then(() => {
           const newData = JSON.stringify(obj);
           fs.writeFile(jsonPath, newData, "utf8", function () {
-            res.status(200).json(newData[id]);
+            res.status(200).json(JSON.parse(newData)[0]);
           });
         });
       });
@@ -127,7 +127,7 @@ router.put("/titleEventappStyle/display/:id", verifyJWT, (req, res) => {
         }).then(() => {
           const newData = JSON.stringify(obj);
           fs.writeFile(jsonPath, newData, "utf8", function () {
-            res.status(200).json(newData[id]);
+            res.status(200).json(JSON.parse(newData)[0]);
           });
         });
       });
@@ -181,9 +181,8 @@ router.put("/textbanner/:id", verifyJWT, (req, res) => {
           resolve();
         }).then(() => {
           const newData = JSON.stringify(obj);
-
           fs.writeFile(jsonPath, newData, "utf8", function () {
-            res.status(200).json(JSON.parse(newData));
+            res.status(200).json(JSON.parse(newData)[0].app.textbanner);
           });
         });
       });
