@@ -49,8 +49,8 @@ export default function ItemFooterCard({
         }
       )
       .then((res) => {
-        refetch();
-        emitEvent();
+        console.log(res.data);
+        // emitEvent();
       })
       .catch((err) => console.error(err));
     setActivate(status);

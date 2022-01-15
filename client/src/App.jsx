@@ -9,7 +9,6 @@ import { initAppState } from "./slicer/appSlice";
 import { initEventState } from "./slicer/eventSlice";
 import { initMusicStore } from "./slicer/musicSlice";
 
-
 import Home from "./Pages/Home";
 import Login from "./Pages/login";
 import Layout from "./Pages/admin/layout";
@@ -79,6 +78,7 @@ function App() {
           console.error(erreur);
         });
     };
+
     const fetchApp = () => {
       axios
         .get(`${FETCH}/app/app`)
@@ -90,12 +90,13 @@ function App() {
           console.error(err);
         });
     };
+
     const fetchFooter = () => {
       axios
         .get(`${FETCH}/footer`)
         .then((res) => {
-          const itemFiltering = res.data.filter((item) => item.isActivate);
-          dispatch(initAppState({ itemFooter: itemFiltering }));
+          console.log(res.data);
+          dispatch(initAppState({ itemFooter: res.data }));
         })
         .catch((err) => {
           console.error(err);

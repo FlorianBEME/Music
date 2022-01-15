@@ -11,7 +11,11 @@ import {
 import { updateEventInStore, deleteEvent } from "../../slicer/eventSlice";
 
 import { ENDPOINT } from "../../FETCH";
-import { updateAppTextBanner, updateAppTitleStyle,deleteAppTextBanner} from "../../slicer/appSlice";
+import {
+  updateAppTextBanner,
+  updateAppTitleStyle,
+  deleteAppTextBanner,
+} from "../../slicer/appSlice";
 
 const socket = io(ENDPOINT);
 
@@ -50,14 +54,13 @@ const SocketPublicComponent = () => {
 
       socket.on("banner", (data) => {
         if (data) {
-          console.log("EVENT: Mise à jour Title banner");
+          console.log("EVENT: Mise à jour texte banner");
           dispatch(updateAppTextBanner(data));
-        }else{
+        } else {
+          console.log("EVENT: Delete texte banner");
           dispatch(deleteAppTextBanner());
         }
       });
-
-      
     };
     publicSocket();
     return () => {};
