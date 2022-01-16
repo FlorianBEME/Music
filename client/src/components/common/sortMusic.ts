@@ -1,6 +1,6 @@
 // function de trie
 
-const compare = (a: any, b: any, compareType: string) => {
+const compare: any = (a: any, b: any, compareType: string) => {
   if (compareType === "indispo") {
     if (a.unavailable) {
       return -1;

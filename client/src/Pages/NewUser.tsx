@@ -1,31 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { FETCH } from "../FETCH";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory } from "react-router-dom";
-import { emitEvent } from "../components/common/socket";
+
+import { FETCH } from "../FETCH";
+import { emitEvent } from "../components/common/socketio/SocketPublicComponent";
 
 const NewUser = () => {
-  let history = useHistory();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (localStorage.getItem("usInfoMusic")) {
+      history.push("/app");
+    }
+    return () => {};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [pseudo, setPseudo] = useState(null);
 
-  const enterInMusicRequest = () => {
+  const enterInMusicRequest = async () => {
     const newUuid = uuidv4();
     axios
       .post(`${FETCH}/visitor`, {
         pseudo: pseudo,
         isNotAllowed: false,
         uuid: newUuid,
+        countVoting: 0,
       })
       .then((res) => {
         let usInfoMusic = {
           id: res.data.id,
           uuid: res.data.uuid,
           pseudo: res.data.pseudo,
+          uuidEvent: res.data.uuidEvent,
         };
         localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
-        emitEvent("update", "user");
+        emitEvent("update", "user-add", res.data);
         history.push("/app");
       })
       .catch((err) => {
@@ -56,7 +67,9 @@ const NewUser = () => {
             className="mt-8 space-y-6"
             onSubmit={(e) => {
               e.preventDefault();
-              enterInMusicRequest();
+              enterInMusicRequest().then(() => {
+                history.push("/app");
+              });
             }}
           >
             <input type="hidden" name="remember" value="true" />

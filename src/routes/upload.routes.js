@@ -28,14 +28,15 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
     if (err) {
       return res.status(500).send({ errorMessage: err.message });
     } else {
-      event = results[0];
+      let event = results[0];
+      console.log(event);
       if (event.bg_music !== null) {
         // si un bg est deja assigné on supprime le ficheier existant
         fs.unlink(`${front}/uploads/${event.bg_music}`, (err) => {
           if (err) {
             return res.status(500).send({ errorMessage: err.message });
           } else {
-            file.mv(`${front}/${file.name}`, (err) => {
+            file.mv(`${front}/uploads/${file.name}`, (err) => {
               if (err) {
                 return res.status(500).send(err);
               }
@@ -50,6 +51,7 @@ router.post("/bg/:id", verifyJWT, (req, res) => {
         });
       } else {
         // si pas de BG assigné
+        console.log("ici");
         file.mv(`${front}/uploads/${file.name}`, (err) => {
           if (err) {
             return res.status(500).send(err);

@@ -6,9 +6,9 @@ import SwitchButton from "../../common/button/SwitchButton";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 
-import withReactContent from "sweetalert2-react-content";
+// import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-const MySwal = withReactContent(Swal);
+// const MySwal = withReactContent(Swal);
 
 type TopPictureLayoutProp = {
   token: string | null;

@@ -15,56 +15,96 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("SOCKET: conection: " + socket.id);
 
-  socket.on("update", (args) => {
-    console.log("SOCKET: ", "args: " + args);
+  socket.on("update", (args, data) => {
+    console.log(args);
     switch (args) {
       case "musiclist":
         console.log("SOCKET: MAJ music");
-        socket.broadcast.emit("musicupdate", true);
+        console.log(data);
+        socket.broadcast.emit("musicupdate", data);
         break;
-      case "title":
-        console.log("SOCKET: MAJ titre music");
-        socket.broadcast.emit("titleupdate", true);
-        break;
-      case "user":
-        console.log("SOCKET: MAJ visiteur");
-        socket.broadcast.emit("userupdate", true);
-        break;
-      case "visitorallowed":
-        console.log("SOCKET: MAJ visiteur permission");
-        socket.broadcast.emit("visitorallowed", true);
+      case "event-delete":
+        console.log("SOCKET: MAJ event-delete");
+        console.log(data);
+        socket.broadcast.emit("event-delete");
         break;
       case "event":
-        console.log("SOCKET: MAJ event");
-        socket.broadcast.emit("event", true);
+        console.log("SOCKET: MAJ event-update");
+        console.log(data);
+        socket.broadcast.emit("event-update", data);
         break;
-      case "settitle":
-        console.log("SOCKET: MAJ Title");
-        socket.broadcast.emit("settitle", true);
+      case "title-style":
+        console.log("SOCKET: MAJ title-style");
+        console.log(data);
+        socket.broadcast.emit("title-style", data);
         break;
-      case "pop":
-        console.log("SOCKET: MAJ Popup");
-        socket.broadcast.emit("pop", true);
-        break;
-      case "footer":
-        console.log("SOCKET: MAJ Footer");
-        socket.broadcast.emit("footer", true);
-        break;
-      case "userupdate":
-        console.log("SOCKET: MAJ user");
-        socket.broadcast.emit("userupdate", true);
-        break;
-      case "setbanner":
+      case "banner":
         console.log("SOCKET: MAJ banner");
-        socket.broadcast.emit("setbanner", true);
+        console.log(data);
+        socket.broadcast.emit("banner", data);
         break;
-      default:
+      case "footer-item-add":
+        console.log("SOCKET: ADD footer-item");
+        console.log(data);
+        socket.broadcast.emit("footer-item-add", data);
         break;
+      case "footer-item-delete":
+        console.log("SOCKET: Delete footer-item");
+        console.log(data);
+        socket.broadcast.emit("footer-item-delete", data);
+        break;
+      case "footer-item-modify":
+        console.log("SOCKET: MAJ footer-item");
+        console.log(data);
+        socket.broadcast.emit("footer-item-modify", data);
+        break;
+      case "footer-copyright-modify":
+        console.log("SOCKET: MAJ footer-copyright");
+        console.log(data);
+        socket.broadcast.emit("footer-copyright-modify", data);
+        break;
+      case "user-add":
+        console.log("SOCKET: MAJ user-add");
+        console.log(data);
+        socket.broadcast.emit("update-list-visitor", data);
+        break;
+
+      //////////////////////////////////////////////////////////////
+      // case "title":
+      //   console.log("SOCKET: MAJ titre music");
+      //   socket.broadcast.emit("titleupdate", true);
+      //   break;
+      // case "user":
+      //   console.log("SOCKET: MAJ visiteur");
+      //   socket.broadcast.emit("userupdate", true); // Reception en admin
+      //   break;
+      // case "visitorallowed":
+      //   console.log("SOCKET: MAJ visiteur permission");
+      //   socket.broadcast.emit("visitorallowed", true);
+      //   break;
+
+      // case "settitle":
+      //   console.log("SOCKET: MAJ Title");
+      //   socket.broadcast.emit("settitle", true);
+      //   break;
+      // case "pop":
+      //   console.log("SOCKET: MAJ Popup");
+      //   socket.broadcast.emit("pop", true);
+      //   break;
+      // case "userupdate":
+      //   console.log("SOCKET: MAJ user");
+      //   socket.broadcast.emit("userupdate", true); // Reception en admin
+      //   break;
+      // case "setbanner":
+      //   console.log("SOCKET: MAJ banner");
+      //   socket.broadcast.emit("setbanner", true);
+      //   break;
+      // default:
+      //   break;
     }
   });
+
   socket.on("eventpiture", (args) => {
-    console.log(args);
-    console.log("test");
     socket.broadcast.emit("addnewpicture", args);
   });
   socket.on("disconnect", () => {

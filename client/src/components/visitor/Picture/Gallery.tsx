@@ -4,14 +4,13 @@ import GaleryComponent from "./GaleryComponent";
 import axios from "axios";
 import { FETCH } from "../../../FETCH";
 import { FiLoader } from "react-icons/fi";
-import { subscribeToSocket } from "../../common/socket";
 
 type props = {
   changeComponent: Function;
 };
 
 export default function GalleryPhoto({ changeComponent }: props) {
-  const [loadImg, setLoadImg] = useState(false);
+  // const [loadImg, setLoadImg] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [pictures, setPictures] = useState<never | any>([]);
@@ -32,17 +31,17 @@ export default function GalleryPhoto({ changeComponent }: props) {
   useEffect(() => {
     fetchPicture();
     setTimeout(() => {
-      setLoadImg(true);
+      // setLoadImg(true);
     }, 5000);
     return () => {};
   }, []);
 
   // socket;
-  useEffect(() => {
-    subscribeToSocket((args: any) => {
-      fetchPicture();
-    });
-  }, []);
+  // useEffect(() => {
+  //   subscribeToSocket((args: any) => {
+  //     fetchPicture();
+  //   });
+  // }, []);
 
   const openLightbox = (index: number) => {
     setCurrentImage(index);
