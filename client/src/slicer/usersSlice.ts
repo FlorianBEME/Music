@@ -14,12 +14,16 @@ export const userSlice = createSlice({
       state.visitors = [...action.payload];
     },
     addNewVisitor: (state: { visitors: any[] }, action) => {
-      state.visitors = [...action.payload, ...state.visitors];
+      let arrayList = [...state.visitors];
+      arrayList.unshift(action.payload);
+      state.visitors = [...arrayList];
     },
+    updateVisitor: (state: { visitors: any[] }, action) => {},
   },
 });
 
-export const { initStoreWithListOfVisitors, addNewVisitor } = userSlice.actions;
+export const { initStoreWithListOfVisitors, addNewVisitor, updateVisitor } =
+  userSlice.actions;
 
 export const visitorsList = (state: any) => state.userStore.visitors;
 export const visitorsIsLoad = (state: any) => state.userStore.isLoad;

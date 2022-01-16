@@ -13,6 +13,7 @@ import {
   visitorsIsLoad,
 } from "../../../slicer/usersSlice";
 import { BsFillTrashFill } from "react-icons/bs";
+import { SocketAdminVisitor } from "../../common/socketio/SocketAdminVisitor";
 
 const MySwal = withReactContent(Swal);
 
@@ -28,8 +29,6 @@ const VisitorLayout = () => {
       axios
         .get(`${FETCH}/visitor`)
         .then((res) => {
-          console.log(res.data);
-
           dispatch(initStoreWithListOfVisitors(res.data));
         })
         .catch(function (erreur) {
@@ -40,29 +39,29 @@ const VisitorLayout = () => {
   }, [dispatch]);
 
   // Suppression de la musique
-  const handleDelete = (id: any) => {
-    MySwal.fire({
-      title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
-      showCancelButton: true,
-      confirmButtonText: "Valider",
-      cancelButtonText: "Annuler",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`${FETCH}/currentsongs/${id}`, {
-            headers: {
-              "x-access-token": token,
-            },
-          })
-          .then(() => {
-            Swal.fire("Suprimée!", "", "success");
-          })
-          .catch(function (error) {
-            Swal.fire("Erreur!", "", "error");
-          });
-      }
-    });
-  };
+  // const handleDelete = (id: any) => {
+  //   MySwal.fire({
+  //     title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
+  //     showCancelButton: true,
+  //     confirmButtonText: "Valider",
+  //     cancelButtonText: "Annuler",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .delete(`${FETCH}/currentsongs/${id}`, {
+  //           headers: {
+  //             "x-access-token": token,
+  //           },
+  //         })
+  //         .then(() => {
+  //           Swal.fire("Suprimée!", "", "success");
+  //         })
+  //         .catch(function (error) {
+  //           Swal.fire("Erreur!", "", "error");
+  //         });
+  //     }
+  //   });
+  // };
 
   const handleAllowed = (id: number) => {
     MySwal.fire({
@@ -89,7 +88,6 @@ const VisitorLayout = () => {
           )
           .then(() => {
             emitEvent("update", "visitorallowed");
-            // fetchData();
             Swal.fire("Modifié!", "", "success");
           })
           .catch(function (error) {
@@ -99,9 +97,9 @@ const VisitorLayout = () => {
     });
   };
 
-  console.log(visitorsIsLoadInStore);
   return (
     <div className="flex flex-col">
+      <SocketAdminVisitor/>
       <div className="w-full">
         <div className="flex justify-between mb-5">
           {/* bandeau Haut de tableau */}
@@ -184,12 +182,12 @@ const VisitorLayout = () => {
                         </td>
                         <td className=" py-4 whitespace-nowrap ">
                           <div className="flex items-center justify-center flex-wrap">
-                            <div
+                            {/* <div
                               className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
                               onClick={() => handleDelete(visitor.id)}
                             >
                               <BsFillTrashFill size={24} />
-                            </div>
+                            </div> */}
                             <div
                               className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
                               onClick={() => handleAllowed(visitor.id)}
