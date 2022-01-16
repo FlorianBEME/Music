@@ -1,52 +1,15 @@
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
 import AdminRoutes from "../../router/listRoute/AdminRoutes";
 import { FETCH } from "../../FETCH";
 import { eventStore } from "../../slicer/eventSlice";
-import { appParam } from "../../slicer/appSlice";
 
 export default function Layout() {
   const history = useHistory();
   const event = useSelector(eventStore);
-  const eventSetting = useSelector(appParam);
-
-  const [dataLoad, setDataLoad] = useState(true);
-  // const [eventSetting, setEventSetting] = useState({});
-
-  //fetch style du titre
-  // const fetchEventSetting = () => {
-  //   axios
-  //     .get(`${FETCH}/app/app`)
-  //     .then((res) => {
-  //       setEventSetting(res.data);
-  //     })
-  //     .catch(function (erreur) {
-  //       console.error(erreur);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   fetchEventSetting();
-  // }, [event]);
-
-  // //Fecth event info
-  // const fetchEvent = () => {
-  //   axios
-  //     .get(`${FETCH}/events`)
-  //     .then((res) => {
-  //       // setevent(res.data);
-  //       setDataLoad(true);
-  //     })
-  //     .catch(function (err) {
-  //       console.error(err);
-  //     });
-  // };
-  // useEffect(() => {
-  //   fetchEvent();
-  // }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -89,13 +52,7 @@ export default function Layout() {
                   return (
                     <Route
                       path={prop.path}
-                      component={() => (
-                        <prop.component
-                          event={event}
-                          dataLoad={dataLoad}
-                          refetchEvent={() => {}}
-                        />
-                      )}
+                      component={() => <prop.component event={event} />}
                       key={key}
                     />
                   );

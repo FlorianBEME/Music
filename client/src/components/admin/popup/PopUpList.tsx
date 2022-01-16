@@ -6,7 +6,7 @@ import axios from "axios";
 
 import Accordion from "../../common/Accordion";
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 
 const MySwal = withReactContent(Swal);

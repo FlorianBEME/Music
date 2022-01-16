@@ -17,7 +17,7 @@ import { Backgroundheader } from "../event/Backgroundheader";
 import { AddNewEvent } from "../event/AddNewEvent";
 import { DeleteEvent } from "../event/DeleteEvent";
 import { TextBannerModify } from "../event/TextBannerModify";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 import { updateEventInStore } from "../../../slicer/eventSlice";
 import { updateAppTitleStyle } from "../../../slicer/appSlice";
 

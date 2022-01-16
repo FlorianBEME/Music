@@ -17,8 +17,10 @@ import RouteLogin from "./router/RoutesLogin";
 import RouteAdmin from "./router/RouteAdmin";
 import NewUser from "./Pages/NewUser";
 
-import { disconnect } from "./components/common/socket";
-import { SocketPublicComponent } from "./components/common/SocketPublicComponent";
+import {
+  SocketPublicComponent,
+  disconnect,
+} from "./components/common/socketio/SocketPublicComponent";
 
 function App() {
   const dispatch = useDispatch();
@@ -111,6 +113,31 @@ function App() {
       });
     };
 
+    const fetchSongIncurrent = () => {
+      //fetch titre en cours
+      axios
+        .get(`${FETCH}/app/app`)
+        .then((res) => {
+          // setTitleIncurent(res.data.app.titleincurent);
+        })
+        .catch(function (erreur) {
+          console.error(erreur);
+        });
+    };
+
+    const fetchMusicList = () => {
+      axios
+        .get(`${FETCH}/currentSongs`)
+        .then((res) => {
+          dispatch(initMusicStore(res.data));
+        })
+        .catch(function (erreur) {
+          console.error(erreur);
+        });
+    };
+
+    fetchSongIncurrent();
+    fetchMusicList();
     fetchApp();
     fetchFooter();
     fetchFooterCopyright();
@@ -123,8 +150,7 @@ function App() {
       <SocketPublicComponent />
       <Router>
         <Switch>
-          <Redirect exact path="/" to="/app" />
-          <RouteVisitor exact path="/app" component={Home} />
+          <RouteVisitor exact path="/" component={Home} />
           <RouteVisitor exact path="/new" component={NewUser} />
           <RouteLogin path="/login" component={Login} isAuth={isAuthVerify} />
           <RouteAdmin
@@ -132,6 +158,7 @@ function App() {
             component={Layout}
             isAuth={isAuthVerify}
           />
+          <Redirect from="*" to="/" />
         </Switch>
       </Router>
     </div>

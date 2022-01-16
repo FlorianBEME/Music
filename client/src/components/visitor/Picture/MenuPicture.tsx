@@ -6,7 +6,7 @@ import axios from "axios";
 import logoCamera from "../../../assets/appareil-photo(1).png";
 import logoGalery from "../../../assets/galerie.png";
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 

@@ -9,10 +9,9 @@ import Swal from "sweetalert2";
 
 import { FETCH } from "../../../FETCH";
 import { removeInput } from "../../common/removeInput";
-import { subscribeToSocket } from "../../common/socket";
 import compare from "../../common/sortMusic";
 import AllDeleteButton from "../../common/button/AllDeleteButton";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 
@@ -182,20 +181,12 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
     });
   };
 
-  useEffect(() => {
-    fetchData();
-    return () => {
-      setSongs([]);
-    };
-  }, []);
-
-  useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "musicupdate") {
-        fetchData();
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  //   return () => {
+  //     setSongs([]);
+  //   };
+  // }, []);
 
   return (
     <div>

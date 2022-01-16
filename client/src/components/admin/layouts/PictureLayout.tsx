@@ -1,15 +1,13 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import withReactContent from "sweetalert2-react-content";
 import TopPictureLayout from "../picture/TopPictureLayout";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
-import { FETCH } from "../../../FETCH";
-import { removeInput } from "../../common/removeInput";
-// import { emitEvent, subscribeToSocket } from "../../common/socket";
+// import { FETCH } from "../../../FETCH";
+// import { removeInput } from "../../common/removeInput";
 
-const MySwal = withReactContent(Swal);
+// const MySwal = withReactContent(Swal);
 
 type MusicLayoutProps = {
   event: any;

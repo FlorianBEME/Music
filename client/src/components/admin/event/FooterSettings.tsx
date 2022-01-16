@@ -7,7 +7,7 @@ import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
 
 import { removeInput } from "../../common/removeInput";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 import { FETCH } from "../../../FETCH";
 import ItemFooterCard from "./footerSettingsComponents/ItemFooterCard";
 import {

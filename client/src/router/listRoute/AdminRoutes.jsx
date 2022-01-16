@@ -1,8 +1,8 @@
-import MusicLayout from "../../components/admin/layouts/MusicLayout";
-import EventLayout from "../../components/admin/layouts/EventLayout";
-import PictureLayout from "../../components/admin/layouts/PictureLayout";
 import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
-import PopupLayout from "../../components/admin/layouts/PopupLayout";
+import EventLayout from "../../components/admin/layouts/EventLayout";
+// import MusicLayout from "../../components/admin/layouts/MusicLayout";
+// import PictureLayout from "../../components/admin/layouts/PictureLayout";
+// import PopupLayout from "../../components/admin/layouts/PopupLayout";
 
 export var AdminRoutes = [
   // {
@@ -29,14 +29,14 @@ export var AdminRoutes = [
     redirect: false,
     component: EventLayout,
   },
-  // {
-  //   id: 4,
-  //   path: "/dashboard/visitor",
-  //   name: "Visiteur",
-  //   icon: "mdi mdi-pencil-circle",
-  //   redirect: false,
-  //   component: VisitorLayout,
-  // },
+  {
+    id: 4,
+    path: "/dashboard/visitor",
+    name: "Visiteur",
+    icon: "mdi mdi-pencil-circle",
+    redirect: false,
+    component: VisitorLayout,
+  },
   // {
   //   id: 5,
   //   path: "/dashboard/pop",

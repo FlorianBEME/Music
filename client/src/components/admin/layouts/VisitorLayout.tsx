@@ -1,69 +1,68 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Switch from "@material-ui/core/Switch";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import { FETCH } from "../../../FETCH";
-import { subscribeToSocket } from "../../common/socket";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import {
+  initStoreWithListOfVisitors,
+  visitorsList,
+  visitorsIsLoad,
+} from "../../../slicer/usersSlice";
+import { BsFillTrashFill } from "react-icons/bs";
 
 const MySwal = withReactContent(Swal);
 
-
 const VisitorLayout = () => {
-
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
+  const visitorInStore: any[] = useSelector(visitorsList);
+  const visitorsIsLoadInStore: boolean = useSelector(visitorsIsLoad);
 
-  const [visitorList, setVisitorList] = useState<any>([]);
-
-  // Fetch liste de visitor
-  const fetchData = () => {
-    axios
-      .get(`${FETCH}/visitor`)
-      .then((res) => {
-        setVisitorList(res.data);
-      })
-      .catch(function (erreur) {
-        console.error(erreur);
-      });
-  };
   useEffect(() => {
+    // Fetch liste de visitor
+    const fetchData = () => {
+      axios
+        .get(`${FETCH}/visitor`)
+        .then((res) => {
+          console.log(res.data);
+
+          dispatch(initStoreWithListOfVisitors(res.data));
+        })
+        .catch(function (erreur) {
+          console.error(erreur);
+        });
+    };
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "userupdate" || args === "visitorallowed") {
-        fetchData();
-      }
-    });
-  }, []);
+  }, [dispatch]);
 
   // Suppression de la musique
-  // const handleDelete = (id) => {
-  //   MySwal.fire({
-  //     title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
-  //     showCancelButton: true,
-  //     confirmButtonText: "Valider",
-  //     cancelButtonText: "Annuler",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .delete(`${FETCH}/currentsongs/${id}`, {
-  //           headers: {
-  //             "x-access-token": token,
-  //           },
-  //         })
-  //         .then(() => {
-  //           Swal.fire("Suprimée!", "", "success");
-  //         })
-  //         .catch(function (error) {
-  //           Swal.fire("Erreur!", "", "error");
-  //         });
-  //     }
-  //   });
-  // };
+  const handleDelete = (id: any) => {
+    MySwal.fire({
+      title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
+      showCancelButton: true,
+      confirmButtonText: "Valider",
+      cancelButtonText: "Annuler",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`${FETCH}/currentsongs/${id}`, {
+            headers: {
+              "x-access-token": token,
+            },
+          })
+          .then(() => {
+            Swal.fire("Suprimée!", "", "success");
+          })
+          .catch(function (error) {
+            Swal.fire("Erreur!", "", "error");
+          });
+      }
+    });
+  };
 
   const handleAllowed = (id: number) => {
     MySwal.fire({
@@ -73,10 +72,10 @@ const VisitorLayout = () => {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        const index = visitorList.findIndex(
+        const index = visitorInStore.findIndex(
           (visitor: any) => id === visitor.id
         );
-        const status = visitorList[index].isNotAllowed;
+        const status = visitorInStore[index].isNotAllowed;
 
         axios
           .put(
@@ -90,7 +89,7 @@ const VisitorLayout = () => {
           )
           .then(() => {
             emitEvent("update", "visitorallowed");
-            fetchData();
+            // fetchData();
             Swal.fire("Modifié!", "", "success");
           })
           .catch(function (error) {
@@ -100,10 +99,7 @@ const VisitorLayout = () => {
     });
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  console.log(visitorsIsLoadInStore);
   return (
     <div className="flex flex-col">
       <div className="w-full">
@@ -147,64 +143,66 @@ const VisitorLayout = () => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-400 dark:divide-white divide-y divide-gray-200">
-                {visitorList.map((visitor: any) => (
-                  <tr key={visitor.id}>
-                    <td className=" py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="ml-4">
-                          <div className="text-sm font-medium dark:text-white text-gray-900">
-                            {visitor.pseudo}
+                {visitorsIsLoadInStore
+                  ? visitorInStore.map((visitor: any) => (
+                      <tr key={visitor.id}>
+                        <td className=" py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="ml-4">
+                              <div className="text-sm font-medium dark:text-white text-gray-900">
+                                {visitor.pseudo}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className=" py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="ml-4">
-                          <div className="text-sm font-medium dark:text-white text-gray-900">
-                            {visitor.uuid}
+                        </td>
+                        <td className=" py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="ml-4">
+                              <div className="text-sm font-medium dark:text-white text-gray-900">
+                                {visitor.uuid}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className=" py-4 whitespace-nowrap">
-                      <div className="flex items-center justify-center">
-                        <div className="">
-                          <div className="text-sm font-medium dark:text-white text-gray-900">
-                            {visitor.countVoting}
+                        </td>
+                        <td className=" py-4 whitespace-nowrap">
+                          <div className="flex items-center justify-center">
+                            <div className="">
+                              <div className="text-sm font-medium dark:text-white text-gray-900">
+                                {visitor.countVoting}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className=" py-4 whitespace-nowrap">
-                      <div className="flex items-center justify-center">
-                        <div className="">
-                          <div className="text-sm font-medium dark:text-white text-gray-900">
-                            {visitor.countsubmit}
+                        </td>
+                        <td className=" py-4 whitespace-nowrap">
+                          <div className="flex items-center justify-center">
+                            <div className="">
+                              <div className="text-sm font-medium dark:text-white text-gray-900">
+                                {visitor.countsubmit}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className=" py-4 whitespace-nowrap ">
-                      <div className="flex items-center justify-center flex-wrap">
-                        {/* <div
-                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
-                          onClick={() => handleDelete(visitor.id)}
-                        >
-                          <BsFillTrashFill size={24} />
-                        </div> */}
-                        <div
-                          className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
-                          onClick={() => handleAllowed(visitor.id)}
-                        >
-                          <Switch
-                            checked={visitor.isNotAllowed ? false : true}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                        </td>
+                        <td className=" py-4 whitespace-nowrap ">
+                          <div className="flex items-center justify-center flex-wrap">
+                            <div
+                              className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                              onClick={() => handleDelete(visitor.id)}
+                            >
+                              <BsFillTrashFill size={24} />
+                            </div>
+                            <div
+                              className="text-indigo-600 hover:text-indigo-900 cursor-pointer mx-2 my-1"
+                              onClick={() => handleAllowed(visitor.id)}
+                            >
+                              <Switch
+                                checked={visitor.isNotAllowed ? false : true}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  : null}
               </tbody>
             </table>
           </div>

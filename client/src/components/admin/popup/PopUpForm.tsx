@@ -9,7 +9,7 @@ import { FaRegCheckSquare } from "react-icons/fa";
 
 import { removeInput } from "../../common/removeInput";
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 

@@ -2,7 +2,6 @@ import { FETCH } from "../../../FETCH";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Accordion from "../../common/Accordion";
-import { subscribeToSocket } from "../../common/socket";
 
 export interface IAppProps {}
 

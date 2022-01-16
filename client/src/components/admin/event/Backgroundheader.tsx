@@ -8,7 +8,7 @@ import { FaRegCheckSquare } from "react-icons/fa";
 
 import MusicBandeau from "../../../assets/musicbandeau.jpg";
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 import { updateEventBgInStore } from "../../../slicer/eventSlice";
 
 const MySwal = withReactContent(Swal);

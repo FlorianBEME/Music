@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
 
-import { emitEvent } from "../../../common/SocketPublicComponent";
+import { emitEvent } from "../../../common/socketio/SocketPublicComponent";
 
 import {
   deleteItemFooterInStore,

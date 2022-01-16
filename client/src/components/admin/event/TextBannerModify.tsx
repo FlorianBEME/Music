@@ -8,7 +8,7 @@ import axios from "axios";
 
 import { FETCH } from "../../../FETCH";
 import { removeInput } from "../../common/removeInput";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 import {
   deleteAppTextBanner,
   updateAppTextBanner,

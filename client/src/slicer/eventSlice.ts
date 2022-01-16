@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { emitEvent } from "../components/common/SocketPublicComponent";
 
 const initialState = {
   eventData: {},

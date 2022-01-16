@@ -61,26 +61,33 @@ router.get("/:id", (req, res) => {
  * @apiSuccess {Object} User Contain user information
  */
 router.post("/", (req, res) => {
-  const sql = "INSERT INTO visitor SET ? ";
-  const visitor = { ...req.body, countVoting: 0 };
-  connection.query(sql, visitor, (err, results) => {
+  const sql = "SELECT * FROM events";
+  connection.query(sql, (err, event) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {
-      res.status(201).json({ id: results.insertId, ...req.body });
+      const user = { ...req.body, uuidEvent: event[0].uuid };
+      const sql = "INSERT INTO visitor SET ? ";
+      connection.query(sql, user, (err, results) => {
+        if (err) {
+          res.status(500).send({ errorMessage: err.message });
+        } else {
+          res.status(201).json({ id: results.insertId, ...user });
+        }
+      });
     }
   });
 });
 
 /**
- * @api {post} /visitor/{id} Verify if Visitor Exist
+ * @api {post} /visitor/verify//{id} Verify if Visitor Exist
  * @apiName VerifyUser
  * @apiBody {String} uuid Number unique
  * @apiParam {Number} id Unique ID
  * @apiGroup Visitor
  * @apiSuccess {Object} Status Contain if exist or not
  */
-router.post("/:id", (req, res) => {
+router.post("/verify/:id", (req, res) => {
   const uuid = req.body.uuid;
   if (!uuid) {
     res.status(400).json({ errorMessage: "Please specify uuid" });
@@ -94,7 +101,7 @@ router.post("/:id", (req, res) => {
           res.status(200).send({ status: false });
         }
       } else {
-        res.status(400).json({ errorMessage: "no Equal" });
+        res.status(404).json({ errorMessage: "visitor inconnu", status:404 });
       }
     });
   }

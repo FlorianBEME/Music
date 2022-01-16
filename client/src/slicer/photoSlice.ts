@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: any = {
-  list: [{ id: 0, n: 1 }],
+  list: [],
 };
-
-let nextId = 1;
 
 const photoSlice = createSlice({
   name: "photoStore",

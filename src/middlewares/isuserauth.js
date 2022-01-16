@@ -1,5 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const { connection } = require("../db_connection");
 
 const verifyJWT = (req, res, next) => {
   const token = req.headers["x-access-token"];

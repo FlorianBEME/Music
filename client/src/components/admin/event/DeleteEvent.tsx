@@ -2,13 +2,13 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 
-import { useDispatch, useSelector } from "react-redux";
-import { eventStore } from "../../../slicer/eventSlice";
-import { appParam } from "../../../slicer/appSlice";
+import { useDispatch } from "react-redux";
+
 
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 import { deleteEvent } from "../../../slicer/eventSlice";
+import { initMusicStore } from "../../../slicer/musicSlice";
 
 const MySwal = withReactContent(Swal);
 
@@ -45,6 +45,7 @@ export function DeleteEvent() {
           .then(() => {
             Swal.fire("Suprimé!", "L'évenement est supprimé", "success");
             dispatch(deleteEvent());
+            dispatch(initMusicStore([]));
             emitEvent("update", "event-delete");
           })
           .catch(() => {

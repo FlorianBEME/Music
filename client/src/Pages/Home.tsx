@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { FiLoader } from "react-icons/fi";
 
 import Footer from "../components/visitor/footer";
@@ -32,7 +32,7 @@ const Home = () => {
 
   const [eventLoad, setEventLoad] = useState(false);
   const [component, setComponent] = useState();
-  const [pop, setPop] = useState([]);
+  // const [pop, setPop] = useState([]);
 
   const componentRender = () => {
     if (component === "music") {
@@ -47,81 +47,60 @@ const Home = () => {
     setComponent(component);
   };
 
-  const fetchPopUp = () => {
-    axios
-      .get(`${FETCH}/pop/available`)
-      .then((res) => {
-        setPop(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  // const fetchPopUp = () => {
+  //   axios
+  //     .get(`${FETCH}/pop/available`)
+  //     .then((res) => {
+  //       setPop(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   fetchPopUp();
+  // }, []);
 
   useEffect(() => {
-    fetchPopUp();
-  }, []);
+    const userInLocalStorage: any = localStorage.getItem("usInfoMusic");
+    const usInfoMusic: any = userInLocalStorage
+      ? JSON.parse(userInLocalStorage)
+      : null;
 
-  useEffect(() => {
-    // Verification du visiteur
-    const verifyUser = new Promise<void>((resolve, reject) => {
-      // si un visiteur n'est pas nouveau
-      if (localStorage.getItem("usInfoMusic")) {
-        const inStorage: any = localStorage.getItem("usInfoMusic");
-        const usInfo: any = JSON.parse(inStorage);
-
-        // on verifie que celui-ci figure bien dans la BDD
+    if (eventData.isLoad) {
+      // On vérifie si le user est déja venu
+      if (!usInfoMusic) {
+        localStorage.removeItem("idMusicVoting");
+        localStorage.removeItem("popid");
+        history.push("/new");
+      } else {
         axios
-          .post(`${FETCH}/visitor/${usInfo.id}`, { uuid: usInfo.uuid })
-          .then((res) => {
-            if (!res.data.status) {
-              // On vide son local storage
-              localStorage.removeItem("usInfoMusic");
-              reject();
-            } else {
-              resolve();
-            }
+          .post(`${FETCH}/visitor/verify/${usInfoMusic.id}`, {
+            uuid: usInfoMusic.uuid,
+          })
+          .then(() => {
+            axios
+              .get(`${FETCH}/visitor/${usInfoMusic.id}`)
+              .then((res) => {
+                //  on ajoute les info user dans le store
+              })
+              .catch(function (erreur) {
+                console.error(erreur);
+              });
           })
           .catch((err) => {
-            console.error(err);
-            reject();
+            if (err.response.status === 404) {
+              localStorage.removeItem("usInfoMusic");
+              localStorage.removeItem("idMusicVoting");
+              localStorage.removeItem("popid");
+              history.push("/new");
+            }
           });
-      } else {
-        reject();
       }
-    });
-
-    const uuidEvent = localStorage.getItem("uuidEvent");
-    // on fetch la soirée en cours
-    // si une soirée est en cours
-    if (eventData.isLoad) {
-      // on verifie le local storage
-      if (eventData.uuid !== uuidEvent || !uuidEvent) {
-        localStorage.removeItem("idMusicVoting");
-        localStorage.removeItem("usInfoMusic");
-        localStorage.removeItem("popid");
-        localStorage.setItem("uuidEvent", eventData.uuid);
-      }
-      // on verifie l'uuid du visiteur
-      verifyUser
-        .then((res) => {
-          // setTimeout(function () {
-          //   setEventLoad(true);
-          // }, 2000);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } else {
-      // si pas de soirée en cours on vide le local storage
-      localStorage.removeItem("idMusicVoting");
-      localStorage.removeItem("usInfoMusic");
-      localStorage.removeItem("uuidEvent");
-      localStorage.removeItem("popid");
-      // setEventLoad(true);
     }
     return () => {};
-  }, [eventData.isLoad, eventData.uuid, history]);
+  }, [eventData, history]);
 
   useEffect(() => {
     if (eventLoad && eventData.isLoad) {
@@ -137,79 +116,65 @@ const Home = () => {
   }, [eventData, eventLoad]);
 
   useEffect(() => {
-    console.log(eventData.hasOwnProperty("isLoad"));
     if (eventData.hasOwnProperty("isLoad")) {
-      setEventLoad(true);
+      setTimeout(() => {
+        setEventLoad(true);
+      }, 3000);
     }
     return () => {
       setEventLoad(false);
     };
   }, [eventData]);
 
-  console.log(eventData);
   // useEffect(() => {
-  //   // if (args === "event") {
-  //   //   history.go(0);
-  //   // } else if (
-  //   //   args === "settitle" ||
-  //   //   args === "setbanner" ||
-  //   //   args === "picturestatus"
-  //   // ) {
-  //   //   fetchApp();
-  //   // } else if (args === "pop") {
-  //   //   fetchPopUp();
-  //   // }
-  // }, [history]);
-
-  useEffect(() => {
-    let popinLocalStorage: number[] = [];
-    let popId = localStorage.getItem("popid");
-    if (popId) {
-      let arr = popId.split(",");
-      arr.forEach((item) => {
-        popinLocalStorage.push(parseInt(item));
-      });
-    }
-    async function verifyPopAndDisplay() {
-      for (const item of pop) {
-        const popup: any = item;
-        // on vérifie que le pop up n'as as deja était vu et traité
-        if (!popinLocalStorage.includes(popup.id)) {
-          if (!popup.filePath) {
-            await Swal.fire({
-              title: popup.title,
-              text: popup.text_content,
-              confirmButtonText: "Ok! ",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                popinLocalStorage.push(popup.id);
-                localStorage.setItem("popid", popinLocalStorage.toString());
-              }
-            });
-          } else {
-            await Swal.fire({
-              title: popup.title,
-              text: popup.text_content,
-              confirmButtonText: "Ok!",
-              imageUrl: popup.filePath,
-              imageAlt: popup.title,
-            }).then((result) => {
-              if (result.isConfirmed) {
-                popinLocalStorage.push(popup.id);
-                localStorage.setItem("popid", popinLocalStorage.toString());
-              }
-            });
-          }
-        }
-      }
-    }
-    // on met un timer
-    setTimeout(() => {
-      if (pop.length >= 1) {
-        verifyPopAndDisplay();
-      }
-    }, 8000);
-  }, [pop]);
+  //   let popinLocalStorage: number[] = [];
+  //   let popId = localStorage.getItem("popid");
+  //   if (popId) {
+  //     let arr = popId.split(",");
+  //     arr.forEach((item) => {
+  //       popinLocalStorage.push(parseInt(item));
+  //     });
+  //   }
+  //   async function verifyPopAndDisplay() {
+  //     for (const item of pop) {
+  //       const popup: any = item;
+  //       // on vérifie que le pop up n'as as deja était vu et traité
+  //       if (!popinLocalStorage.includes(popup.id)) {
+  //         if (!popup.filePath) {
+  //           await Swal.fire({
+  //             title: popup.title,
+  //             text: popup.text_content,
+  //             confirmButtonText: "Ok! ",
+  //           }).then((result) => {
+  //             if (result.isConfirmed) {
+  //               popinLocalStorage.push(popup.id);
+  //               localStorage.setItem("popid", popinLocalStorage.toString());
+  //             }
+  //           });
+  //         } else {
+  //           await Swal.fire({
+  //             title: popup.title,
+  //             text: popup.text_content,
+  //             confirmButtonText: "Ok!",
+  //             imageUrl: popup.filePath,
+  //             imageAlt: popup.title,
+  //           }).then((result) => {
+  //             if (result.isConfirmed) {
+  //               popinLocalStorage.push(popup.id);
+  //               localStorage.setItem("popid", popinLocalStorage.toString());
+  //             }
+  //           });
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // on met un timer
+  //   setTimeout(() => {
+  //     if (pop.length >= 1) {
+  //       verifyPopAndDisplay();
+  //     }
+  //   }, 8000);
+  // }, [pop]);
 
   return (
     <div>

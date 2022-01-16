@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { socket } from "./socket";
 
-import io from "socket.io-client";
-
-import { ENDPOINT } from "../../FETCH";
-import { addNewSong } from "../../slicer/musicSlice";
-import { updateEventInStore, deleteEvent } from "../../slicer/eventSlice";
+import { addNewSong, initMusicStore } from "../../../slicer/musicSlice";
+import { updateEventInStore, deleteEvent } from "../../../slicer/eventSlice";
 import {
   updateAppTextBanner,
   updateAppTitleStyle,
@@ -14,9 +12,7 @@ import {
   deleteItemFooterInStore,
   updateItemFooter,
   updateCopyrightTextInStore,
-} from "../../slicer/appSlice";
-
-const socket = io(ENDPOINT);
+} from "../../../slicer/appSlice";
 
 const SocketPublicComponent = () => {
   const dispatch = useDispatch();
@@ -25,33 +21,34 @@ const SocketPublicComponent = () => {
     const publicSocket = () => {
       if (!socket) return true;
 
-      socket.on("musicupdate", (data) => {
+      socket.on("musicupdate", (data: any) => {
         if (data) {
           console.log("MUSIC: Ajout d'une music");
           dispatch(addNewSong(data));
         }
       });
 
-      socket.on("event-update", (data) => {
+      socket.on("event-update", (data: any) => {
         if (data) {
           console.log("EVENT: Mise à jour Event");
           dispatch(updateEventInStore(data));
         }
       });
 
-      socket.on("event-delete", (data) => {
+      socket.on("event-delete", (data: any) => {
         console.log("EVENT: Suppression de l'event");
         dispatch(deleteEvent());
+        dispatch(initMusicStore([]));
       });
 
-      socket.on("title-style", (data) => {
+      socket.on("title-style", (data: any) => {
         if (data) {
           console.log("EVENT: Mise à jour Title style");
           dispatch(updateAppTitleStyle(data));
         }
       });
 
-      socket.on("banner", (data) => {
+      socket.on("banner", (data: any) => {
         if (data) {
           console.log("EVENT: Mise à jour texte banner");
           dispatch(updateAppTextBanner(data));
@@ -61,25 +58,25 @@ const SocketPublicComponent = () => {
         }
       });
 
-      socket.on("footer-item-add", (data) => {
+      socket.on("footer-item-add", (data: any) => {
         if (data) {
           console.log("EVENT: Ajout d'un item-footer");
           dispatch(addNewItemFooterInStore(data));
         }
       });
-      socket.on("footer-item-delete", (id) => {
+      socket.on("footer-item-delete", (id: any) => {
         if (id) {
           console.log("EVENT: Suppression d'un item footer");
           dispatch(deleteItemFooterInStore(id));
         }
       });
-      socket.on("footer-item-modify", (data) => {
+      socket.on("footer-item-modify", (data: any) => {
         if (data) {
           console.log("EVENT: MAJ d'un item footer");
           dispatch(updateItemFooter(data));
         }
       });
-      socket.on("footer-copyright-modify", (data) => {
+      socket.on("footer-copyright-modify", (data: any) => {
         if (data) {
           console.log("EVENT: MAJ du text copyright footer");
           dispatch(updateCopyrightTextInStore(data));

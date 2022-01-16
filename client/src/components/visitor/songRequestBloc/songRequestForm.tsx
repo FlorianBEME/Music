@@ -7,19 +7,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { FETCH } from "../../../FETCH";
 import { removeInput } from "../../common/removeInput";
 import { addNewSong } from "../../../slicer/musicSlice";
-import { emitEvent } from "../../common/SocketPublicComponent";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 type RequestFormProps = {
   visitorInfo: any;
-  isAllowed: Boolean;
   musicList: any[];
 };
 
-const SongRequestForm = ({
-  visitorInfo,
-  isAllowed,
-  musicList,
-}: RequestFormProps) => {
+const SongRequestForm = ({ visitorInfo, musicList }: RequestFormProps) => {
   const dispatch = useDispatch();
 
   const [data, setData] = useState({
@@ -42,48 +37,48 @@ const SongRequestForm = ({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (isAllowed) {
-      // on vérifie si l'artiste est déja dans la liste
-      let artistFiltered: object[] = [];
-      musicList.forEach((song: any) => {
-        if (song.artist.toLowerCase() === data.artist.toLowerCase()) {
-          artistFiltered.push(song);
-        }
-      });
-      if (
-        artistFiltered.filter(
-          (item: any) => item.title.toLowerCase() === data.title.toLowerCase()
-        ).length < 1
-      ) {
-        axios
-          .post(`${FETCH}/currentsongs`, {
-            ...data,
-            visitor_id: visitorInfo,
-            countVote: 0,
-          })
-          .then((res) => {
-            toast.success("Musique envoyé!", {
+    // on vérifie si l'artiste est déja dans la liste
+    let artistFiltered: object[] = [];
+    musicList.forEach((song: any) => {
+      if (song.artist.toLowerCase() === data.artist.toLowerCase()) {
+        artistFiltered.push(song);
+      }
+    });
+    if (
+      artistFiltered.filter(
+        (item: any) => item.title.toLowerCase() === data.title.toLowerCase()
+      ).length < 1
+    ) {
+      axios
+        .post(`${FETCH}/currentsongs`, {
+          ...data,
+          visitor_id: visitorInfo,
+          countVote: 0,
+        })
+        .then((res) => {
+          toast.success("Musique envoyé!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          dispatch(addNewSong(res.data));
+          emitEvent("update", "musiclist", res.data);
+          removeInput(["title", "artist"]);
+        })
+        .catch(function (error) {
+          if (error.response.status === 401) {
+            toast.error("Vous n'êtes pas autorisé!", {
               position: toast.POSITION.TOP_RIGHT,
             });
-            dispatch(addNewSong(res.data));
-            emitEvent("update", "musiclist", res.data);
-            removeInput(["title", "artist"]);
-          })
-          .catch(function (error) {
+          } else {
             toast.error("Erreur", { position: toast.POSITION.TOP_RIGHT });
-            console.error(error);
-          });
-      } else {
-        toast.error("Chanson déja dans la liste", {
-          position: toast.POSITION.TOP_RIGHT,
+          }
+          console.error(error);
         });
-      }
-      artistFiltered = [];
     } else {
-      toast.error("Vous n'êtes pas autorisé!", {
+      toast.error("Chanson déja dans la liste", {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
+    artistFiltered = [];
   };
 
   return (

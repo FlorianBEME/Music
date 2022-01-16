@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { emitEvent } from "../components/common/SocketPublicComponent";
+import { emitEvent } from "../components/common/socketio/SocketPublicComponent";
 
 const initialState: any = {
   list: [],

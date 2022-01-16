@@ -59,11 +59,15 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("footer-item-modify", data);
         break;
       case "footer-copyright-modify":
-          console.log("SOCKET: MAJ footer-copyright");
-          console.log(data);
-          socket.broadcast.emit("footer-copyright-modify", data);
-          break;
-        
+        console.log("SOCKET: MAJ footer-copyright");
+        console.log(data);
+        socket.broadcast.emit("footer-copyright-modify", data);
+        break;
+      case "user-add":
+        console.log("SOCKET: MAJ user-add");
+        console.log(data);
+        socket.broadcast.emit("update-list-visitor", data);
+        break;
 
       //////////////////////////////////////////////////////////////
       // case "title":
