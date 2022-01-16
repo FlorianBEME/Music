@@ -11,6 +11,7 @@ SET @tables = CONCAT('DROP TABLE IF EXISTS ', @tables);
 PREPARE stmt FROM @tables;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE `currentsongs` (
@@ -44,7 +45,8 @@ CREATE TABLE `visitor` (
   `uuid` varchar(255) NOT NULL,
   `pseudo` varchar(50) NOT NULL,
   `isNotAllowed`BOOLEAN NOT NULL,
-  `countVoting`  INT NOT NULL
+  `countVoting`  INT NOT NULL,
+  `uuidEvent` varchar(255) NOT NULL
 );
 
 CREATE TABLE `popup` (

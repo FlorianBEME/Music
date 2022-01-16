@@ -1,51 +1,54 @@
 import { useEffect, useState, SyntheticEvent } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
-import { emitEvent, subscribeToSocket } from "../../common/socket";
-import ItemFooterCard from "./footerSettingsComponents/ItemFooterCard";
 import { FaRegCheckSquare } from "react-icons/fa";
 import { AiOutlineDownload } from "react-icons/ai";
+
 import { removeInput } from "../../common/removeInput";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import { FETCH } from "../../../FETCH";
+import ItemFooterCard from "./footerSettingsComponents/ItemFooterCard";
+import {
+  addNewItemFooterInStore,
+  appParam,
+  updateCopyrightTextInStore,
+} from "../../../slicer/appSlice";
 
 const MySwal = withReactContent(Swal);
 
 export default function FooterSettings() {
+  const dispatch = useDispatch();
+  const eventSetting = useSelector(appParam);
   const token = localStorage.getItem("token");
+
+  const [copyright, setCopyright] = useState<any>();
   const [imagePreviewFooter, setImagePreviewFooter] = useState<any>({
     file: null,
     imagePreviewUrl: null,
   });
   const [currentFile, setCurrentFile] = useState<any>();
   const [newItem, setNewItem] = useState<any>({ name: "", path_to: "" });
-  const [itemsInFooter, setItemsInFooter] = useState<any>([]);
-  const [copyright, setCopyright] = useState({});
+  const [oldText, setoldText] = useState("Saisir votre Texte");
 
-  //fetch
-  const fetchFooterItem = () => {
-    axios
-      .get(`${FETCH}/footer`)
-      .then((res) => {
-        setItemsInFooter(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  useEffect(() => {
+    if (eventSetting.footerCopyright != null) {
+      setoldText(eventSetting.footerCopyright);
+    }
+  }, [eventSetting]);
+
   // preview image
   const handleImageChangeFooter = (e: any) => {
     if (e.target.files[0] !== undefined) {
       let reader = new FileReader();
       let file = e.target.files[0];
-
       reader.onloadend = () => {
         setImagePreviewFooter({
           file: file,
           imagePreviewUrl: reader.result,
         });
       };
-
       setCurrentFile(file);
       reader.readAsDataURL(file);
     } else {
@@ -94,9 +97,9 @@ export default function FooterSettings() {
                       },
                     }
                   )
-                  .then(() => {
+                  .then((el) => {
                     Swal.fire("Modifié!", "", "success");
-                    resolve(res);
+                    resolve(el);
                   })
                   .catch(function (error) {
                     reject(error);
@@ -106,10 +109,10 @@ export default function FooterSettings() {
                 reject(error);
               });
           })
-            .then(() => {
+            .then((el: any) => {
+              dispatch(addNewItemFooterInStore(el.data));
+              emitEvent("update", "footer-item-add", el.data);
               Swal.fire("Succés!", "L'item est ajouté", "success");
-              fetchFooterItem();
-              emitEvent("update", "footer");
             })
             .catch(() => {
               Swal.fire("Erreur!", "Une erreur est survenue", "error");
@@ -141,8 +144,10 @@ export default function FooterSettings() {
           })
           .then((res) => {
             if (res.status === 200) {
-              Swal.fire("Modifié!", "", "success");
+              dispatch(updateCopyrightTextInStore(res.data.text));
+              emitEvent("update", "footer-copyright-modify", res.data.text);
               removeInput(["text"]);
+              Swal.fire("Modifié!", "", "success");
             }
           })
           .catch((err) => {
@@ -152,21 +157,6 @@ export default function FooterSettings() {
       }
     });
   };
-
-  useEffect(() => {
-    fetchFooterItem();
-    return () => {
-      setItemsInFooter([]);
-    };
-  }, []);
-
-  useEffect(() => {
-    subscribeToSocket((args: string) => {
-      if (args === "footer") {
-        fetchFooterItem();
-      }
-    });
-  }, []);
 
   return (
     <div className="bg-white my-2.5 dark:bg-gray-700 shadow sm:rounded-lg">
@@ -295,17 +285,15 @@ export default function FooterSettings() {
           <p>Liste des icones</p>
         </div>
         <div className="flex flex-wrap">
-          {itemsInFooter.length === 0 ? (
+          {eventSetting.itemFooter.length === 0 ? (
             <div className="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-200">
               Aucun icone enregistré actuellement
             </div>
           ) : (
-            itemsInFooter.map((item: any) => {
+            eventSetting.itemFooter.map((item: any) => {
               return (
                 <ItemFooterCard
-                  emitEvent={() => emitEvent("update", "footer")}
                   key={item.id}
-                  refetch={() => fetchFooterItem()}
                   apiPath={`${FETCH}/footer`}
                   token={token}
                   id={item.id}
@@ -322,11 +310,10 @@ export default function FooterSettings() {
       {/* Modification du texte copyright */}
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-          Modifier le text "copyright"
+          Modifier le texte "copyright"
         </h3>{" "}
         <form
           className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6"
-          // {/* className="mt-5 flex items-center space-x-4 flex-col" */}
           onSubmit={(e) => modifyCopyright(e)}
         >
           <div className="sm:col-span-4">
@@ -345,7 +332,9 @@ export default function FooterSettings() {
                     [e.target.name]: e.target.value,
                   })
                 }
-                placeholder="©Copyright 2016L. Durand."
+                placeholder={
+                  { oldText } ? oldText : "©Copyright 2016L. Durand."
+                }
                 type="text"
                 name="text"
                 id="text"

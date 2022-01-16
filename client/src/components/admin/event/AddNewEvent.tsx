@@ -2,9 +2,12 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
 import { v4 as uuidv4 } from "uuid";
-import { emitEvent } from "../../common/socket";
+import { useDispatch } from "react-redux";
+
+import { updateEventInStore } from "../../../slicer/eventSlice";
+import { FETCH } from "../../../FETCH";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 
@@ -14,6 +17,8 @@ export interface IAppProps {
 }
 
 export function AddNewEvent(props: IAppProps) {
+  const dispatch = useDispatch();
+
   const [newEvent, setNewEvent] = useState({
     name: "",
     active_wall_picture: false,
@@ -37,6 +42,7 @@ export function AddNewEvent(props: IAppProps) {
             .post(
               `${FETCH}/events`,
               {
+                bg_music: null,
                 name: newEvent.name,
                 active_music_request: newEvent.active_music_request,
                 active_wall_picture: newEvent.active_wall_picture,
@@ -48,12 +54,15 @@ export function AddNewEvent(props: IAppProps) {
                 },
               }
             )
+            .then((res) => {
+              console.log(res.data);
+              dispatch(updateEventInStore(res.data));
+              emitEvent("update", "event", res.data);
+              Swal.fire("Créer!", "", "success");
+            })
             .catch(function (error) {
               console.error(error);
             });
-          Swal.fire("Créer!", "", "success");
-          emitEvent("update", "event");
-          props.refetch();
         }
       });
     }

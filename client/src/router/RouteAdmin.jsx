@@ -21,7 +21,6 @@ const RouteAdmin = ({ component: Component, isAuth, ...rest }) => {
                   )}
                 />
               );
-              
             } else {
               return (
                 <Redirect

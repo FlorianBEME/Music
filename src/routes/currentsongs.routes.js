@@ -15,32 +15,60 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const sql = "INSERT INTO currentsongs SET ?";
-  connection.query(sql, req.body, (err, results) => {
+  const sql = "SELECT * FROM visitor WHERE id=?";
+  connection.query(sql, req.body.visitor_id, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
+    }
+    if (results.length > 0) {
+      if (results[0].isNotAllowed) {
+        res.status(401).send({ error: "Pas autorisé" });
+      } else {
+        const sqlInsert = "INSERT INTO currentsongs SET ?";
+        connection.query(sqlInsert, req.body, (err, results) => {
+          if (err) {
+            res.status(500).send({ errorMessage: err.message });
+          } else {
+            res.status(201).json({ id: results.insertId, ...req.body });
+          }
+        });
+      }
     } else {
-      res.status(201).json({ id: results.insertId, ...req.body });
+      res.status(500).send({ error: "Visiteur Inconnu" });
     }
   });
 });
 
 router.put("/:id", (req, res) => {
-  let sql = "UPDATE currentsongs SET ? WHERE id=?";
-  connection.query(sql, [req.body, req.params.id], (err, results) => {
+  const sql = "SELECT * FROM visitor WHERE id=?";
+  connection.query(sql, req.body.visitor_id, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
+    }
+    if (results.length > 0) {
+      if (results[0].isNotAllowed) {
+        res.status(401).send({ error: "Pas autorisé" });
+      } else {
+        let sql = "UPDATE currentsongs SET ? WHERE id=?";
+        connection.query(sql, [req.body, req.params.id], (err, results) => {
+          if (err) {
+            res.status(500).send({ errorMessage: err.message });
+          } else {
+            sql = "SELECT * FROM currentsongs WHERE id=?";
+            connection.query(sql, req.params.id, (err, result) => {
+              if (result.length === 0) {
+                res.status(404).send({
+                  errorMessage: `Song with id ${req.params.id} not found`,
+                });
+              } else {
+                res.status(200).json(result[0]);
+              }
+            });
+          }
+        });
+      }
     } else {
-      sql = "SELECT * FROM currentsongs WHERE id=?";
-      connection.query(sql, req.params.id, (err, result) => {
-        if (result.length === 0) {
-          res.status(404).send({
-            errorMessage: `Question with id ${req.params.id} not found`,
-          });
-        } else {
-          res.status(200).json(result[0]);
-        }
-      });
+      res.status(500).send({ error: "Visiteur Inconnu" });
     }
   });
 });

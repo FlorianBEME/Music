@@ -1,12 +1,13 @@
-import logoCamera from "../../../assets/appareil-photo(1).png";
-import logoGalery from "../../../assets/galerie.png";
-
-import { emitEvent } from "../../common/socket";
 import React, { ReactElement, useState } from "react";
-import axios from "axios";
-import { FETCH } from "../../../FETCH";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import axios from "axios";
+
+import logoCamera from "../../../assets/appareil-photo(1).png";
+import logoGalery from "../../../assets/galerie.png";
+import { FETCH } from "../../../FETCH";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+
 const MySwal = withReactContent(Swal);
 
 interface Props {

@@ -1,26 +1,26 @@
-import MusicLayout from "../../components/admin/layouts/MusicLayout";
-import EventLayout from "../../components/admin/layouts/EventLayout";
-import PictureLayout from "../../components/admin/layouts/PictureLayout";
 import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
-import PopupLayout from "../../components/admin/layouts/PopupLayout";
+import EventLayout from "../../components/admin/layouts/EventLayout";
+// import MusicLayout from "../../components/admin/layouts/MusicLayout";
+// import PictureLayout from "../../components/admin/layouts/PictureLayout";
+// import PopupLayout from "../../components/admin/layouts/PopupLayout";
 
 export var AdminRoutes = [
-  {
-    id: 1,
-    path: "/dashboard/music",
-    name: "Musique",
-    icon: "mdi mdi-pencil-circle",
-    redirect: false,
-    component: MusicLayout,
-  },
-  {
-    id: 2,
-    path: "/dashboard/picture",
-    name: "Photo",
-    icon: "mdi mdi-pencil-circle",
-    redirect: false,
-    component: PictureLayout,
-  },
+  // {
+  //   id: 1,
+  //   path: "/dashboard/music",
+  //   name: "Musique",
+  //   icon: "mdi mdi-pencil-circle",
+  //   redirect: false,
+  //   component: MusicLayout,
+  // },
+  // {
+  //   id: 2,
+  //   path: "/dashboard/picture",
+  //   name: "Photo",
+  //   icon: "mdi mdi-pencil-circle",
+  //   redirect: false,
+  //   component: PictureLayout,
+  // },
   {
     id: 3,
     path: "/dashboard/event",
@@ -37,14 +37,14 @@ export var AdminRoutes = [
     redirect: false,
     component: VisitorLayout,
   },
-  {
-    id: 5,
-    path: "/dashboard/pop",
-    name: "Annonce",
-    icon: "mdi mdi-pencil-circle",
-    redirect: false,
-    component: PopupLayout,
-  },
+  // {
+  //   id: 5,
+  //   path: "/dashboard/pop",
+  //   name: "Annonce",
+  //   icon: "mdi mdi-pencil-circle",
+  //   redirect: false,
+  //   component: PopupLayout,
+  // },
   {
     id: 6,
     path: "/dashboard",

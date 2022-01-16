@@ -1,34 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { emitEvent } from "../../common/socket";
+import { useDispatch } from "react-redux";
+
+import { FETCH } from "../../../FETCH";
 import compare from "../../common/sortMusic";
+import { incrementVote } from "../../../slicer/musicSlice";
 
 type SongRequestInCurrentProps = {
-  isAllowed: boolean;
-  refetch: Function;
-  songs: any;
   isLoading: boolean;
   visitorId: Number | null;
+  musicList: any[];
 };
 
 export default function SongRequestInCurrent({
-  isAllowed,
-  refetch,
-  songs,
+  musicList,
   isLoading,
   visitorId,
 }: SongRequestInCurrentProps) {
-  // Hook pour le rendu du composant
-  function useForceUpdate() {
-    //eslint-disable-next-line
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue((value) => value + 1); // update the state to force render
-  }
+  const dispatch = useDispatch();
 
-  const forceUpdate = useForceUpdate();
+  const [compareType, setCompareType] = useState("default");
+  const [songs, setSongs]: any = useState([]);
 
   // Fonction pour désactivé le vote
   const votingDisable = (id: number) => {
@@ -41,59 +35,67 @@ export default function SongRequestInCurrent({
   };
 
   const handleVote = (id: number, count: number) => {
-    if (isAllowed) {
-      let newCount: number = count + 1;
-      // je modifie le compteur de vote de la musique
-      axios
-        .put(`${FETCH}/currentSongs/${id}`, {
-          countVote: newCount,
-        })
-        .then((result: object) => {
-          // je recupere le nombre de fois que mon user à voté
-          axios
-            .get(`${FETCH}/visitor/${visitorId}`)
-            .then((res) => {
-              const visitor = { ...res.data[0] };
-              const newCount = visitor.countVoting + 1;
-              // je modifie le compteur de mon user
-              axios
-                .patch(`${FETCH}/visitor/newcount/${visitorId}`, {
-                  countvoting: newCount,
-                })
-                .then(() => {
-                  // je modifie le local storage
-                  // Je vérifie si mon user a jamais voté
-                  if (
-                    localStorage.getItem("idMusicVoting") === null &&
-                    localStorage.getItem("date") === null
-                  ) {
-                    localStorage.setItem("idMusicVoting", id.toString());
-                  } else {
-                    // Si il a déja voté je récupere la liste des id, j'ajoute le nouveau et je modifie le localStorage
-                    let oldId = localStorage.getItem("idMusicVoting");
-                    if (oldId !== null) {
-                      let result: Array<string> = oldId.split(",");
-                      result.push(id.toString());
-                      localStorage.removeItem("idMusicVoting");
-                      localStorage.setItem("idMusicVoting", result.toString());
-                    }
+    let newCount: number = count + 1;
+    // je modifie le compteur de vote de la musique
+    axios
+      .put(`${FETCH}/currentSongs/${id}`, {
+        countVote: newCount,
+        visitor_id: visitorId,
+      })
+      .then((result) => {
+        // je recupere le nombre de fois que mon user à voté
+        axios
+          .get(`${FETCH}/visitor/${visitorId}`)
+          .then((res) => {
+            const visitor = { ...res.data[0] };
+            const newCount = visitor.countVoting + 1;
+            // je modifie le compteur de mon user
+            axios
+              .patch(`${FETCH}/visitor/newcount/${visitorId}`, {
+                countvoting: newCount,
+              })
+              .then((res) => {
+                // je modifie le local storage
+                // Je vérifie si mon user a jamais voté
+                if (
+                  localStorage.getItem("idMusicVoting") === null &&
+                  localStorage.getItem("date") === null
+                ) {
+                  localStorage.setItem("idMusicVoting", id.toString());
+                } else {
+                  // Si il a déja voté je récupere la liste des id, j'ajoute le nouveau et je modifie le localStorage
+                  let oldId = localStorage.getItem("idMusicVoting");
+                  if (oldId !== null) {
+                    let result: Array<string> = oldId.split(",");
+                    result.push(id.toString());
+                    localStorage.removeItem("idMusicVoting");
+                    localStorage.setItem("idMusicVoting", result.toString());
                   }
-                  emitEvent("update", "musiclist");
-                  emitEvent("update", "userupdate");
-                  refetch();
-                })
-                .catch((err) => console.error(err));
-            })
-            .catch((err) => console.error(err));
-        });
-      forceUpdate();
-    } else {
-      toast.error("Vous n'êtes pas autorisé!", {
-        position: toast.POSITION.TOP_RIGHT,
+                }
+                // Je met à jour le store
+                dispatch(incrementVote(result.data));
+              })
+              .catch((err) => console.error(err));
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch(function (error) {
+        if (error.response.status === 401) {
+          toast.error("Vous n'êtes pas autorisé!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        } else {
+          toast.error("Erreur", { position: toast.POSITION.TOP_RIGHT });
+        }
+        console.error(error);
       });
-    }
   };
-  const [compareType, setCompareType] = useState("default");
+
+  useEffect(() => {
+    if (isLoading) {
+      setSongs([...musicList]);
+    }
+  }, [isLoading, musicList]);
 
   return (
     <div>
@@ -131,9 +133,9 @@ export default function SongRequestInCurrent({
                 .sort((a: any, b: any) => {
                   return compare(a, b, compareType);
                 })
-                .map((song: any) => (
+                .map((song: any, index: number) => (
                   <li
-                    key={song.id}
+                    key={index}
                     className=" flex items-center justify-between px-4 py-4 sm:px-6 flex-col md:flex-row"
                   >
                     <div className="flex sm:w-80 flex-col items-center md:items-start text-gray-800 dark:text-gray-100">

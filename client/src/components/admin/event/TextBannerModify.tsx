@@ -1,31 +1,39 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
+
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/socket";
 import { removeInput } from "../../common/removeInput";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import {
+  deleteAppTextBanner,
+  updateAppTextBanner,
+} from "../../../slicer/appSlice";
+import { appParam } from "../../../slicer/appSlice";
 
 const MySwal = withReactContent(Swal);
 
-export interface IAppProps {
-  token: String | null;
-  textFetch: any;
-  refetchData: Function;
-}
+export const TextBannerModify = () => {
+  const token = localStorage.getItem("token");
+  const eventSetting = useSelector(appParam);
 
-export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const [textBanner, setTextBanner] = useState("");
-
   const [oldText, setoldText] = useState("Saisir votre Texte");
 
   useEffect(() => {
-    if (textFetch != null) {
-      setoldText(textFetch);
+    if (eventSetting.app.textbanner != null) {
+      setoldText(eventSetting.app.textbanner);
     } else {
       setoldText("Saisir votre Texte");
     }
-  }, [textFetch]);
+  }, [eventSetting]);
 
   const modifyTextBanner = () => {
     MySwal.fire({
@@ -48,13 +56,18 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
               },
             }
           )
-          .then(() => {
-            emitEvent("update", "setbanner");
+          .then((res) => {
+            dispatch(updateAppTextBanner(res.data));
             removeInput(["inputTextbanner"]);
-            refetchData();
+            emitEvent("update", "banner", res.data);
           })
-          .catch((err) => {
-            console.error(err);
+          .catch((error) => {
+            if (error.response.status === 401) {
+              localStorage.removeItem("token");
+              history.go(0);
+            } else {
+              Swal.fire("Erreur!", "Une erreur est survenue", "error");
+            }
           });
       }
     });
@@ -82,12 +95,17 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
             }
           )
           .then(() => {
-            emitEvent("update", "setbanner");
+            dispatch(deleteAppTextBanner());
+            emitEvent("update", "banner");
             removeInput(["inputTextbanner"]);
-            refetchData();
           })
           .catch((err) => {
-            console.error(err);
+            if (err.response.status === 401) {
+              localStorage.removeItem("token");
+              history.go(0);
+            } else {
+              Swal.fire("Erreur!", "Une erreur est survenue", "error");
+            }
           });
       }
     });
@@ -113,6 +131,7 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
               <div className="relative flex items-start">
                 <div className="flex items-center w-full">
                   <textarea
+                    required
                     onChange={(e) => {
                       setTextBanner(e.target.value);
                     }}
@@ -130,7 +149,7 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
               >
                 Modifier
               </button>
-              {textFetch === null ? null : (
+              {eventSetting.app.textbanner === null ? null : (
                 <button
                   onClick={() => {
                     deleteTextBanner();
@@ -147,4 +166,4 @@ export function TextBannerModify({ token, textFetch, refetchData }: IAppProps) {
       </div>
     </div>
   );
-}
+};

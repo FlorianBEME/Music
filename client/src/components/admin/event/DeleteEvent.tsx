@@ -1,18 +1,21 @@
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
+
+import { useDispatch } from "react-redux";
+
+
 import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/socket";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import { deleteEvent } from "../../../slicer/eventSlice";
+import { initMusicStore } from "../../../slicer/musicSlice";
 
 const MySwal = withReactContent(Swal);
 
-export interface IAppProps {
-  token: string | null;
-  event: any;
-  refetch: Function;
-}
+export function DeleteEvent() {
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
 
-export function DeleteEvent(props: IAppProps) {
   // suprimer un event et la donnée
   const handleRemove = () => {
     MySwal.fire({
@@ -29,7 +32,7 @@ export function DeleteEvent(props: IAppProps) {
           axios
             .delete(`${FETCH}/events/remove/all`, {
               headers: {
-                "x-access-token": props.token,
+                "x-access-token": token,
               },
             })
             .then((res) => {
@@ -41,8 +44,9 @@ export function DeleteEvent(props: IAppProps) {
         })
           .then(() => {
             Swal.fire("Suprimé!", "L'évenement est supprimé", "success");
-            props.refetch();
-            emitEvent("update", "event");
+            dispatch(deleteEvent());
+            dispatch(initMusicStore([]));
+            emitEvent("update", "event-delete");
           })
           .catch(() => {
             Swal.fire("Erreur!", "Une erreur est survenue", "error");
