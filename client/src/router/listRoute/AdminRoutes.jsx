@@ -1,5 +1,5 @@
-import VisitorLayout from "../../components/admin/picture/layouts/VisitorLayout";
-import EventLayout from "../../components/admin/picture/layouts/EventLayout";
+import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
+import EventLayout from "../../components/admin/layouts/EventLayout";
 // import MusicLayout from "../../components/admin/layouts/MusicLayout";
 // import PictureLayout from "../../components/admin/layouts/PictureLayout";
 // import PopupLayout from "../../components/admin/layouts/PopupLayout";

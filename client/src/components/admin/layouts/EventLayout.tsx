@@ -8,18 +8,18 @@ import { useHistory } from "react-router-dom";
 import { Switch } from "@headlessui/react";
 
 import { useSelector } from "react-redux";
-import { eventStore } from "../../../../slicer/eventSlice";
-import { appParam } from "../../../../slicer/appSlice";
+import { eventStore } from "../../../slicer/eventSlice";
+import { appParam } from "../../../slicer/appSlice";
 
-import { FETCH } from "../../../../FETCH";
-import FooterSettings from "../../event/FooterSettings";
-import { Backgroundheader } from "../../event/Backgroundheader";
-import { AddNewEvent } from "../../event/AddNewEvent";
-import { DeleteEvent } from "../../event/DeleteEvent";
-import { TextBannerModify } from "../../event/TextBannerModify";
-import { emitEvent } from "../../../common/socketio/SocketPublicComponent";
-import { updateEventInStore } from "../../../../slicer/eventSlice";
-import { updateAppTitleStyle } from "../../../../slicer/appSlice";
+import { FETCH } from "../../../FETCH";
+import FooterSettings from "../event/FooterSettings";
+import { Backgroundheader } from "../event/Backgroundheader";
+import { AddNewEvent } from "../event/AddNewEvent";
+import { DeleteEvent } from "../event/DeleteEvent";
+import { TextBannerModify } from "../event/TextBannerModify";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import { updateEventInStore } from "../../../slicer/eventSlice";
+import { updateAppTitleStyle } from "../../../slicer/appSlice";
 
 // Switch
 function classNames(...classes: any) {

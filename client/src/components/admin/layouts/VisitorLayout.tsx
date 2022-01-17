@@ -5,15 +5,15 @@ import Switch from "@material-ui/core/Switch";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-import { FETCH } from "../../../../FETCH";
-import { emitEvent } from "../../../common/socketio/SocketPublicComponent";
+import { FETCH } from "../../../FETCH";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 import {
   initStoreWithListOfVisitors,
   visitorsList,
   visitorsIsLoad,
   updatePermissionVisitor,
-} from "../../../../slicer/usersSlice";
-import { SocketAdminVisitor } from "../../../common/socketio/SocketAdminVisitor";
+} from "../../../slicer/usersSlice";
+import { SocketAdminVisitor } from "../../common/socketio/SocketAdminVisitor";
 
 const MySwal = withReactContent(Swal);
 

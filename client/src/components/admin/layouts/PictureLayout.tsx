@@ -1,7 +1,7 @@
 // import { useEffect, useState } from "react";
 // import axios from "axios";
 // import withReactContent from "sweetalert2-react-content";
-import TopPictureLayout from "../TopPictureLayout";
+import TopPictureLayout from "../picture/TopPictureLayout";
 // import Swal from "sweetalert2";
 
 // import { FETCH } from "../../../FETCH";

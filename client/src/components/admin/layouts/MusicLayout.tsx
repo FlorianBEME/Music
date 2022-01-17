@@ -7,11 +7,11 @@ import { ReactElement } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 
-import { FETCH } from "../../../../FETCH";
-import { removeInput } from "../../../common/removeInput";
-import compare from "../../../common/sortMusic";
-import AllDeleteButton from "../../../common/button/AllDeleteButton";
-import { emitEvent } from "../../../common/socketio/SocketPublicComponent";
+import { FETCH } from "../../../FETCH";
+import { removeInput } from "../../common/removeInput";
+import compare from "../../common/sortMusic";
+import AllDeleteButton from "../../common/button/AllDeleteButton";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 const MySwal = withReactContent(Swal);
 
