@@ -70,39 +70,6 @@ io.on("connection", (socket) => {
         break;
       default:
         break;
-
-      //////////////////////////////////////////////////////////////
-      // case "title":
-      //   console.log("SOCKET: MAJ titre music");
-      //   socket.broadcast.emit("titleupdate", true);
-      //   break;
-      // case "user":
-      //   console.log("SOCKET: MAJ visiteur");
-      //   socket.broadcast.emit("userupdate", true); // Reception en admin
-      //   break;
-      // case "visitorallowed":
-      //   console.log("SOCKET: MAJ visiteur permission");
-      //   socket.broadcast.emit("visitorallowed", true);
-      //   break;
-
-      // case "settitle":
-      //   console.log("SOCKET: MAJ Title");
-      //   socket.broadcast.emit("settitle", true);
-      //   break;
-      // case "pop":
-      //   console.log("SOCKET: MAJ Popup");
-      //   socket.broadcast.emit("pop", true);
-      //   break;
-      // case "userupdate":
-      //   console.log("SOCKET: MAJ user");
-      //   socket.broadcast.emit("userupdate", true); // Reception en admin
-      //   break;
-      // case "setbanner":
-      //   console.log("SOCKET: MAJ banner");
-      //   socket.broadcast.emit("setbanner", true);
-      //   break;
-      // default:
-      //   break;
     }
   });
 
