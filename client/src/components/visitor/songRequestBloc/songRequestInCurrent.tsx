@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { FETCH } from "../../../FETCH";
 import compare from "../../common/sortMusic";
 import { incrementVote } from "../../../slicer/musicSlice";
+import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 type SongRequestInCurrentProps = {
   isLoading: boolean;
@@ -74,6 +75,10 @@ export default function SongRequestInCurrent({
                 }
                 // Je met à jour le store
                 dispatch(incrementVote(result.data));
+                emitEvent("ADMIN", "increment-vote", {
+                  id: visitorId,
+                  countVoting: newCount,
+                });
               })
               .catch((err) => console.error(err));
           })

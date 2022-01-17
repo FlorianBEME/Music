@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addNewVisitor, updateVisitor } from "../../../slicer/usersSlice";
+import {
+  addNewVisitor,
+  updateCountVoteVisitor,
+  updatePermissionVisitor,
+  updateSubmitVisitor,
+} from "../../../slicer/usersSlice";
 import { socket } from "./socket";
 
 const SocketAdminVisitor = () => {
@@ -12,15 +17,35 @@ const SocketAdminVisitor = () => {
 
       socket.on("update-list-visitor", (data: any) => {
         if (data) {
-          console.log("VISITOR: Ajout d'un visiteur");
+          console.log("ADMIN: Ajout d'un visiteur");
           dispatch(addNewVisitor(data));
         }
       });
 
-      socket.on("modify-visitor", (data: any) => {
+      socket.on("increment-vote", (data: any) => {
         if (data) {
-          console.log("VISITOR: Ajout d'un visiteur");
-          dispatch(updateVisitor(data));
+          console.log("ADMIN:  Increment vote user n° " + data.id);
+          dispatch(updateCountVoteVisitor(data));
+        }
+      });
+
+      socket.on("increment-submit-visitor", (data: any) => {
+        if (data) {
+          console.log(`ADMIN: Increment submit user n° ${data}`);
+          dispatch(updateSubmitVisitor(data));
+        }
+      });
+      socket.on("update-permission-visitor", (data: any) => {
+        if (data) {
+          console.log(
+            `ADMIN: MAJ permission user n° ${data.id} | New permission: ${data.isNotAllowed}`
+          );
+          dispatch(
+            updatePermissionVisitor({
+              id: data.id,
+              isNotAllowed: data.isNotAllowed,
+            })
+          );
         }
       });
     };
