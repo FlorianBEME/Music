@@ -85,7 +85,6 @@ function App() {
       axios
         .get(`${FETCH}/app/app`)
         .then((res) => {
-          console.log(res.data);
           dispatch(initAppState(res.data));
         })
         .catch((err) => {
@@ -117,8 +116,7 @@ function App() {
       //fetch titre en cours
       axios
         .get(`${FETCH}/app/app`)
-        .then((res) => {
-        })
+        .then((res) => {})
         .catch(function (erreur) {
           console.error(erreur);
         });

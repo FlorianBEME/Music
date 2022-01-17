@@ -30,6 +30,19 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.broadcast.emit("music-count-vote", data);
         break;
+      case "music-remove":
+        console.log(`SOCKET: Remove music n°${data} `);
+        console.log(data);
+        socket.broadcast.emit("music-remove", data);
+        break;
+      case "music-remove-all":
+        console.log(`SOCKET: Remove music all`);
+        socket.broadcast.emit("music-remove-all");
+        break;
+      case "music-status":
+        console.log(`SOCKET: update music-status`);
+        socket.broadcast.emit("music-status", data);
+        break;
       case "event-delete":
         console.log("SOCKET: MAJ event-delete");
         console.log(data);
@@ -74,6 +87,11 @@ io.on("connection", (socket) => {
         console.log("SOCKET: MAJ user-add");
         console.log(data);
         socket.broadcast.emit("update-list-visitor", data);
+        break;
+      case "song-in-current":
+        console.log("SOCKET: MAJ Title");
+        console.log(data);
+        socket.broadcast.emit("song-in-current", data);
         break;
       default:
         break;

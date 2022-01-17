@@ -13,8 +13,7 @@ const NewUser = () => {
     if (localStorage.getItem("usInfoMusic")) {
       history.push("/app");
     }
-    return () => {};
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [pseudo, setPseudo] = useState(null);
