@@ -1,18 +1,18 @@
 import VisitorLayout from "../../components/admin/layouts/VisitorLayout";
 import EventLayout from "../../components/admin/layouts/EventLayout";
-// import MusicLayout from "../../components/admin/layouts/MusicLayout";
+import MusicLayout from "../../components/admin/layouts/MusicLayout";
 // import PictureLayout from "../../components/admin/layouts/PictureLayout";
 // import PopupLayout from "../../components/admin/layouts/PopupLayout";
 
 export var AdminRoutes = [
-  // {
-  //   id: 1,
-  //   path: "/dashboard/music",
-  //   name: "Musique",
-  //   icon: "mdi mdi-pencil-circle",
-  //   redirect: false,
-  //   component: MusicLayout,
-  // },
+  {
+    id: 1,
+    path: "/dashboard/music",
+    name: "Musique",
+    icon: "mdi mdi-pencil-circle",
+    redirect: false,
+    component: MusicLayout,
+  },
   // {
   //   id: 2,
   //   path: "/dashboard/picture",

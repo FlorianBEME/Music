@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
-import { BsFillTrashFill } from "react-icons/bs";
-import { CgUnavailable } from "react-icons/cg";
-import { AiOutlineCheck } from "react-icons/ai";
 import { ReactElement } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { BsFillTrashFill } from "react-icons/bs";
+import { CgUnavailable } from "react-icons/cg";
+import { AiOutlineCheck } from "react-icons/ai";
 
 import { FETCH } from "../../../FETCH";
 import { removeInput } from "../../common/removeInput";
 import compare from "../../common/sortMusic";
 import AllDeleteButton from "../../common/button/AllDeleteButton";
 import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import { musicIsLoading, musicList } from "../../../slicer/musicSlice";
 
 const MySwal = withReactContent(Swal);
 
@@ -20,23 +22,22 @@ type MusicLayoutProps = {
 };
 
 export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
-  // const MusicLayout = ({ event }: MusicLayoutProps) => {
+  const isLoading = useSelector(musicIsLoading);
+  const musics = useSelector(musicList);
   const token = localStorage.getItem("token");
+
   const [compareType, setCompareType] = useState("default");
   const [songs, setSongs] = useState<any>([]);
+
+
   const [songsInCurrent, setSongsInCurrent] = useState("");
 
-  //Fecth liste de musique
-  const fetchData = () => {
-    axios
-      .get(`${FETCH}/currentSongs`)
-      .then((res) => {
-        setSongs(res.data);
-      })
-      .catch(function (erreur) {
-        console.error(erreur);
-      });
-  };
+  useEffect(() => {
+    if (isLoading) {
+      setSongs([...musics]);
+    }
+  }, [isLoading, musics]);
+
   // Suppression de la musique
   const handleDeleteMusic = (id: number) => {
     MySwal.fire({
@@ -55,7 +56,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
           .then(() => {
             Swal.fire("Suprimée!", "", "success");
             emitEvent("update", "musiclist");
-            fetchData();
+            // fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -82,7 +83,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
             .then(() => {
               Swal.fire("Suprimée!", "", "success");
               emitEvent("update", "musiclist");
-              fetchData();
+              // fetchData();
             });
         });
       }
@@ -110,7 +111,6 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
           .then(() => {
             Swal.fire("Modifié!", "", "success");
             emitEvent("update", "musiclist");
-            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -139,7 +139,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
           .then(() => {
             Swal.fire("Modifié!", "", "success");
             emitEvent("update", "musiclist");
-            fetchData();
+            // fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -181,23 +181,17 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
     });
   };
 
-  // useEffect(() => {
-  //   fetchData();
-  //   return () => {
-  //     setSongs([]);
-  //   };
-  // }, []);
-
   return (
     <div>
       <div className="hidden  sm:flex flex-col ">
-        {event.isLoad ? (
+        {!event.isLoad ? (
           <div className="w-full flex justify-center items-center">
             <p className="dark:text-gray-100 py-52">Pas d'évenement en cours</p>
           </div>
         ) : event.active_music_request ? (
           <div>
             <div className="w-full">
+              {/* top */}
               <div className="flex justify-between mb-5">
                 <div className="flex space-x-3">
                   <input
@@ -253,6 +247,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                 </div>
               </div>
             </div>
+            {/* Table */}
             <div className="sm:-my-2 sm:overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">

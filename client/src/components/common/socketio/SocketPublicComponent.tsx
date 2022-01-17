@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { socket } from "./socket";
 
-import { addNewSong, initMusicStore } from "../../../slicer/musicSlice";
+import { addNewSong, incrementVote, initMusicStore } from "../../../slicer/musicSlice";
 import { updateEventInStore, deleteEvent } from "../../../slicer/eventSlice";
 import {
   updateAppTextBanner,
@@ -80,6 +80,15 @@ const SocketPublicComponent = () => {
         if (data) {
           console.log("EVENT: MAJ du text copyright footer");
           dispatch(updateCopyrightTextInStore(data));
+        }
+      });
+      socket.on("music-count-vote", (data: any) => {
+        if (data) {
+          console.log(data);
+          console.log(
+            `MUSIC: MAJ count vote music n°${data.id} | new Count: ${data}`
+          );
+          dispatch(incrementVote(data))
         }
       });
     };

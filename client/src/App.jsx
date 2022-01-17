@@ -118,7 +118,6 @@ function App() {
       axios
         .get(`${FETCH}/app/app`)
         .then((res) => {
-          // setTitleIncurent(res.data.app.titleincurent);
         })
         .catch(function (erreur) {
           console.error(erreur);

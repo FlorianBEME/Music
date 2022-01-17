@@ -23,6 +23,13 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.broadcast.emit("musicupdate", data);
         break;
+      case "music-count-vote":
+        console.log(
+          `SOCKET: MAJ count vote music n°${data.id} | new Count: ${data.countVote}`
+        );
+        console.log(data);
+        socket.broadcast.emit("music-count-vote", data);
+        break;
       case "event-delete":
         console.log("SOCKET: MAJ event-delete");
         console.log(data);
@@ -79,9 +86,10 @@ io.on("connection", (socket) => {
 
   socket.on("ADMIN", (args, data) => {
     switch (args) {
-      case "increment-vote":
+      case "increment-vote-visitor":
+        console.log(data);
         console.log(
-          `SOCKET: Admin => Increment vote user n° ${data.id} | Nouveau Compte: ${data.countVote}`
+          `SOCKET: Admin => Increment vote user n° ${data.id} | Nouveau Compte: ${data.countVoting}`
         );
         socket.broadcast.emit("increment-vote", data);
         break;

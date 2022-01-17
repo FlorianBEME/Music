@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { emitEvent } from "../components/common/socketio/SocketPublicComponent";
 
 const initialState: any = {
   list: [],
@@ -30,8 +31,7 @@ const musicSlice = createSlice({
       const list = [...state.list];
       const index = list.findIndex((el) => el.id === action.payload.id);
       if (index !== -1) {
-        list[index] = action.payload;
-        state.list = list;
+        state.list[index].countVote = action.payload.countVote;
       }
     },
   },
