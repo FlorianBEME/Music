@@ -1,7 +1,7 @@
-import PopUpForm from "../popup/PopUpForm";
-import PopUpList from "../popup/PopUpList";
+import PopUpForm from "../../popup/PopUpForm";
+import PopUpList from "../../popup/PopUpList";
 import axios from "axios";
-import { FETCH } from "../../../FETCH";
+import { FETCH } from "../../../../FETCH";
 import { useEffect, useState } from "react";
 
 export default function PopupLayout() {

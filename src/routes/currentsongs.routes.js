@@ -29,7 +29,16 @@ router.post("/", (req, res) => {
           if (err) {
             res.status(500).send({ errorMessage: err.message });
           } else {
-            res.status(201).json({ id: results.insertId, ...req.body });
+            // res.status(201).json({ id: results.insertId, ...req.body });
+            const sqlGet = `SELECT currentsongs.id ,visitor_id , title,artist,countVote, unavailable,isValid,isNew,uuid,pseudo FROM currentsongs INNER JOIN visitor ON visitor_id = visitor.id WHERE currentsongs.id=${results.insertId}`;
+
+            connection.query(sqlGet, req.body, (err, el) => {
+              if (err) {
+                res.status(500).send({ errorMessage: err.message });
+              } else {
+                res.status(201).json(el[0]);
+              }
+            });
           }
         });
       }

@@ -5,15 +5,15 @@ import Switch from "@material-ui/core/Switch";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-import { FETCH } from "../../../FETCH";
-import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import { FETCH } from "../../../../FETCH";
+import { emitEvent } from "../../../common/socketio/SocketPublicComponent";
 import {
   initStoreWithListOfVisitors,
   visitorsList,
   visitorsIsLoad,
-} from "../../../slicer/usersSlice";
-import { BsFillTrashFill } from "react-icons/bs";
-import { SocketAdminVisitor } from "../../common/socketio/SocketAdminVisitor";
+  updatePermissionVisitor,
+} from "../../../../slicer/usersSlice";
+import { SocketAdminVisitor } from "../../../common/socketio/SocketAdminVisitor";
 
 const MySwal = withReactContent(Swal);
 
@@ -86,8 +86,17 @@ const VisitorLayout = () => {
               },
             }
           )
-          .then(() => {
-            emitEvent("update", "visitorallowed");
+          .then((res) => {
+            emitEvent("ADMIN", "update-permission-visitor", {
+              id: res.data.id,
+              isNotAllowed: res.data.isNotAllowed,
+            });
+            dispatch(
+              updatePermissionVisitor({
+                id: res.data.id,
+                isNotAllowed: res.data.isNotAllowed,
+              })
+            );
             Swal.fire("Modifié!", "", "success");
           })
           .catch(function (error) {
@@ -99,7 +108,7 @@ const VisitorLayout = () => {
 
   return (
     <div className="flex flex-col">
-      <SocketAdminVisitor/>
+      <SocketAdminVisitor />
       <div className="w-full">
         <div className="flex justify-between mb-5">
           {/* bandeau Haut de tableau */}

@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { emitEvent } from "../components/common/socketio/SocketPublicComponent";
-
 const initialState: any = {
   list: [],
   isLoading: false,
@@ -23,7 +21,6 @@ const musicSlice = createSlice({
     updateSong: (state, action) => {
       const list = [...state.list];
       const index = list.findIndex((el) => el.id === action.payload.id);
-      console.log(index);
       if (index !== -1) {
         list[index] = action.payload;
         state.list = list;
@@ -32,11 +29,9 @@ const musicSlice = createSlice({
     incrementVote: (state, action) => {
       const list = [...state.list];
       const index = list.findIndex((el) => el.id === action.payload.id);
-      console.log(index);
       if (index !== -1) {
         list[index] = action.payload;
         state.list = list;
-        emitEvent("update", "musiclist", action.payload);
       }
     },
   },

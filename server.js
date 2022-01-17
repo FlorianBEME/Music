@@ -68,6 +68,8 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.broadcast.emit("update-list-visitor", data);
         break;
+      default:
+        break;
 
       //////////////////////////////////////////////////////////////
       // case "title":
@@ -107,6 +109,30 @@ io.on("connection", (socket) => {
   socket.on("eventpiture", (args) => {
     socket.broadcast.emit("addnewpicture", args);
   });
+
+  socket.on("ADMIN", (args, data) => {
+    switch (args) {
+      case "increment-vote":
+        console.log(
+          `SOCKET: Admin => Increment vote user n° ${data.id} | Nouveau Compte: ${data.countVote}`
+        );
+        socket.broadcast.emit("increment-vote", data);
+        break;
+      case "increment-submit-visitor":
+        console.log(`SOCKET: Admin => Increment submit user n° ${data}`);
+        socket.broadcast.emit("increment-submit-visitor", data);
+        break;
+      case "update-permission-visitor":
+        console.log(
+          `SOCKET: Admin => Update permission user n° ${data.id} | New Permission: ${data.isNotAllowed}`
+        );
+        socket.broadcast.emit("update-permission-visitor", data);
+        break;
+      default:
+        break;
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("SOCKET: deconection: " + socket.id);
   });
