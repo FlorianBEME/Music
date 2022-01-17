@@ -10,7 +10,7 @@ import { addNewSong } from "../../../slicer/musicSlice";
 import { emitEvent } from "../../common/socketio/SocketPublicComponent";
 
 type RequestFormProps = {
-  visitorInfo: any;
+  visitorInfo: number;
   musicList: any[];
 };
 
@@ -61,6 +61,7 @@ const SongRequestForm = ({ visitorInfo, musicList }: RequestFormProps) => {
           });
           dispatch(addNewSong(res.data));
           emitEvent("update", "musiclist", res.data);
+          emitEvent("ADMIN", "increment-submit-visitor", visitorInfo);
           removeInput(["title", "artist"]);
         })
         .catch(function (error) {
