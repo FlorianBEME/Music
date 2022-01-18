@@ -21,6 +21,8 @@ import {
   updateStatusMusic,
 } from "../../../slicer/musicSlice";
 
+import { appParam, udpdateSongInCurrent } from "../../../slicer/appSlice";
+
 const MySwal = withReactContent(Swal);
 
 type MusicLayoutProps = {
@@ -31,6 +33,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
   const dispatch = useDispatch();
   const isLoading = useSelector(musicIsLoading);
   const musics = useSelector(musicList);
+  const app = useSelector(appParam);
   const token = localStorage.getItem("token");
 
   const [compareType, setCompareType] = useState("default");
@@ -196,6 +199,8 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
             if (res.status === 200) {
               Swal.fire("Modifié!", "", "success");
               emitEvent("update", "song-in-current", songsInCurrent);
+              dispatch(udpdateSongInCurrent(songsInCurrent));
+              removeInput(["artist", "title"]);
             }
           })
           .catch(function (error) {
@@ -229,11 +234,10 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                     name="title"
                     id="title"
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    placeholder="Titre de chanson"
+                    placeholder={app.app.titleincurent.title}
                   />
                   <input
                     onChange={(e) => {
-                      console.log(songsInCurrent);
                       setSongsInCurrent({
                         ...songsInCurrent,
                         artist: e.target.value,
@@ -243,7 +247,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                     name="artist"
                     id="artist"
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    placeholder="Artiste"
+                    placeholder={app.app.titleincurent.artist}
                   />
                   <button
                     disabled={
