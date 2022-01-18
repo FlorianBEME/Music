@@ -55,7 +55,6 @@ export function AddNewEvent(props: IAppProps) {
               }
             )
             .then((res) => {
-              console.log(res.data);
               dispatch(updateEventInStore(res.data));
               emitEvent("update", "event", res.data);
               Swal.fire("Créer!", "", "success");

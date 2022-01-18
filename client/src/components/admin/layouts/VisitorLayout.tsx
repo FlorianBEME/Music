@@ -13,7 +13,7 @@ import {
   visitorsIsLoad,
   updatePermissionVisitor,
 } from "../../../slicer/usersSlice";
-import { SocketAdminVisitor } from "../../common/socketio/SocketAdminVisitor";
+import { SocketAdminVisitor } from "../../common/socketio/Admin/SocketAdminVisitor";
 
 const MySwal = withReactContent(Swal);
 
@@ -37,31 +37,6 @@ const VisitorLayout = () => {
     };
     fetchData();
   }, [dispatch]);
-
-  // Suppression de la musique
-  // const handleDelete = (id: any) => {
-  //   MySwal.fire({
-  //     title: `Êtes-vous sûr de vouloir supprimer cette chanson?`,
-  //     showCancelButton: true,
-  //     confirmButtonText: "Valider",
-  //     cancelButtonText: "Annuler",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .delete(`${FETCH}/currentsongs/${id}`, {
-  //           headers: {
-  //             "x-access-token": token,
-  //           },
-  //         })
-  //         .then(() => {
-  //           Swal.fire("Suprimée!", "", "success");
-  //         })
-  //         .catch(function (error) {
-  //           Swal.fire("Erreur!", "", "error");
-  //         });
-  //     }
-  //   });
-  // };
 
   const handleAllowed = (id: number) => {
     MySwal.fire({

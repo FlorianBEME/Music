@@ -48,6 +48,12 @@ export const appSlice = createSlice({
     updateCopyrightTextInStore: (state, action) => {
       state.appData.footerCopyright = action.payload;
     },
+    udpdateSongInCurrent: (state, action) => {
+      state.appData.app.titleincurent = { ...action.payload };
+    },
+    updateDefaultStatusPermissionPhoto: (state, action) => {
+      state.appData.app.defaultPictureAccept = action.payload;
+    },
   },
 });
 
@@ -60,6 +66,8 @@ export const {
   addNewItemFooterInStore,
   deleteItemFooterInStore,
   updateCopyrightTextInStore,
+  udpdateSongInCurrent,
+  updateDefaultStatusPermissionPhoto,
 } = appSlice.actions;
 
 export const appParam = (state: any) => state.appStore.appData;

@@ -101,7 +101,7 @@ router.post("/verify/:id", (req, res) => {
           res.status(200).send({ status: false });
         }
       } else {
-        res.status(404).json({ errorMessage: "visitor inconnu", status:404 });
+        res.status(404).json({ errorMessage: "visitor inconnu", status: 404 });
       }
     });
   }
@@ -156,7 +156,6 @@ router.patch("/newcount/:id", (req, res) => {
             errorMessage: `visitor with id ${req.params.id} not found`,
           });
         } else {
-          console.log(result);
           res.status(200).json(result[0]);
         }
       });

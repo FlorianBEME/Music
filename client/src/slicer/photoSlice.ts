@@ -1,23 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: any = {
-  list: [],
+  picturesAvailable: [],
 };
 
 const photoSlice = createSlice({
   name: "photoStore",
   initialState,
   reducers: {
-    // addItemToBasket: (state, action) => {
-    //   console.log("in");
-    //   state.music = [...state.items, { id: nextId, name: action.payload.name }];
-    //   nextId += 1;
-    // },
+    initPictureStoreAvailable: (state, action) => {
+      state.picturesAvailable = [...action.payload];
+    },
+    removePicture: (state) => {
+      state.picturesAvailable = [];
+    },
   },
 });
 
-// export const { addItemToBasket } = musicSlice.actions;
+export const { initPictureStoreAvailable, removePicture } = photoSlice.actions;
 
-export const selectItems = (state: any) => state.music;
+export const picturesAvailables = (state: any) =>
+  state.photoStore.picturesAvailable.filter(
+    (el: { is_accept: any }) => el.is_accept === 1
+  );
+export const picturesNotAllowed = (state: any) =>
+  state.photoStore.picturesAvailable.filter(
+    (el: { is_accept: any }) => el.is_accept === 0
+  );
+export const picturesAll = (state: any) => state.photoStore.picturesAvailable;
 
 export default photoSlice.reducer;

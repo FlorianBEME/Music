@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { BsFillTrashFill } from "react-icons/bs";
-import { CgUnavailable } from "react-icons/cg";
-import { AiOutlineCheck } from "react-icons/ai";
 import { ReactElement } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { BsFillTrashFill } from "react-icons/bs";
+import { CgUnavailable } from "react-icons/cg";
+import { AiOutlineCheck } from "react-icons/ai";
 
 import { FETCH } from "../../../FETCH";
 import { removeInput } from "../../common/removeInput";
 import compare from "../../common/sortMusic";
 import AllDeleteButton from "../../common/button/AllDeleteButton";
 import { emitEvent } from "../../common/socketio/SocketPublicComponent";
+import {
+  musicIsLoading,
+  musicList,
+  removeAllMusic,
+  removeMusic,
+  updateStatusMusic,
+} from "../../../slicer/musicSlice";
+
+import { appParam, udpdateSongInCurrent } from "../../../slicer/appSlice";
 
 const MySwal = withReactContent(Swal);
 
@@ -20,23 +30,26 @@ type MusicLayoutProps = {
 };
 
 export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
-  // const MusicLayout = ({ event }: MusicLayoutProps) => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(musicIsLoading);
+  const musics = useSelector(musicList);
+  const app = useSelector(appParam);
   const token = localStorage.getItem("token");
+
   const [compareType, setCompareType] = useState("default");
   const [songs, setSongs] = useState<any>([]);
-  const [songsInCurrent, setSongsInCurrent] = useState("");
 
-  //Fecth liste de musique
-  const fetchData = () => {
-    axios
-      .get(`${FETCH}/currentSongs`)
-      .then((res) => {
-        setSongs(res.data);
-      })
-      .catch(function (erreur) {
-        console.error(erreur);
-      });
-  };
+  const [songsInCurrent, setSongsInCurrent] = useState({
+    artist: "",
+    title: "",
+  });
+
+  useEffect(() => {
+    if (isLoading) {
+      setSongs([...musics]);
+    }
+  }, [isLoading, musics]);
+
   // Suppression de la musique
   const handleDeleteMusic = (id: number) => {
     MySwal.fire({
@@ -54,8 +67,8 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
           })
           .then(() => {
             Swal.fire("Suprimée!", "", "success");
-            emitEvent("update", "musiclist");
-            fetchData();
+            emitEvent("update", "music-remove", id);
+            dispatch(removeMusic(id));
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -63,6 +76,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
       }
     });
   };
+
   // Suppression de toute les musiques
   const handleAllDelete = () => {
     MySwal.fire({
@@ -72,22 +86,21 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
       cancelButtonText: "Annuler",
     }).then((result) => {
       if (result.isConfirmed) {
-        songs.forEach((song: any) => {
-          axios
-            .delete(`${FETCH}/currentsongs/${song.id}`, {
-              headers: {
-                "x-access-token": token,
-              },
-            })
-            .then(() => {
-              Swal.fire("Suprimée!", "", "success");
-              emitEvent("update", "musiclist");
-              fetchData();
-            });
-        });
+        axios
+          .delete(`${FETCH}/currentsongs/remove/all`, {
+            headers: {
+              "x-access-token": token,
+            },
+          })
+          .then(() => {
+            Swal.fire("Suprimée!", "", "success");
+            emitEvent("update", "music-remove-all");
+            dispatch(removeAllMusic());
+          });
       }
     });
   };
+
   // Changer status music
   const handleUnavailableMusic = (id: number) => {
     MySwal.fire({
@@ -100,17 +113,25 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
         axios
           .put(
             `${FETCH}/currentsongs/${id}`,
-            { unavailable: 1, isNew: 0, isValid: 0, countVote: -1 },
+            { unavailable: 1, isNew: 0, isValid: 0 },
             {
               headers: {
                 "x-access-token": token,
               },
             }
           )
-          .then(() => {
+          .then((res) => {
             Swal.fire("Modifié!", "", "success");
-            emitEvent("update", "musiclist");
-            fetchData();
+            const data = {
+              status: {
+                unavailable: res.data.unavailable,
+                isNew: res.data.isNew,
+                isValid: res.data.isValid,
+              },
+              id: res.data.id,
+            };
+            dispatch(updateStatusMusic(data));
+            emitEvent("update", "music-status", data);
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -136,10 +157,18 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
               },
             }
           )
-          .then(() => {
+          .then((res) => {
+            const data = {
+              status: {
+                unavailable: res.data.unavailable,
+                isNew: res.data.isNew,
+                isValid: res.data.isValid,
+              },
+              id: res.data.id,
+            };
+            dispatch(updateStatusMusic(data));
+            emitEvent("update", "music-status", data);
             Swal.fire("Modifié!", "", "success");
-            emitEvent("update", "musiclist");
-            fetchData();
           })
           .catch(function (error) {
             Swal.fire("Erreur!", "", "error");
@@ -169,9 +198,9 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
           .then((res) => {
             if (res.status === 200) {
               Swal.fire("Modifié!", "", "success");
-              removeInput(["title"]);
-              setSongsInCurrent("");
-              emitEvent("update", "title");
+              emitEvent("update", "song-in-current", songsInCurrent);
+              dispatch(udpdateSongInCurrent(songsInCurrent));
+              removeInput(["artist", "title"]);
             }
           })
           .catch(function (error) {
@@ -181,38 +210,49 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
     });
   };
 
-  // useEffect(() => {
-  //   fetchData();
-  //   return () => {
-  //     setSongs([]);
-  //   };
-  // }, []);
-
   return (
     <div>
       <div className="hidden  sm:flex flex-col ">
-        {event.isLoad ? (
+        {!event.isLoad ? (
           <div className="w-full flex justify-center items-center">
             <p className="dark:text-gray-100 py-52">Pas d'évenement en cours</p>
           </div>
         ) : event.active_music_request ? (
           <div>
             <div className="w-full">
+              {/* top */}
               <div className="flex justify-between mb-5">
                 <div className="flex space-x-3">
                   <input
                     onChange={(e) => {
-                      setSongsInCurrent(e.target.value);
+                      setSongsInCurrent({
+                        ...songsInCurrent,
+                        title: e.target.value,
+                      });
                     }}
                     type="text"
                     name="title"
                     id="title"
                     className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    placeholder="Titre en cours"
+                    placeholder={app.app.titleincurent.title}
+                  />
+                  <input
+                    onChange={(e) => {
+                      setSongsInCurrent({
+                        ...songsInCurrent,
+                        artist: e.target.value,
+                      });
+                    }}
+                    type="text"
+                    name="artist"
+                    id="artist"
+                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    placeholder={app.app.titleincurent.artist}
                   />
                   <button
                     disabled={
-                      songsInCurrent === null || songsInCurrent === ""
+                      songsInCurrent.artist === "" ||
+                      songsInCurrent.title === ""
                         ? true
                         : false
                     }
@@ -221,7 +261,8 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                     }}
                     type="button"
                     className={
-                      songsInCurrent === null || songsInCurrent === ""
+                      songsInCurrent.artist === "" ||
+                      songsInCurrent.title === ""
                         ? "inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-gray-700 bg-gray-100 cursor-not-allowed dark:bg-gray-500 dark:text-gray-200"
                         : "inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-green-700 dark:bg-green-700 dark:text-green-100 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                     }
@@ -253,6 +294,7 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                 </div>
               </div>
             </div>
+            {/* Table */}
             <div className="sm:-my-2 sm:overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -342,16 +384,30 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                                   <BsFillTrashFill size={24} />
                                 </div>
                                 <div
-                                  className=" cursor-pointer mx-2 my-1"
+                                  className={
+                                    song.unavailable
+                                      ? "text-gray-400 mx-2 my-1"
+                                      : "cursor-pointer mx-2 my-1"
+                                  }
                                   onClick={() =>
-                                    handleUnavailableMusic(song.id)
+                                    !song.unavailable
+                                      ? handleUnavailableMusic(song.id)
+                                      : null
                                   }
                                 >
                                   <CgUnavailable size={25} />
                                 </div>
                                 <div
-                                  className="cursor-pointer mx-2 my-1"
-                                  onClick={() => handleValidMusic(song.id)}
+                                  className={
+                                    song.isValid
+                                      ? "text-gray-400 mx-2 my-1"
+                                      : "cursor-pointer mx-2 my-1"
+                                  }
+                                  onClick={() =>
+                                    !song.isValid
+                                      ? handleValidMusic(song.id)
+                                      : null
+                                  }
                                 >
                                   <AiOutlineCheck size={25} />
                                 </div>
@@ -364,15 +420,6 @@ export default function MusicLayout({ event }: MusicLayoutProps): ReactElement {
                 </div>
                 <div className="flex justify-end mt-5">
                   <AllDeleteButton action={handleAllDelete} />
-                  {/* <button
-                      onClick={() => {
-                        handleAllDelete();
-                      }}
-                      type="button"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md dark:text-red-100 dark:bg-red-700   text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                      Tout supprimer
-                    </button> */}
                 </div>
               </div>
             </div>

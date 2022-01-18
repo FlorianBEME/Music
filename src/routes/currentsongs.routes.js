@@ -47,35 +47,21 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  const sql = "SELECT * FROM visitor WHERE id=?";
-  connection.query(sql, req.body.visitor_id, (err, results) => {
+  const sql = "UPDATE currentsongs SET ? WHERE id=?";
+  connection.query(sql, [req.body, req.params.id], (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
-    }
-    if (results.length > 0) {
-      if (results[0].isNotAllowed) {
-        res.status(401).send({ error: "Pas autorisé" });
-      } else {
-        let sql = "UPDATE currentsongs SET ? WHERE id=?";
-        connection.query(sql, [req.body, req.params.id], (err, results) => {
-          if (err) {
-            res.status(500).send({ errorMessage: err.message });
-          } else {
-            sql = "SELECT * FROM currentsongs WHERE id=?";
-            connection.query(sql, req.params.id, (err, result) => {
-              if (result.length === 0) {
-                res.status(404).send({
-                  errorMessage: `Song with id ${req.params.id} not found`,
-                });
-              } else {
-                res.status(200).json(result[0]);
-              }
-            });
-          }
-        });
-      }
     } else {
-      res.status(500).send({ error: "Visiteur Inconnu" });
+      const sqlSelect = "SELECT * FROM currentsongs WHERE id=?";
+      connection.query(sqlSelect, req.params.id, (err, result) => {
+        if (result.length === 0) {
+          res.status(404).send({
+            errorMessage: `song with id ${req.params.id} not found`,
+          });
+        } else {
+          res.status(200).json(result[0]);
+        }
+      });
     }
   });
 });
@@ -83,6 +69,17 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", verifyJWT, (req, res) => {
   const sql = "DELETE FROM currentsongs WHERE id=?";
   connection.query(sql, req.params.id, (err, results) => {
+    if (err) {
+      res.status(500).send({ errorMessage: err.message });
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
+router.delete("/remove/all", verifyJWT, (req, res) => {
+  const sql = "DELETE FROM currentsongs; ";
+  connection.query(sql, (err, results) => {
     if (err) {
       res.status(500).send({ errorMessage: err.message });
     } else {

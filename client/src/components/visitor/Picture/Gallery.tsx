@@ -1,47 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Carousel, { Modal, ModalGateway } from "react-images";
 import GaleryComponent from "./GaleryComponent";
-import axios from "axios";
-import { FETCH } from "../../../FETCH";
+
 import { FiLoader } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import { picturesAvailables } from "../../../slicer/photoSlice";
 
 type props = {
   changeComponent: Function;
 };
 
 export default function GalleryPhoto({ changeComponent }: props) {
+  const pictures = useSelector(picturesAvailables);
+
   // const [loadImg, setLoadImg] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [pictures, setPictures] = useState<never | any>([]);
-  const [picturesIsLoad, setPicturesIsload] = useState(false);
-
-  const fetchPicture = () => {
-    axios
-      .get(`${FETCH}/eventpicture/available`)
-      .then((res) => {
-        setPicturesIsload(true);
-        setPictures(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  useEffect(() => {
-    fetchPicture();
-    setTimeout(() => {
-      // setLoadImg(true);
-    }, 5000);
-    return () => {};
-  }, []);
-
-  // socket;
-  // useEffect(() => {
-  //   subscribeToSocket((args: any) => {
-  //     fetchPicture();
-  //   });
-  // }, []);
+  // const [pictures, setPictures] = useState<never | any>([]);
+  const [picturesIsLoad, setPicturesIsload] = useState(true);
 
   const openLightbox = (index: number) => {
     setCurrentImage(index);
