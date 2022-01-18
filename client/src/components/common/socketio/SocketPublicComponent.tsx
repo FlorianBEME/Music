@@ -43,8 +43,8 @@ const SocketPublicComponent = () => {
         }
       });
 
-      socket.on("PUBLIC-event-delete", (data: any) => {
-        console.log("EVENT: Suppression de l'event");
+      socket.on("event-delete", (data: any) => {
+        console.log("PUBLIC-EVENT: Suppression de l'event");
         dispatch(deleteEvent());
         dispatch(initMusicStore([]));
       });

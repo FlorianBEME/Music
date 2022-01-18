@@ -1,1 +1,1 @@
-[{"id":0,"app":{"titleincurent":{"artist":"testtest","title":"a"},"textbanner":null,"defaultPictureAccept":false},"titleEventappStyle":{"position":"right","color":"#ff0000","display":true}}]
+[{"id":0,"app":{"titleincurent":"Titre en cours...","textbanner":null,"defaultPictureAccept":false,"artistincurrent":"Artiste en cours..."},"titleEventappStyle":{"position":"right","color":"#000000","display":true}}]
