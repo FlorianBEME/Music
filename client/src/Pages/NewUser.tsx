@@ -1,47 +1,60 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useHistory } from "react-router-dom";
 
 import { FETCH } from "../FETCH";
 import { emitEvent } from "../components/common/socketio/SocketPublicComponent";
+import { eventStore } from "../slicer/eventSlice";
 
 const NewUser = () => {
+  const event = useSelector(eventStore);
   const history = useHistory();
 
   useEffect(() => {
     if (localStorage.getItem("usInfoMusic")) {
       history.push("/app");
     }
-    return () => {};
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!event.isLoad) {
+      history.push("/app");
+    }
+  }, [event.isLoad, history]);
 
   const [pseudo, setPseudo] = useState(null);
 
   const enterInMusicRequest = async () => {
-    const newUuid = uuidv4();
-    axios
-      .post(`${FETCH}/visitor`, {
-        pseudo: pseudo,
-        isNotAllowed: false,
-        uuid: newUuid,
-        countVoting: 0,
-      })
-      .then((res) => {
-        let usInfoMusic = {
-          id: res.data.id,
-          uuid: res.data.uuid,
-          pseudo: res.data.pseudo,
-          uuidEvent: res.data.uuidEvent,
-        };
-        localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
-        emitEvent("update", "user-add", res.data);
-        history.push("/app");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    console.log(event);
+    if (event.isLoad) {
+      const newUuid = uuidv4();
+      axios
+        .post(`${FETCH}/visitor`, {
+          pseudo: pseudo,
+          isNotAllowed: false,
+          uuid: newUuid,
+          countVoting: 0,
+        })
+        .then((res) => {
+          let usInfoMusic = {
+            id: res.data.id,
+            uuid: res.data.uuid,
+            pseudo: res.data.pseudo,
+            uuidEvent: res.data.uuidEvent,
+          };
+          localStorage.setItem("usInfoMusic", JSON.stringify(usInfoMusic));
+          emitEvent("update", "user-add", res.data);
+          history.push("/app");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      history.push("/app");
+    }
   };
 
   return (

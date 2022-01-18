@@ -40,6 +40,7 @@ router.put("/songinprogress/:id", verifyJWT, (req, res) => {
         }
       }).then(() => {
         new Promise((resolve) => {
+          console.log(req.body);
           obj[id].app.titleincurent = req.body.titleincurent;
           resolve();
         }).then(() => {

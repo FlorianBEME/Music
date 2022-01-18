@@ -8,6 +8,7 @@ import { FETCH } from "./FETCH";
 import { initAppState } from "./slicer/appSlice";
 import { initEventState } from "./slicer/eventSlice";
 import { initMusicStore } from "./slicer/musicSlice";
+import { initPictureStoreAvailable } from "./slicer/photoSlice";
 
 import Home from "./Pages/Home";
 import Login from "./Pages/login";
@@ -57,92 +58,103 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const fetchEvent = () => {
-      axios.get(`${FETCH}/events`).then((res) => {
+    let apiDone = [];
+
+    const fetchEvent = async () => {
+      await axios.get(`${FETCH}/events`).then((res) => {
         // si une soirée est en cours
         if (res.data.length > 0) {
           const currentEvent = res.data;
           // On stock l'event dans le store
           dispatch(initEventState({ ...currentEvent[0], isLoad: true }));
+          apiDone.push("event");
         } else {
           dispatch(initEventState({ isLoad: false }));
         }
       });
     };
 
-    const fetchSongs = () => {
-      axios
+    const fetchSongs = async () => {
+      await axios
         .get(`${FETCH}/currentSongs`)
         .then((res) => {
           dispatch(initMusicStore(res.data));
+          apiDone.push("songs");
         })
         .catch(function (erreur) {
           console.error(erreur);
         });
     };
 
-    const fetchApp = () => {
-      axios
+    const fetchApp = async () => {
+      await axios
         .get(`${FETCH}/app/app`)
         .then((res) => {
-          console.log(res.data);
           dispatch(initAppState(res.data));
+          apiDone.push("app");
         })
         .catch((err) => {
           console.error(err);
         });
     };
 
-    const fetchFooter = () => {
-      axios
+    const fetchFooter = async () => {
+      await axios
         .get(`${FETCH}/footer`)
         .then((res) => {
           dispatch(initAppState({ itemFooter: res.data }));
+          apiDone.push("footer");
         })
         .catch((err) => {
           console.error(err);
         });
     };
 
-    const fetchFooterCopyright = () => {
-      axios.get(`${FETCH}/copyright`).then((res) => {
+    const fetchFooterCopyright = async () => {
+      await axios.get(`${FETCH}/copyright`).then((res) => {
         if (res.data.length > 0) {
           dispatch(initAppState({ footerCopyright: res.data[0].text }));
+          apiDone.push("copyright");
         } else {
         }
       });
     };
 
-    const fetchSongIncurrent = () => {
+    const fetchSongIncurrent = async () => {
       //fetch titre en cours
-      axios
+      await axios
         .get(`${FETCH}/app/app`)
-        .then((res) => {
-          // setTitleIncurent(res.data.app.titleincurent);
+        .then(() => {
+          apiDone.push("songsincurrent");
         })
         .catch(function (erreur) {
           console.error(erreur);
         });
     };
 
-    const fetchMusicList = () => {
-      axios
-        .get(`${FETCH}/currentSongs`)
+    const fetchPicture = async () => {
+      await axios
+        .get(`${FETCH}/eventpicture`)
         .then((res) => {
-          dispatch(initMusicStore(res.data));
+          console.log(res.data);
+          dispatch(initPictureStoreAvailable(res.data));
+          apiDone.push("picture");
         })
-        .catch(function (erreur) {
-          console.error(erreur);
+        .catch((err) => {
+          console.error(err);
         });
     };
-
-    fetchSongIncurrent();
-    fetchMusicList();
-    fetchApp();
-    fetchFooter();
-    fetchFooterCopyright();
-    fetchSongs();
-    fetchEvent();
+    Promise.all([
+      fetchPicture(),
+      fetchSongIncurrent(),
+      fetchApp(),
+      fetchFooter(),
+      fetchFooterCopyright(),
+      fetchSongs(),
+      fetchEvent(),
+    ]).then(() => {
+      // loader
+    });
   }, [dispatch]);
 
   return (

@@ -5,8 +5,8 @@ import {
   updateCountVoteVisitor,
   updatePermissionVisitor,
   updateSubmitVisitor,
-} from "../../../slicer/usersSlice";
-import { socket } from "./socket";
+} from "../../../../slicer/usersSlice";
+import { socket } from "../socket";
 
 const SocketAdminVisitor = () => {
   const dispatch = useDispatch();
@@ -22,8 +22,9 @@ const SocketAdminVisitor = () => {
         }
       });
 
-      socket.on("increment-vote", (data: any) => {
+      socket.on("increment-vote-visitor", (data: any) => {
         if (data) {
+          console.log(data);
           console.log("ADMIN:  Increment vote user n° " + data.id);
           dispatch(updateCountVoteVisitor(data));
         }

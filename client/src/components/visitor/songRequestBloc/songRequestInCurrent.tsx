@@ -75,10 +75,11 @@ export default function SongRequestInCurrent({
                 }
                 // Je met à jour le store
                 dispatch(incrementVote(result.data));
-                emitEvent("ADMIN", "increment-vote", {
+                emitEvent("ADMIN", "increment-vote-visitor", {
                   id: visitorId,
                   countVoting: newCount,
                 });
+                emitEvent("update", "music-count-vote", result.data);
               })
               .catch((err) => console.error(err));
           })
