@@ -21,6 +21,7 @@ import {
   updateCopyrightTextInStore,
   udpdateSongInCurrent,
 } from "../../../slicer/appSlice";
+import { removePicture } from "../../../slicer/photoSlice";
 
 const SocketPublicComponent = () => {
   const dispatch = useDispatch();
@@ -127,6 +128,10 @@ const SocketPublicComponent = () => {
           console.log(data);
           dispatch(udpdateSongInCurrent(data));
         }
+      });
+      socket.on("remove-all-picture", (data: any) => {
+        console.log(`PUBLIC-PHOTOS: Remove photos liste`);
+        dispatch(removePicture());
       });
     };
     publicSocket();

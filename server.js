@@ -93,6 +93,10 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.broadcast.emit("song-in-current", data);
         break;
+      case "remove-all-picture":
+        console.log("SOCKET: Delete all picture");
+        socket.broadcast.emit("remove-all-picture");
+        break;
       default:
         break;
     }
@@ -118,6 +122,12 @@ io.on("connection", (socket) => {
       case "update-permission-visitor":
         console.log(
           `SOCKET: Admin => Update permission user n° ${data.id} | New Permission: ${data.isNotAllowed}`
+        );
+        socket.broadcast.emit("update-permission-visitor", data);
+        break;
+      case "update-allowed-picture":
+        console.log(
+          `SOCKET: Admin => Update allowed picture | New Permission: ${data.status}`
         );
         socket.broadcast.emit("update-permission-visitor", data);
         break;

@@ -51,6 +51,9 @@ export const appSlice = createSlice({
     udpdateSongInCurrent: (state, action) => {
       state.appData.app.titleincurent = { ...action.payload };
     },
+    updateDefaultStatusPermissionPhoto: (state, action) => {
+      state.appData.app.defaultPictureAccept = action.payload;
+    },
   },
 });
 
@@ -64,6 +67,7 @@ export const {
   deleteItemFooterInStore,
   updateCopyrightTextInStore,
   udpdateSongInCurrent,
+  updateDefaultStatusPermissionPhoto,
 } = appSlice.actions;
 
 export const appParam = (state: any) => state.appStore.appData;
